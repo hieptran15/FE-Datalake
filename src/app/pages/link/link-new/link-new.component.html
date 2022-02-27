@@ -1,0 +1,215 @@
+<nb-card class="dialog dialog-md">
+  <nb-card-header>
+    {{!data?.id ? 'Thêm liên kết' : 'Sửa thông tin liên kết'}}
+  </nb-card-header>
+  <nb-card-body>
+    <nb-card>
+      <nb-card-header>
+        Thông tin
+        <span *ngIf="data?.id">
+          liên kết từ {{data.leftClusterName ? 'cụm "' + data.leftClusterName + '"' : 'ứng dụng "' + data.leftNodeName + '"' }}
+          đến {{data.rightClusterName ? 'cụm "' + data.rightClusterName + '"' : 'ứng dụng "' + data.rightNodeName + '"' }}
+        </span>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row" *ngIf="!data?.id">
+          <div class="col-lg-12 form-group">
+            <label class="label">Bắt đầu từ</label>
+            <div class="row">
+              <div class="col-3">
+                <ng-select [(ngModel)]="leftType" [items]="types" bindValue="value" [disabled]="data?.id">
+                </ng-select>
+              </div>
+              <div class="col-9 row">
+                <div class=" form-group" *ngIf="leftType === 2 || leftType === 0 || leftType === 1"
+                     [ngClass]="{'col-lg-12': (leftType === 2), 'col-lg-6': (leftType === 0), 'col-lg-4': (leftType === 1)}">
+                  <!--                  <label class="label">Cụm server</label>-->
+                  <ng-select [items]="leftServer$ | async"
+                             fullWidth
+                             bindLabel="clusterName"
+                             [hideSelected]="true"
+                             (change)="selectedLeftCluster  = null; selectedLeftNode = null"
+                             typeToSearchText="Chọn cụm server"
+                             [typeahead]="leftServerInput$"
+                             [loading]="leftServerLoading"
+                             [(ngModel)]="selectedLeftServer"
+                             (focus)="leftServerInput$.next()"
+                             placeholder="Chọn cụm server"
+                             [disabled]="data?.id"
+                  >
+                  </ng-select>
+                </div>
+
+                <div class=" form-group" *ngIf="leftType === 0 || leftType === 1 "
+                     [ngClass]="{ 'col-lg-6': (leftType === 0), 'col-lg-4': (leftType === 1)}"
+                >
+                  <!--                  <label class="label">Cụm</label>-->
+                  <ng-select [items]="leftClusters$ | async"
+                             bindLabel="clusterName"
+                             fullWidth
+                             [hideSelected]="true"
+                             (change)="selectedLeftNode = null"
+                             typeToSearchText="Chọn cụm ứng dụng"
+                             [typeahead]="leftClusterInput$"
+                             [loading]="leftClusterLoading"
+                             [(ngModel)]="selectedLeftCluster"
+                             (focus)="leftClusterInput$.next()"
+                             placeholder="Chọn cụm ứng dụng"
+                             [disabled]="data?.id"
+                  >
+                  </ng-select>
+                </div>
+                <div class="col-lg-4 form-group" *ngIf="leftType === 1"
+                >
+                  <!--                  <label class="label">Cụm ứng dụng</label>-->
+                  <ng-select [items]="leftNodes$ | async"
+                             fullWidth
+                             bindLabel="nodeName"
+                             [hideSelected]="true"
+                             typeToSearchText="Chọn ứng dụng"
+                             [typeahead]="leftNodeInput$"
+                             [loading]="leftNodeLoading"
+                             [(ngModel)]="selectedLeftNode"
+                             (focus)="leftNodeInput$.next()"
+                             placeholder="Chọn ứng dụng"
+                             [disabled]="data?.id"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12 form-group">
+            <label class="label">đến</label>
+            <div class="row">
+              <div class="col-3">
+                <ng-select [(ngModel)]="rightType" [items]="types" bindValue="value" [disabled]="data?.id">
+                </ng-select>
+              </div>
+              <div class="col-9 row">
+                <div class=" form-group" *ngIf="rightType === 2 || rightType === 0 || rightType === 1"
+                     [ngClass]="{'col-lg-12': (rightType === 2), 'col-lg-6': (rightType === 0), 'col-lg-4': (rightType === 1)}">
+                  <ng-select [items]="rightServer$ | async"
+                             bindLabel="clusterName"
+                             [hideSelected]="true"
+                             (change)="selectedRightCluster = null; selectedRightNode = null"
+                             typeToSearchText="Chọn cụm server"
+                             [typeahead]="rightServerInput$"
+                             [loading]="rightServerLoading"
+                             [(ngModel)]="selectedRightServer"
+                             (focus)="rightServerInput$.next()"
+                             placeholder="Chọn cụm server"
+                             [disabled]="data?.id"
+                  >
+                  </ng-select>
+                </div>
+                <div class=" form-group" *ngIf="rightType === 0 || rightType === 1 "
+                     [ngClass]="{ 'col-lg-6': (rightType === 0), 'col-lg-4': (rightType === 1)}">
+                  <ng-select [items]="rightClusters$ | async"
+                             bindLabel="clusterName"
+                             [hideSelected]="true"
+                             (change)="selectedRightNode = null"
+                             typeToSearchText="Chọn cụm ứng dụng"
+                             [typeahead]="rightClusterInput$"
+                             [loading]="rightClusterLoading"
+                             [(ngModel)]="selectedRightCluster"
+                             (focus)="rightClusterInput$.next()"
+                             placeholder="Chọn cụm ứng dụng"
+                             [disabled]="data?.id"
+                  >
+                  </ng-select>
+                </div>
+                <div class="col-lg-4 form-group" *ngIf="rightType === 1">
+                  <ng-select [items]="rightNodes$ | async"
+                             bindLabel="nodeName"
+                             [hideSelected]="true"
+                             typeToSearchText="Chọn ứng dụng"
+                             [typeahead]="rightNodeInput$"
+                             [loading]="rightNodeLoading"
+                             [(ngModel)]="selectedRightNode"
+                             (focus)="rightNodeInput$.next()"
+                             placeholder="Chọn ứng dụng"
+                             [disabled]="data?.id"
+                  >
+                  </ng-select>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12 form-group" [formGroup]="linkFormGroup">
+            <label class="label">Tên liên kết</label>
+            <input style="padding-left: 10px" type="text" nbInput fullWidth formControlName="label"
+                   (change)="trimChar('label')">
+            <ngx-inline-message [message]="'Tên liên kết'"
+                                [formName]="linkFormGroup.get('label')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="form-group" [formGroup]="linkFormGroup">
+          <label class="label">Mô tả</label>
+          <!--          <textarea nbInput fullWidth formControlName="description" (change)="trimChar('description')" rows="5"></textarea>-->
+          <ckeditor type="divarea" (dataChange)="linkFormGroup.get('description').patchValue($event)"
+                    [data]="linkFormGroup.get('description').value"></ckeditor>
+          <ngx-inline-message [message]="'Mô tả'"
+                              [formName]="linkFormGroup.get('description')"></ngx-inline-message>
+        </div>
+      </nb-card-body>
+    </nb-card>
+    <nb-card>
+      <nb-card-header>Style</nb-card-header>
+      <nb-card-body class="row">
+        <div class="form-group col-lg-6" [formGroup]="linkFormGroup">
+          <label class="label">Màu chữ</label>
+          <nb-form-field>
+            <input style="padding-left: 10px" [colorPicker]="linkFormGroup.get('textColor').value"
+                   (change)="trimChar('textColor')"
+                   [cpPresetColors]="['#ffffff','#000000','#8ab871','#6fa050']"
+                   [cpOutputFormat]="'auto'" fullWidth nbInput formControlName="textColor" #textColor
+                   (colorPickerChange)="linkFormGroup.get('textColor').setValue($event)">
+            <button nbSuffix nbButton type="button" (click)="textColor.click()" class="color-picker-toggle"
+                    [style.background]="linkFormGroup.get('textColor').value || 'transparent'"
+            >
+              &nbsp;
+            </button>
+          </nb-form-field>
+          <ngx-inline-message [message]="'Màu chữ'"
+                              [formName]="linkFormGroup.get('textColor')"></ngx-inline-message>
+        </div>
+        <div class="form-group col-lg-6" [formGroup]="linkFormGroup">
+          <label class="label">Kiểu đường</label>
+          <ngx-border-select [(borderStyle)]="linkFormGroup.value.borderStyle"></ngx-border-select>
+        </div>
+        <div class="form-group col-lg-6" [formGroup]="linkFormGroup">
+          <label class="label">Màu đường</label>
+          <nb-form-field>
+            <input style="padding-left: 10px" [colorPicker]="linkFormGroup.get('borderColor').value"
+                   (change)="trimChar('borderColor')"
+                   [cpPresetColors]="['#ffffff','#000000','#8ab871','#6fa050']"
+                   [cpOutputFormat]="'auto'" fullWidth nbInput formControlName="borderColor" #borderColor
+                   (colorPickerChange)="linkFormGroup.get('borderColor').setValue($event)">
+            <button nbSuffix nbButton type="button" (click)="borderColor.click()" class="color-picker-toggle"
+                    [style.background]="linkFormGroup.get('borderColor').value || 'transparent'"
+            >
+              &nbsp;
+            </button>
+          </nb-form-field>
+          <ngx-inline-message [message]="'Màu liên kết'"
+                              [formName]="linkFormGroup.get('borderColor')"></ngx-inline-message>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="float-right d-flex edit-button">
+      <button type="button" (click)="save()"
+              [disabled]="linkFormGroup.invalid || isSaving">Lưu
+      </button>
+      <button class="ml-2" type="button" (click)="ref.close()">Hủy</button>
+    </div>
+  </nb-card-footer>
+</nb-card>
+

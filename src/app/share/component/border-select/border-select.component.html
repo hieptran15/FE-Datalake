@@ -1,0 +1,8 @@
+<ng-select fullWidth [items]="borderLists" (change)="change($event)" [(ngModel)]="borderStyle" [searchable]="false" [clearable]="false">
+  <ng-template ng-label-tmp let-item="item" let-clear="clear">
+    <p class="border-preview" [ngClass]="item"></p>
+  </ng-template>
+  <ng-template ng-option-tmp let-item="item">
+    <p class="border-preview" [ngClass]="item"></p>
+  </ng-template>
+</ng-select>

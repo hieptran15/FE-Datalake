@@ -1,0 +1,121 @@
+.label-size {
+  width: 15%;
+}
+
+.input-size {
+  width: 35% !important;
+}
+
+.checkbox-ml {
+  margin-left: 44px;
+}
+
+.form-validate {
+  color: #ff0000;
+  font-size: 12px;
+}
+
+.combobox {
+  width: 55%;
+  margin-right: 1%;
+}
+
+ml-button {
+  margin-left: 0.5rem;
+}
+
+label {
+  em {
+    color: #9c3328;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.item-copy {
+  cursor: pointer;
+  //text-decoration: underline;
+  color: #9cbefd;
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+.cbb-custom {
+  width: 300px;
+  font-size: 13px;
+}
+
+@media only screen and (max-width: 1600px) {
+  ::ng-deep .ngx-datatable .datatable-body {
+    max-height: 400px !important;
+    overflow: hidden auto;
+
+    &::-webkit-scrollbar {
+      width: 2px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  }
+}
+
+.config-make-file {
+  textarea {
+    background-color: var(--background-table);
+  }
+}
+
+nb-card-body {
+  input {
+    background-color: var(--background-table) !important;
+    color: var(--color-text-light) !important;
+
+    &:hover {
+      background-color: var(--background-table) !important;
+      color: var(--color-text-light) !important;
+    }
+  }
+}
+
+
+nb-card-body, nb-card-header {
+  span {
+    color: var(--color-text-light) !important;
+  }
+}

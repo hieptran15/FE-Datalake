@@ -1,0 +1,182 @@
+//::ng-deep .ngx-datatable .datatable-body-cell-label {
+//  text-align: center;
+//}
+//
+//::ng-deep .ngx-datatable .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap {
+//  text-align: center;
+//}
+:host ::ng-deep {
+  nb-layout
+  .row
+  .col-3
+  nb-card-body .module-name-item:focus {
+    background-color: rgba(140, 149, 178, 0.15);
+  }
+
+  //.module-name-item:focus {
+  //  background-color: red;
+  //}
+
+  nb-card-body {
+    padding: 2.8rem 1.5rem;
+    border-radius: 0px 0px 5px 5px;
+  }
+}
+
+nb-layout-column {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+nb-card-header {
+  .justify-content-between {
+    padding: 0;
+
+    .custom-show-data {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: none;
+      font-weight: bold;
+      //background: #2a3142;
+      background: #2e3648;
+      border: 1px solid #363e54;
+      color: white;
+      border-radius: 10px;
+    }
+
+    .custom-show-data:hover {
+      background: #363e54;
+    }
+  }
+}
+
+ngx-datatable.material .datatable-header .datatable-header-cell {
+  font-size: 0.9375rem !important;
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+}
+
+nb-card-body {
+  .justify-content-between {
+    margin: 0 0 20px 0;
+
+    .col-4 {
+      padding: 0;
+
+      input {
+        background: #2e3648;
+        border: 1px solid #363e54;
+        color: white;
+        border-radius: 5px;
+      }
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #80808040;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #101426;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #101426;
+}
+
+
+.module-name-item {
+  height: 50px;
+  padding-left: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: var(--bg-back);
+  color: var(--color-text-light);
+  margin-bottom: 2px;
+  outline: none;
+  border: 0;
+
+  &.selected {
+    background-color: rgba(140, 149, 178, 0.15);
+  }
+
+  span {
+    text-align: left;
+    line-height: 20px;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+  }
+
+
+}
+
+.module-name-item:last-of-type {
+  border-bottom: none;
+  margin-buttom: 0;
+}
+
+.list-item-module {
+  margin: 24px 0;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+.module-detail-background {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  justify-content: space-between;
+  align-items: center;
+
+
+  .module-detail {
+    width: 70%;
+
+    .col-3 {
+      white-space: nowrap;
+    }
+  }
+}
+
+//custom style popup confirm be tu man confirm sr sang
+.step-action-background {
+  min-width: 450px;
+  height: 251px;
+
+  .action-popup-body {
+    padding: 25px;
+
+    button:first-of-type {
+      margin-right: 12px;
+    }
+
+    .button-area {
+      position: absolute;
+      bottom: 0;
+    }
+  }
+}

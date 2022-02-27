@@ -1,0 +1,49 @@
+.w-h-dialog {
+  min-width: 50vw;
+  height: auto;
+  background: #222736 !important;
+}
+
+nb-card.custom-p {
+  p {
+    color: var(--color-text-light);
+  }
+
+  h3 {
+    color: var(--color-text-light);
+  }
+}
+
+span {
+  em {
+    color: #9c3328;
+  }
+}
+
+.w-12 {
+  width: 12%;
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  .edit-error small.text-danger {
+    position: absolute;
+  }
+
+}
+
+.w-88 {
+  width: 88%;
+}
+
+.custom-link {
+  color: #3366ff;
+  cursor: pointer;
+}
+
+.custom-font {
+  font-size: 1.35rem;
+}

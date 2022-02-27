@@ -1,0 +1,21 @@
+<nb-card>
+  <nb-card-header class="d-flex justify-content-between align-items-center">
+    <span style="color: var(--color-text-light);">{{ title }}</span>
+  </nb-card-header>
+  <nb-card-body>
+    <div>
+      <span style="font-weight: 400;color: var(--color-text-light);">{{message}}</span>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div style="display: flex;justify-content: flex-end;" class="text-right edit-button d-flex justify-content-center">
+      <button type="button" status="info" size="small" (click)="save()">
+        {{ okTitle }}
+      </button>
+      <button class="edit-button-cancel ml-2" type="button" status="warning" size="small" *ngIf="!hideCancel"
+              (click)="close()">
+        {{ cancelTitle }}
+      </button>
+    </div>
+  </nb-card-footer>
+</nb-card>

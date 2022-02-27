@@ -1,0 +1,571 @@
+{
+  "validation": {
+    "required": "{{field}} not be empty.",
+    "maxLength": "{{field}} not over {{value}} characters",
+    "minLength": "{{field}} at least {{value}} characters",
+    "pattern": "{{field}} invalid format",
+    "onlyNaturalNumber": "{{field}} must be natural number",
+    "onlyNumber": "{{field}} must be number",
+    "onlyDoubleNumber": "{{field}} must be number",
+    "onlyCharacter": "{{field}} only input alphabet, number and character _",
+    "mustMatch": "{{field}} not match",
+    "existCheck": "{{field}} is exist",
+    "email": "Invalid email format",
+    "mustSameUnit": "{{field}} must same unit",
+    "invalidColor": "Color is invalid",
+    "noData": "No data",
+    "max": "{{field}} allowable value is exceeded"
+  },
+  "login": {
+    "in": "Login",
+    "out": "Logout",
+    "account": "Account",
+    "password": "Password",
+    "failIn": "Login Fail",
+    "forgotPassword": "Forgot password"
+  },
+  "changePass": {
+    "currentPassword": "Current password",
+    "password": "New password",
+    "confirmPassword": "Confirm password",
+    "btnChange": "Change passWord",
+    "changePassTitle": "ChangePass title",
+    "changePassSuccess": "ChangePass success"
+  },
+  "global": {
+    "label": {
+      "select": "Select"
+    },
+    "select": {
+      "placeholder": "Choose role",
+      "clearAllText": "Clear all text",
+      "notFoundText": "Not found text"
+    },
+    "gridTitle": "Grid title",
+    "labels": {
+      "fromTime": "From time",
+      "toTime": "To time",
+      "search": "Search",
+      "chartSearch": "Chart search",
+      "groupChart": "Group chart",
+      "openChartMap": "Địa phương",
+      "requireToDate": "Require to date"
+    }
+  },
+  "user": {
+    "column": {
+      "index": "No",
+      "account": "Account",
+      "email": "Email",
+      "status": "Status",
+      "phoneNumber": "Phone number",
+      "createDate": "Create date",
+      "active": "Active",
+      "activated": "Status",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "fullname": "Full name",
+      "getAlerted": "Get alerted to the head",
+      "language": "Language",
+      "role": "Role group",
+      "group": "Group",
+      "type": "Type",
+      "domain": "Domain",
+      "addNewType": "Add role group",
+      "userName": "User name",
+      "userHDFS": "HDFS user"
+    },
+    "label": {
+      "type": "Account type",
+      "record": "record",
+      "title": "User management",
+      "add": "Add",
+      "edit": "Edit user",
+      "new": "Add user",
+      "addUser": "Add new user",
+      "search": "Search",
+      "active": "Active",
+      "inactive": "Inactive",
+      "cancel": "Cancel",
+      "save": "Save",
+      "changePass": "Are you sure to reset this user password?",
+      "changeStatus": "Are you sure you want to switch the user state?",
+      "edit": "Edit",
+      "lockUser": "Lock user",
+      "unLockUser": "Unlock user",
+      "resetPass": "Reset password",
+      "addRoleGroup": "Add Role Group",
+      "normal": "Normal",
+      "selectAllUser": "Get all user"
+    },
+    "userManagement": {
+      "title": "User list"
+    },
+    "roleManager": {
+      "title": "Role manager",
+      "typeAccount": "Type account",
+      "listPermission": "List module"
+    }
+  },
+  "accessManager": {
+    "label": {
+      "startTime": "Start time",
+      "endTime": "End time",
+      "reason": "Reason"
+    }
+  },
+  "user-hdfs": {
+    "column": {
+      "name": "User name",
+      "description": "Description",
+      "permission": "Permisstions",
+      "action": "Actions"
+    },
+    "label": {
+      "nameUser": "User name",
+      "addNewUser": "Add new user",
+      "listUserHdfs": "List user",
+      "description": "Description",
+      "cancel": "Cancel",
+      "save": "Save"
+    }
+  },
+  "HDFSBrowser": {
+    "column": {
+      "permission": "Permission",
+      "owner": "Owner",
+      "group": "Group",
+      "size": "Size",
+      "quota": "Quota",
+      "replication": "Replication",
+      "blockSize": "Block size",
+      "name": "Name",
+      "option": "Option"
+    },
+    "label": {
+      "copyPath": "Copy path",
+      "reload": "Reload",
+      "newFile": "New file",
+      "newFolder": "New folder",
+      "fileName": "File name",
+      "fileContent": "File content",
+      "folderName": "Folder name",
+      "getSize": "Get size",
+      "delete": "Delete",
+      "move": "move",
+      "moveTo": "Move to",
+      "download": "Download",
+      "copyTo": "Copy to",
+      "copy": "Copy",
+      "permission": "Permission",
+      "close": "Close",
+      "error": "Error",
+      "save": "Save",
+      "ConfirmationText": "Confirmation text:",
+      "fillText": "Fill with the confirmation text",
+      "permissionChange": "Permission change",
+      "errorConnection": "Connection error "
+    }
+  },
+  "module": {
+    "column": {
+      "moduleName": "Module name",
+      "description": "Description",
+      "permission": "Permissions",
+      "action": "Actions"
+    },
+    "label": {
+      "roles": "Roles",
+      "create": "Create new module",
+      "edit": "Edit module",
+      "listModule": "List of module",
+      "cancel": "Cancel",
+      "save": "Save",
+      "deleteItem": "Delete item",
+      "confirmDelete": "Are you sure you want to delete the record?",
+      "confirm": "Confirm"
+    }
+  },
+  "flow-customized": {
+    "column": {
+      "nameThread": "Stream name",
+      "ProcessorRunning": "Processor running",
+      "ProcessorStop": "Processor stop",
+      "ProcessorInvalid": "Processor invalid"
+    },
+    "label": {
+      "viewLog": "View stream logs",
+      "title": "List of streams",
+      "nameConnection": "Connection name",
+      "refresh": "Refresh",
+      "nextPage": "Turn pages",
+      "messConfirm": "Are you sure want to turn pages!",
+      "yes": "Yes",
+      "no": "No",
+      "cancel": "Cancel",
+      "deleteThread": "Delete thread",
+      "confirmDeleteThread?": "Are you sure you want to delete this thread?",
+      "updateTheStatus": "Update the status of the stream",
+      "confirmUpdateThread": "Are you sure you want to update the stream's status?"
+    }
+  },
+  "connection-manager": {
+    "column": {
+      "nameConnection": "Connection name",
+      "typeConnection": "Connection type",
+      "numberOfThreadsUsed": "Thread in used",
+      "createAt": "Create at",
+      "action": "Actions"
+    },
+    "label": {
+      "connectionManager": "Connection manager",
+      "addNewConnection": "Add new connection",
+      "nameConnection": "Connection name",
+      "listConnection": "List of connections",
+      "typeConnection": "Type connection",
+      "emptyName": "Name connection not be empty",
+      "userName": "Username",
+      "password": "Password",
+      "connectionMode": "Connection mode",
+      "connectionTimeout": "Connection timeout",
+      "dataTimeOut": "Data timeOut",
+      "testConnection": "Test connection",
+      "create": "Create",
+      "save": "Save",
+      "cancel": "Cancel",
+      "advancedSetting": "Advanced settings",
+      "resourcePath": "HDFS resource path"
+    }
+  },
+  "data-ingestion": {
+    "column": {
+      "calendar": "Calendar",
+      "custom": "Custom",
+      "destination": "Destination",
+      "group": "Group",
+      "source": "Source",
+      "status": "Status",
+      "threadCode": "Thread code",
+      "threadName": "Thread name",
+      "details": "Details"
+    },
+    "label": {
+      "add": "Add",
+      "addField": "Add fields",
+      "addFieldInfo": "Add an information field",
+      "addNewGroup": "Add a new group",
+      "addNewThread": "Add a new thread",
+      "advancedSetup": "Advanced setup",
+      "connection": "Connection",
+      "createNewThread": "Create a new thread",
+      "dbUrl": "DB connection url",
+      "dbClassname": "DB driver classname",
+      "dbLocation": "DB driver location",
+      "dbUsername": "DB username",
+      "dbPassword": "DB password",
+      "dbType": "DB Type",
+      "delete": "Delete",
+      "delimiter": "Delimiter",
+      "description": "Description",
+      "detailThread": "Detail thread",
+      "directory": "Directory",
+      "disable": "Disable",
+      "edit": "Edit",
+      "enable": "Enable",
+      "extract": "Extract",
+      "fetchSize": "Fetch Size",
+      "ftpServer": "FTP server",
+      "hdfsResource": "HDFS resources",
+      "hdfsPath": "HDFS path",
+      "hdfsGroup": "HDFS owner group",
+      "hdfsUser": "HDFS owner user",
+      "id": "ID",
+      "infoThread": "Infomation thread",
+      "kafkaBroker": "Kafka broker",
+      "kafkaTopic": "Kafka topic",
+      "kafkaTopics": "Kafka topics",
+      "listThread": "Flow manager",
+      "logLevel": "Log level",
+      "manipulation": "Manipulation",
+      "maxRow": "Max row per file",
+      "monitor": "Monitor",
+      "name": "Name",
+      "nameConnection": "Name connection",
+      "nameGroup": "Name group",
+      "nameThread": "Name thread",
+      "owner": "Owner",
+      "path": "Path",
+      "password": "Password",
+      "port": "Port",
+      "record": "record",
+      "show": "Show",
+      "scheduling": "Scheduling",
+      "seeLog": "VIEW LOG",
+      "setup": "Setup",
+      "sqlQuery": "SQL query",
+      "start": "Start",
+      "stop": "Stop",
+      "taskParallel": "Task parallel",
+      "timezone": "Delta timezone",
+      "title": "List of streams",
+      "type": "Type",
+      "typeCalendar": "Type Calendar",
+      "update": "Update",
+      "updateThread": "Update thread",
+      "userName": "Username",
+      "cancel": "Cancel",
+      "save": "Save",
+      "deleteItem": "Delete item",
+      "confirmDelete": "Are you sure you want to delete the record?",
+      "confirm": "Confirm"
+    },
+    "properties": {
+      "threadName": "Thread name"
+    }
+  },
+  "success": {
+    "http": {
+      "actionSuccessfully": "Action successfully",
+      "notify": "Notify",
+      "addSuccess": "Add connection successfully",
+      "editSuccess": "Update connection successfully",
+      "addThreadSuccess": "Add Thread successfully",
+      "editThreadSuccess": "Update Thread successfully",
+      "deleteThreadSuccess": "Delete Thread successfully",
+      "deleteThreadFail": "Delete Thread failed",
+      "updateModuleSuccess": "Update module successfully",
+      "updateModuleFail": "Update module failed",
+      "addModuleSuccess": "Add module successfully",
+      "addModuleFail": "Add module failed",
+      "deleteModuleSuccess": "Delete module successfully",
+      "deleteModuleFail": "Delete module Failed",
+      "updateUseHdfsSuccess": "Update User successfully",
+      "updateUseHdfsFail": "Update user failed",
+      "addUseHdfsSuccess": "Add user successfully",
+      "addUseHdfsFail": "Add user failed",
+      "deleteUseHdfsSuccess": "Delete User successfully",
+      "deleteUseHdfsFail": "Delete User Failed",
+      "deleteSuccess": "Delete successfully"
+    }
+  },
+  "serverIpTables": {
+    "column": {
+      "ip": "Ip",
+      "userSSH": "UserSSH",
+      "passSSH": "PassSSH",
+      "passRoot": "PassRoot"
+    },
+    "success": {
+      "addSuccess": "Add new {{file}} successfully",
+      "editSuccess": "Update server successfully",
+      "deleteSuccess": "Delete server successfully"
+    },
+    "fail": {
+      "addFail": "Add new server failed",
+      "editFail": "Update server failed",
+      "deleteFail": "Delete server failed"
+    },
+    "label": {
+      "placeholder": "Enter search information",
+      "addNew": "Add new server",
+      "active": "Active",
+      "status": "Status",
+      "lock": "Lock",
+      "edit": "Edit",
+      "delete": "Delete",
+      "unlock": "Unlock",
+      "locks": "Lock",
+      "editServer": "Edit server information",
+      "save": "Create new",
+      "saveEdit": "Save",
+      "confirmLock": "Do you want to lock server ?",
+      "confirmUnlock": "Do you want to unlock server ?",
+      "cancel": "Cancel"
+    }
+  },
+  "error": {
+    "http": {
+      "401": "Login error",
+      "errors": "Error",
+      "duplicateName": "Duplicate name",
+      "duplicateIpAddress": "Duplicate Ip address"
+    }
+  },
+  "monitor": {
+    "title": "Monitor",
+    "week": "Week",
+    "day": "Day",
+    "month": "Month",
+    "flowChart": "Flow chart of the streams",
+    "weeklyFlowChart": "Weekly flow chart",
+    "monthlyFlowChart": "Monthly flow chart",
+    "chartFileNumber": "Chart File Number",
+    "capacityChart": "Capacity Chart"
+  },
+  "sideBar": {
+    "provisioning": "Provisioning"
+  },
+  "footer": {
+    "title": "Viettel Big Data Platform– Copyright ©️ 2021 - Designed by BDT - Data Governance  Department (DGD) - Viettel Group"
+  },
+  "toast": {
+    "note": "Notification",
+    "addGroupSuccess": "Add group success",
+    "addGroupError": "Add group error",
+    "resetPassWordSuccess": "Password reset success to 123456a@",
+    "successfulStreamStatusUpdate": "Successful stream status update",
+    "errorStreamStatusUpdate": "Error stream status update",
+    "saveAnswer": "Do you want to save your changes?"
+  },
+  "process": {
+    "processing": "Processing...",
+    "messageHdfs": "You have not been assigned hdfs user, please contact Admin for support!",
+    "messageErrorServer": "Not connected to the server yet, please contact the Admin for support!"
+  },
+  "ipTable": {
+    "dulicate": "Do you want duplicated lines?",
+    "content": "Content",
+    "ChooseAServer": "Choose a server",
+    "deleteLine": "do you want to delete the line?",
+    "contentRow": "Content",
+    "choiceRuleType": "Choice rule type",
+    "UserNameNotBeEmpty": "username",
+    "EmailNotBeEmpty": "email",
+    "reset": "Do you want to resset?"
+  },
+  "accessAuthorization": {
+    "title": "List rule access thrift",
+    "addOPermission": "Add new permissions",
+    "createThrift": "Create new access rights for the group",
+    "createThriftUser": "Create new access rights for the user",
+    "delete": "Do you want to delete?",
+    "editThrift": "Update access rights for the group",
+    "editThriftUser": "Update access rights for the user",
+    "deleteThrift": "Delete access rights for the group",
+    "deleteThriftUser": "Delete access rights for the user",
+    "add": "Add success",
+    "update": "Update success",
+    "groupAccess": "Group Access",
+    "userAccess": "User access",
+    "error": "Error server",
+    "dateCreated": "Active date",
+    "deadline": "End_at",
+    "chooseThritf": "Choose thrift",
+    "chooseGroup": "Choose group",
+    "expiryDate": "Expiry date",
+    "dateError": "Creation date must be greater than or equal to current date and less than or equal to end date",
+    "listError": {
+      "exist": "UserId and ThriftId already exist",
+      "notInFoIpTable": "Server not information IP table",
+      "connectFail": "Connect fail"
+    }
+  },
+  "accessLog": {
+    "title": "Query",
+    "query": "Query ",
+    "dateCreated": "Active date",
+    "deadline": "End_at",
+    "from": "From",
+    "to": "To",
+    "accessDetails": "Query Detail"
+  },
+  "lookupTable": {
+    "findExactly": "FindExactly",
+    "sortBy": "Sort by:",
+    "tableLookup": "Table lookup",
+    "relationName": "Relation name",
+    "jobName": "Job name",
+    "tableName": "Table name",
+    "tableAction": "Table action",
+    "jobStatus": "Job status",
+    "dateModifyRelation": "Date modify relation",
+    "dateModifyJob": "Date modify job",
+    "details": "Details",
+    "all": "All",
+    "searchByRelationName": "Relation name",
+    "searchByTableName": "Table name",
+    "searchByJobName": "Job name"
+  },
+  "userThrift": {
+    "group": {
+      "wpGroupName": "Group Name",
+      "description": "Description",
+      "groupAccount": "Server group account",
+      "active": "Active",
+      "lock": "Lock"
+    },
+    "column": {
+      "user": "User",
+      "ip": "Ip",
+      "passWord": "Password",
+      "group": "Group",
+      "accountType": "Account type",
+      "status": "Status",
+      "createTime": "Create time",
+      "updateTime": "Update time",
+      "action": "Action",
+      "phone": "Phone"
+    },
+    "label": {
+      "userName": "UserName",
+      "save": "Create",
+      "update": "Save",
+      "cancel": "Cancel",
+      "createUser": "Create new account",
+      "createGroup": "Create new group",
+      "editGroup": "Edit group",
+      "listServer": "List server",
+      "confirmDelete": "Are you sure want to delete?",
+      "titleDelete": "Delete",
+      "confirm": "Confirm",
+      "sso": "SSO",
+      "default": "often"
+    }
+  },
+  "Thrift": {
+    "column": {
+      "name": "Thrift",
+      "host": "Host",
+      "port": "Port",
+      "description": "Description",
+      "status": "Status",
+      "action": "Action"
+    },
+    "label": {
+      "checkHost": "Host does not exist in IP tables",
+      "name": "Thrift name",
+      "create": "Create new thrift",
+      "listThrift": "List thrift",
+      "editThrift": "Edit thrift"
+    }
+  },
+  "label": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "unlock": "Unlock",
+    "locks": "Lock",
+    "active": "Active",
+    "confirm": "Confirm",
+    "titleDelete": "Delete item",
+    "save": "Save",
+    "saveIp": "Create",
+    "create": "Create",
+    "cancel": "Cancel",
+    "createSuccess": "Create new successfully",
+    "createFail": "Create new false",
+    "updateSuccess": "Update item successfully",
+    "updateFail": "Update item false",
+    "deleteSuccess": "Delete item successfully",
+    "deleteFail": "Delete item false",
+    "confirmDelete": "Are you sure want to delete?",
+    "group": "Group"
+  },
+  "page": {
+    "show": "Show",
+    "record": "record",
+    "createThrift": "Create new access rights for the group",
+    "createThriftUser": "Create new access rights for the user",
+    "delete": "do you want to delete?"
+  }
+}
+

@@ -1,0 +1,19 @@
+.add-or-edit-access {
+  nb-checkbox {
+    ::ng-deep {
+      .label {
+        top: 4px;
+      }
+    }
+  }
+}
+
+.button-close{
+  background:var(--background-container) !important;
+}
+:host ::ng-deep{
+  nb-radio.status-basic .text{
+  color: var(--color-text-light);
+
+  }
+}

@@ -1,0 +1,111 @@
+  <nb-card class="dialog dialog-md">
+  <nb-card-header>
+    {{title}}
+  </nb-card-header>
+  <nb-card-body>
+    <nb-card>
+      <nb-card-header>Thông tin</nb-card-header>
+      <nb-card-body>
+<!--        <div class="form-group" *ngIf="parentName">-->
+<!--          <label class="label">Cụm server</label>-->
+<!--          &lt;!&ndash;          <ng-select [items]="parents$ | async"&ndash;&gt;-->
+<!--          &lt;!&ndash;                     bindLabel="clusterName"&ndash;&gt;-->
+<!--          &lt;!&ndash;                     [hideSelected]="true"&ndash;&gt;-->
+<!--          &lt;!&ndash;                     typeToSearchText="Chọn cụm cha"&ndash;&gt;-->
+<!--          &lt;!&ndash;                     [typeahead]="parentsInput$"&ndash;&gt;-->
+<!--          &lt;!&ndash;                     [loading]="parentsLoading"&ndash;&gt;-->
+<!--          &lt;!&ndash;                     [(ngModel)]="selectedParent"&ndash;&gt;-->
+<!--          &lt;!&ndash;                     (focus)="parentsInput$.next()"&ndash;&gt;-->
+<!--          &lt;!&ndash;          >&ndash;&gt;-->
+<!--          &lt;!&ndash;          </ng-select>&ndash;&gt;-->
+<!--          <input type="text" readonly nbInput [(ngModel)]="parentName" fullWidth>-->
+<!--          <ngx-inline-message [message]="'Cụm cha'"-->
+<!--                              [formName]="applicationCluster.get('parentId')"></ngx-inline-message>-->
+<!--        </div>-->
+
+        <div class="form-group" [formGroup]="applicationCluster">
+          <label class="label">Tên cụm <span class="text-danger">*</span></label>
+          <input style="padding-left: 10px" type="text" nbInput fullWidth formControlName="clusterName" (change)="trimChar('clusterName')"/>
+          <ngx-inline-message [message]="'Tên cụm'"
+                              [formName]="applicationCluster.get('clusterName')"></ngx-inline-message>
+        </div>
+        <div class="form-group" [formGroup]="applicationCluster">
+          <label class="label">Tags</label>
+          <ng-select [items]="tags"
+                     [addTag]="addTagFn"
+                     [hideSelected]="true"
+                     multiple="true"
+                     bindLabel="name"
+                     formControlName="tags">
+          </ng-select>
+        </div>
+        <div class="form-group" >
+          <label class="label">Mô tả</label>
+<!--          <textarea nbInput fullWidth formControlName="description"></textarea>-->
+          <ckeditor type="divarea" (dataChange)="applicationCluster.get('description').patchValue($event)" [data]="applicationCluster.get('description').value"></ckeditor>
+          <ngx-inline-message [message]="'Mô tả'" (change)="trimChar('description')"
+                              [formName]="applicationCluster.get('description')"></ngx-inline-message>
+        </div>
+      </nb-card-body>
+    </nb-card>
+    <nb-card>
+      <nb-card-header>Style</nb-card-header>
+      <nb-card-body class="row" [formGroup]="applicationCluster">
+        <div class="form-group col-lg-6">
+          <label class="label">Màu nền</label>
+          <nb-form-field>
+            <input style="padding-left: 10px" [colorPicker]="applicationCluster.get('background').value" (change)="trimChar('background')"
+                   [cpPresetColors] = "['#ffffff','#000000','#8ab871','#6fa050']"
+                   [cpOutputFormat]="'auto'" fullWidth nbInput formControlName="background" #background
+                   (colorPickerChange)="applicationCluster.get('background').setValue($event)">
+            <button nbSuffix nbButton type="button" class="color-picker-toggle"
+                    (click)="background.click()"
+                    [style.background]="applicationCluster.get('background').value || 'transparent'"
+                    >&nbsp;</button>
+          </nb-form-field>
+          <ngx-inline-message [message]="'Màu nền'" (change)="trimChar('background')"
+                              [formName]="applicationCluster.get('background')"></ngx-inline-message>
+        </div>
+        <div class="form-group col-lg-6">
+          <label class="label">Màu chữ</label>
+          <nb-form-field>
+            <input style="padding-left: 10px" [colorPicker]="applicationCluster.get('textColor').value" (change)="trimChar('textColor')"
+                   [cpPresetColors] = "['#ffffff','#000000','#8ab871','#6fa050']"
+                   [cpOutputFormat]="'auto'" fullWidth nbInput formControlName="textColor" #textColor
+                   (colorPickerChange)="applicationCluster.get('textColor').setValue($event)">
+            <button nbSuffix nbButton type="button"(click)="textColor.click()" class="color-picker-toggle"
+                    [style.background]="applicationCluster.get('textColor').value || 'transparent'" >&nbsp;</button>
+          </nb-form-field>
+          <ngx-inline-message [message]="'Màu chữ'" (change)="trimChar('textColor')"
+                              [formName]="applicationCluster.get('textColor')"></ngx-inline-message>
+        </div>
+        <div class="form-group col-lg-6">
+          <label class="label">Kiểu border</label>
+          <ngx-border-select [(borderStyle)]="borderStyle"></ngx-border-select>
+        </div>
+        <div class="form-group col-lg-6">
+          <label class="label">Màu border</label>
+          <nb-form-field>
+            <input style="padding-left: 10px" [colorPicker]="applicationCluster.get('borderColor').value" (change)="trimChar('borderColor')"
+                   [cpPresetColors] = "['#ffffff','#000000','#8ab871','#6fa050']"
+                   [cpOutputFormat]="'auto'" fullWidth nbInput formControlName="borderColor" #borderColor
+                   (colorPickerChange)="applicationCluster.get('borderColor').setValue($event)">
+            <button nbSuffix nbButton type="button"(click)="borderColor.click()" class="color-picker-toggle"
+                    [style.background]="applicationCluster.get('borderColor').value || 'transparent'" >&nbsp;</button>
+          </nb-form-field>
+          <ngx-inline-message [message]="'Màu border'" (change)="trimChar('borderColor')"
+                              [formName]="applicationCluster.get('borderColor')"></ngx-inline-message>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="float-right d-flex edit-button">
+      <button type="button"  status="primary" (click)="save()" [disabled]="isSaving || applicationCluster.invalid">Lưu</button>
+      <button type="button" class="ml-2" status="danger" (click)="ref.close()">Hủy</button>
+    </div>
+  </nb-card-footer>
+</nb-card>
+
+
+

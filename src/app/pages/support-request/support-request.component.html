@@ -1,0 +1,300 @@
+<nb-layout>
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;"
+    [nbSpinner]="isLoading" [nbSpinnerMessage]="'Processing'" nbSpinnerStatus="primary">
+    <nb-card>
+      <nb-card-header>
+        <div>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="title-page">
+              Quản lý yêu cầu
+            </div>
+            <div class="d-flex align-items-center" style="font-size: 12px ; font-weight:400">
+
+            </div>
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div style="margin-bottom: 25px;margin-top: 20px;" class="d-flex justify-content-between align-items-center">
+          <div style="padding: 0 6px" class="col-3 d-flex page align-items-center">
+            <span>{{'Hiển thị'}}</span>
+            <ng-select [items]="limits"
+                       class="selectPage"
+                       bindLabel="name"
+                       [(ngModel)]="limit"
+                       [clearable]="false"
+                       appendTo="">
+            </ng-select>
+            <span>{{'bản ghi'}}</span>
+          </div>
+          <div class="d-flex align-items-center" style="font-size: 12px ; font-weight:400">
+
+            <nb-form-field style="margin-right: 10px">
+              <div style="position: relative">
+                <input (keyup.enter)="filterInfoSR()" [(ngModel)]="searchValue" nbInput fullWidth trim="blur"
+                       style="padding-left: 10px"
+                       class="input-edit"
+                       placeholder="Nội dung tìm kiếm">
+                <nb-icon nbPrefix icon="search-outline" pack="eva"
+                         style="position: absolute;top: 8px;z-index: 3; right: 10px;"></nb-icon>
+              </div>
+            </nb-form-field>
+            <div class="edit-button position-relative">
+              <button (click)="openBoxFiler()" nbTooltip="Filter"
+                      style="height: 35px;width: 41px; padding: 5px 1px; color: white; min-width: 0 !important;"
+                      class="d-flex justify-content-center align-items-center">
+                <nb-icon nbPrefix icon="funnel-outline" pack="eva"></nb-icon>
+                <div *ngIf="listFilterSelected.length < 1">
+                  <svg width="7" height="4" viewBox="0 0 7 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M0.58875 0H6.41125C6.93479 0 7.19655 0.620174 6.82714 0.981742L3.91589 3.83119C3.68593 4.05627 3.31407 4.05627 3.08655 3.83119L0.172857 0.981742C-0.196554 0.620174 0.065214 0 0.58875 0Z"
+                      fill="white"/>
+                  </svg>
+                </div>
+                <span *ngIf="listFilterSelected.length > 0">{{listFilterSelected.length}}</span>
+              </button>
+              <div *ngIf="isFilerBox"
+                   class="support-filter position-absolute">
+                <div style="width: 100%;margin: 0px 13px 0px 0px;" class="position-relative">
+                  <table style="margin: 10px 16px">
+                    <tr class="table-row-listUser-header">
+                      <th style="width: 50%"></th>
+                      <th style="width: 50%"></th>
+                      <th></th>
+                    </tr>
+                    <tr [formGroup]="row" *ngFor="let row of listUserForm.controls; let i = index"
+                        class="table-row-listUser">
+                      <td class="position-relative">
+                        <ng-select
+                          class="edit-select"
+                          formControlName="selectedFilter"
+                          placeholder="Lọc theo"
+                          appendTo=""
+                          (change)="onSetValueGroup(row,i)"
+                        >
+                          <ng-option
+                            *ngFor="let item of listFilterBy" [value]="item?.key">
+                            <span showTooltip>{{item?.name}}</span></ng-option>
+                        </ng-select>
+                        <ngx-inline-message
+                          style="position: absolute;top: 68%;left: 2%;font-size: 11px;"
+                          [message]="'Type'"
+                          [formName]="row.get('selectedFilter')"></ngx-inline-message>
+                      </td>
+                      <td>
+                        <ng-select
+                          formControlName="selectedType"
+                          appendTo=""
+                          [readonly]="row.value.selectedFilter === null"
+                          class="edit-select"
+                        >
+                          <ng-option
+                            *ngFor="let item of lists[i]" [value]="item?.key">
+                            <span showTooltip>{{item?.name}}</span></ng-option>
+                        </ng-select>
+                      </td>
+                      <td class="d-flex justify-content-end align-items-center">
+                        <!--                        <div *ngIf="i >= 1" (click)="deleteRowUser(row)"-->
+                        <!--                             style="cursor: pointer;margin-top: 8px; margin-right: 2px">-->
+                        <!--                          <svg width="13" height="12" viewBox="0 0 13 12" fill="none"-->
+                        <!--                               xmlns="http://www.w3.org/2000/svg">-->
+                        <!--                            <path-->
+                        <!--                              d="M6.03272 0C2.69663 0 0 2.682 0 6C0 9.318 2.69663 12 6.03272 12C9.36882 12 12.0654 9.318 12.0654 6C12.0654 2.682 9.36882 0 6.03272 0ZM8.6268 8.58C8.57098 8.63562 8.50469 8.67975 8.43171 8.70986C8.35873 8.73997 8.2805 8.75547 8.20149 8.75547C8.12248 8.75547 8.04425 8.73997 7.97127 8.70986C7.89829 8.67975 7.83199 8.63562 7.77618 8.58L6.03272 6.846L4.28927 8.58C4.17647 8.69219 4.02348 8.75521 3.86396 8.75521C3.70444 8.75521 3.55145 8.69219 3.43865 8.58C3.32585 8.46781 3.26249 8.31566 3.26249 8.157C3.26249 8.07844 3.27804 8.00065 3.30827 7.92807C3.3385 7.8555 3.3828 7.78955 3.43865 7.734L5.18211 6L3.43865 4.266C3.32585 4.15381 3.26249 4.00166 3.26249 3.843C3.26249 3.68434 3.32585 3.53219 3.43865 3.42C3.55145 3.30781 3.70444 3.24479 3.86396 3.24479C4.02348 3.24479 4.17647 3.30781 4.28927 3.42L6.03272 5.154L7.77618 3.42C7.83203 3.36445 7.89834 3.32039 7.97131 3.29032C8.04429 3.26026 8.1225 3.24479 8.20149 3.24479C8.28048 3.24479 8.35869 3.26026 8.43166 3.29032C8.50464 3.32039 8.57094 3.36445 8.6268 3.42C8.68265 3.47555 8.72695 3.5415 8.75718 3.61407C8.78741 3.68665 8.80296 3.76444 8.80296 3.843C8.80296 3.92156 8.78741 3.99935 8.75718 4.07193C8.72695 4.1445 8.68265 4.21045 8.6268 4.266L6.88334 6L8.6268 7.734C8.85604 7.962 8.85604 8.346 8.6268 8.58Z"-->
+                        <!--                              fill="#FF313C"/>-->
+                        <!--                          </svg>-->
+                        <!--                        </div>-->
+                        <div style="margin-top: 8px" *ngIf="i < 1">
+                          <nb-icon nbTooltip="{{'Add'}}" style="cursor: pointer;color:#0F70F5"
+                                   (click)="addRowFilterSelected()"
+                                   icon="plus-circle-outline"
+                                   pack="eva"></nb-icon>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                  <div *ngIf="listFilterSelected.length !== 0"
+                       style="max-height: 245px;background: var(--bg-back);overflow-y: auto;overflow-x: hidden;margin: 0 45px 0 18px;border-radius: 5px;padding: 5px;">
+                    <table style="width:100%;">
+                      <tr class="table-row-listUser-header">
+                        <th style="width: 50%"></th>
+                        <th style="width: 50%"></th>
+                        <th></th>
+                      </tr>
+                      <tr *ngFor="let row of listFilterSelected; let i = index" class="table-list-user">
+                        <td class="position-relative">
+                          <span>{{row?.selectedFilter}}</span>
+                        </td>
+                        <td style="padding-left: 22px">
+                          <span>{{row?.selectedType}}</span>
+                        </td>
+                        <td class="d-flex justify-content-end align-items-center">
+                          <div (click)="deleteFilterSelected(i)" style="cursor: pointer; margin-right: 2px">
+                            <svg width="13" height="12" viewBox="0 0 13 12" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                d="M6.03272 0C2.69663 0 0 2.682 0 6C0 9.318 2.69663 12 6.03272 12C9.36882 12 12.0654 9.318 12.0654 6C12.0654 2.682 9.36882 0 6.03272 0ZM8.6268 8.58C8.57098 8.63562 8.50469 8.67975 8.43171 8.70986C8.35873 8.73997 8.2805 8.75547 8.20149 8.75547C8.12248 8.75547 8.04425 8.73997 7.97127 8.70986C7.89829 8.67975 7.83199 8.63562 7.77618 8.58L6.03272 6.846L4.28927 8.58C4.17647 8.69219 4.02348 8.75521 3.86396 8.75521C3.70444 8.75521 3.55145 8.69219 3.43865 8.58C3.32585 8.46781 3.26249 8.31566 3.26249 8.157C3.26249 8.07844 3.27804 8.00065 3.30827 7.92807C3.3385 7.8555 3.3828 7.78955 3.43865 7.734L5.18211 6L3.43865 4.266C3.32585 4.15381 3.26249 4.00166 3.26249 3.843C3.26249 3.68434 3.32585 3.53219 3.43865 3.42C3.55145 3.30781 3.70444 3.24479 3.86396 3.24479C4.02348 3.24479 4.17647 3.30781 4.28927 3.42L6.03272 5.154L7.77618 3.42C7.83203 3.36445 7.89834 3.32039 7.97131 3.29032C8.04429 3.26026 8.1225 3.24479 8.20149 3.24479C8.28048 3.24479 8.35869 3.26026 8.43166 3.29032C8.50464 3.32039 8.57094 3.36445 8.6268 3.42C8.68265 3.47555 8.72695 3.5415 8.75718 3.61407C8.78741 3.68665 8.80296 3.76444 8.80296 3.843C8.80296 3.92156 8.78741 3.99935 8.75718 4.07193C8.72695 4.1445 8.68265 4.21045 8.6268 4.266L6.88334 6L8.6268 7.734C8.85604 7.962 8.85604 8.346 8.6268 8.58Z"
+                                fill="#FF313C"/>
+                            </svg>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <div class="d-flex edit-button justify-content-center align-items-center mt-2 mb-3">
+                  <button style="min-width: 60px" [disabled]="arrayFilter.length === 0" (click)="filterInfoSR()"
+                          class="mr-2">Filter
+                  </button>
+                  <button style="min-width: 60px" (click)="clearFilter()" class="edit-button-cancel">Clear</button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-left: 10px" class="edit-button">
+              <button (click)="closePupup()" [nbPopover]="templateRef" nbPopoverPlacement="bottom">
+                {{'Mở yêu cầu'}}</button>
+              <ng-template #templateRef>
+                <nb-list class="edit-nblist-support">
+                  <nb-list-item (click)="navigateToOpenRequest('thrift_connection')" class="edit-nblist-support__item">
+                    Thrift connection
+                  </nb-list-item>
+                  <nb-list-item (click)="navigateToOpenRequest('iptables')" class="edit-nblist-support__item">
+                    Iptables
+                  </nb-list-item>
+                  <nb-list-item (click)="navigateToOpenRequest('lb_connection')" class="edit-nblist-support__item">
+                    LB Connection
+                  </nb-list-item>
+                </nb-list>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div (click)="closePupup()" style="margin-bottom: 49px">
+          <ngx-datatable class="dark fullscreen" #table
+                         [columnMode]="'force'"
+                         [limit]="limit"
+                         [rows]="rowData"
+                         [headerHeight]="'auto'"
+                         [rowHeight]="'auto'"
+                         [footerHeight]="'auto'"
+                         [columns]="columnsTable"
+                         [messages]="
+{totalMessage: 'data-ingestion.label.record' | translate}">
+            <ng-container *ngFor="let col of columnsTable">
+              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name | translate}}" [flexGrow]="col.flexGrow"
+                                    [sortable]="false"
+                                    [sortable]="col.prop === 'stt' || col.prop === 'id' ? true : false"
+              >
+                <ng-template let-column="column" ngx-datatable-header-template>
+                  <ng-container [ngSwitch]="col.prop">
+                    <ng-container *ngSwitchDefault>
+                      {{ column.name |translate }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'stt'">
+                      <span class="w-100 text-cente">{{ column.name |translate}}</span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'status'">
+                      <div class="text-center"><span class="w-100">{{ column.name |translate}}</span></div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'action'">
+                      <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+                <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                  <ng-container [ngSwitch]="col.prop">
+                    <ng-container *ngSwitchCase="'stt'">
+                      <span class="text-center">{{rowIndex + 1}}</span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'id'">
+                      <span class="text-center">{{value ? value : 'N/A' }}</span>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <span [title]="value"> {{ value ? value : 'N/A' }} </span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'type'">
+                      <span style="color: #02BF51" *ngIf="value === 'lb_connection'"
+                            [title]="value"> {{ value ? 'LB connection' : 'N/A' }} </span>
+                      <span style="color: #38A4F8" *ngIf="value === 'iptables'"
+                            [title]="value"> {{ value ? 'Iptables' : 'N/A' }} </span>
+                      <span style="color: #FFC300" *ngIf="value === 'thrift_connection'"
+                            [title]="value"> {{ value ? 'Thrift connection' : 'N/A' }} </span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'status'">
+                      <div *ngIf="value === 'waiting'" class="edit-status-waiting">
+                        <div class="status-bg-opacity"></div>
+                        <div class="custom-show-data status-greend">Đang đợi
+                        </div>
+                      </div>
+                      <div *ngIf="value === 'completed'" class="edit-status-completed">
+                        <div class="status-bg-opacity"></div>
+                        <div class="custom-show-data status-greend">Đã phê duyệt
+                        </div>
+                      </div>
+                      <div *ngIf="value === 'approved'" class="edit-status-completed">
+                        <div class="status-bg-opacity"></div>
+                        <div class="custom-show-data status-greend">Đã chấp nhận
+                        </div>
+                      </div>
+                      <div *ngIf="value === 'archived'" class="edit-status-completed">
+                        <div class="status-bg-opacity"></div>
+                        <div class="custom-show-data status-greend">Đã Lưu
+                        </div>
+                      </div>
+                      <div *ngIf="value === 'rejected'" class="edit-status-rejected">
+                        <div class="status-bg-opacity"></div>
+                        <div class="custom-show-data status-greend">Đã từ chối
+                        </div>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'action'">
+                      <div
+                        class="w-100 d-flex justify-content-center">
+                        <button class="edit"
+                                (click)="navigateToRequestDetails(row)"
+                                status="warning" nbButton ghost
+                                nbTooltip="{{'Details'}}"
+                        >
+                          <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+                        </button>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-footer>
+                <ng-template
+                  ngx-datatable-footer-template
+                  let-rowCount="rowCount"
+                  let-pageSize="pageSize"
+                  let-selectedCount="selectedCount"
+                  let-curPage="curPage"
+                  let-offset="offset">
+                  <div style="padding: 5px 10px;width:200px">
+                    <div *ngIf="rowCount > 0">
+                    <span>{{'Hiển thị' | translate}} {{(curPage - 1) * limit + 1}}
+                      - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}
+                      /{{rowCount}} {{'bản ghi' | translate}}</span>
+                    </div>
+                    <div *ngIf="rowCount === 0">
+                      <span>0 {{'data-ingestion.label.record' | translate}}</span>
+                    </div>
+                  </div>
+                  <datatable-pager
+                    [pagerLeftArrowIcon]="'datatable-icon-left'"
+                    [pagerRightArrowIcon]="'datatable-icon-right'"
+                    [page]="curPage"
+                    [size]="pageSize"
+                    [count]="rowCount"
+                    [hidden]="!((rowCount / pageSize) > 1)"
+                    (change)="table.onFooterPage($event)">
+                  </datatable-pager>
+                </ng-template>
+              </ngx-datatable-footer>
+            </ng-container>
+          </ngx-datatable>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

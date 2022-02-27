@@ -1,0 +1,26 @@
+
+
+.w-15 {
+  width: 15%;
+}
+
+.w-85 {
+  width: 85%;
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+}
+:host ::ng-deep{
+  nb-card{
+    background:var(--background-container);
+  }
+}

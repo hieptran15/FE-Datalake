@@ -1,0 +1,131 @@
+nb-card {
+  position: relative;
+
+  nb-card-header {
+    span {
+      white-space: nowrap;
+    }
+  }
+
+  nb-card-body {
+    cursor: pointer;
+
+    &:before {
+      display: none;
+      content: '';
+      position: absolute;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      left: 0px;
+      background-color: #000;
+      opacity: 0.4;
+      border-left: 2px solid #2a3142;
+      border-right: 2px solid #2a3142;
+      border-bottom: 2px solid #2a3142;
+    }
+  }
+
+  .chart-desc {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 5;
+    color: #fff;
+    font-weight: bold
+  }
+
+  .chart-body {
+    width: 100%;
+    padding-top: 80%;
+    position: relative;
+
+    .chart-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.4rem;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+  }
+
+  .actions {
+    //visibility: hidden;
+    position: absolute;
+    z-index: 3;
+    top: 7px;
+    right: 7px;
+  }
+
+  &:hover {
+    nb-card-body {
+      &:before {
+        display: none;
+      }
+    }
+
+    .actions {
+      visibility: visible;
+    }
+
+    .chart-desc {
+      display: block;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .edit-size {
+    margin: 10px 15px;
+    margin-bottom: 10px !important;
+    min-height: 108px;
+
+    nb-card-body {
+      padding: 0 15px;
+      border-radius: 5px;
+      border: 1px solid transparent;
+    }
+  }
+}
+
+
+.dashboard-card-user-title {
+  &:first-of-type {
+    font-family: Sarabun;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    color: var(--color-text-light);
+  }
+
+  &:last-of-type {
+    font-family: Sarabun;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    color: var(--color-text-not-selected);
+  }
+}
+
+span.number-dashboard-card-user {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 28px;
+  text-transform: capitalize;
+
+  /* Secondary/Green */
+}
+
+

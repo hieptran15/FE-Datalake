@@ -1,0 +1,9 @@
+<nb-card id="colorPickerContainer">
+  <nb-card-body>
+    <input [(colorPicker)]="color" [style.background]="color" [cpOutputFormat]="'auto'"/>
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton size="small" (click)="save()">Chọn</button>
+    <button class="ml-2" nbButton size="small" status="danger" (click)="cancel()">Hủy</button>
+  </nb-card-footer>
+</nb-card>

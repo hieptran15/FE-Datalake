@@ -1,0 +1,65 @@
+<div *ngIf="formName.invalid && formName.touched">
+  <small class="form-text text-danger" *ngIf="formName.errors.required">
+    {{'validation.required' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.minlength">
+    {{'validation.minLength' | translate:{
+    field: (message|translate),
+    value: formName.errors.minlength.requiredLength
+  } }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.maxlength">
+    {{'validation.maxLength' | translate:{
+    field: (message|translate),
+    value: formName.errors.maxlength.requiredLength
+  } }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.max">
+    {{'validation.max' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.pattern">
+    {{'validation.pattern' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.onlyNaturalNumber">
+    {{'validation.onlyNaturalNumber' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.onlyNumber">
+    {{'validation.onlyNumber' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.passwordMustMatchChange">
+    {{'validation.mustMatch' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.onlyDoubleNumber">
+    {{'validation.onlyDoubleNumber' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.onlyCharacter">
+    {{'validation.onlyCharacter' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.mustMatch">
+    {{'validation.mustMatch' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.email">
+    {{'validation.email' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.existCheck">
+    {{'validation.existCheck' | translate:{field: (message|translate)} }}
+  </small>
+  <small class="form-text text-danger" *ngIf="formName.errors.isValidColor">
+    {{'validation.invalidColor' | translate }}
+  </small>
+
+
+</div>
+<div *ngIf="formName.invalid">
+  <small class="form-text text-danger" *ngIf="formName.errors.mustSameUnit">
+    {{'validation.mustSameUnit' | translate:{field: (message|translate)} }}
+  </small>
+</div>
+
+<div *ngIf="formName.invalid && isFile">
+  <small class="form-text text-danger" *ngIf="formName.errors.required">
+    {{'validation.required' | translate:{field: (message|translate)} }}
+  </small>
+</div>
+
+

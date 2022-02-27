@@ -1,0 +1,69 @@
+.header-request {
+  //border-bottom: 1px solid var(--border-popup-area);
+
+  &__items {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--color-text-breadcrumb);
+    padding: 10px 20px;
+    cursor: pointer;
+
+    &:hover {
+      border-bottom: 2px solid #0f70f5;
+      color: #0f70f5;
+    }
+  }
+}
+
+.edit-thritf-request, .edit-IPtable-request, .edit-LB-request {
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.edit-thritf-request {
+
+  color: #ffc300;
+}
+
+.edit-IPtable-request {
+  color: #0f70f5;
+}
+
+.edit-LB-request {
+  color: #02bf51;
+}
+
+:host ::ng-deep {
+
+  .edit-button button.edit-button-cancel-rq {
+    background-color: #8c95b2;
+    color: white;
+    border: 1px solid transparent;
+
+    :hover {
+      background-color: #8c95b2;
+      color: white;
+      border: 1px solid transparent;
+
+    }
+  }
+
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  nb-card-body {
+    padding: 0 1.5rem;
+  }
+
+  .activeRequest {
+    border-bottom: 2px solid #0f70f5;
+    color: #0f70f5;
+  }
+}
+
+.button-disable-step {
+  background-color: var(--color-button-cancel);
+  color: white;
+}
+

@@ -1,0 +1,313 @@
+<div class="user-update-dialog">
+  <nb-card style="width: 40vw;background: var(--background-container) !important;">
+    <nb-card-header class="d-flex justify-content-between">
+      <div>{{user?.id ? ('user.label.edit'|translate) : ('user.label.new'|translate)}}<span>: {{nameUser}}</span></div>
+      <button nbButton ghost (click)="ref.close('close')" style="background: none; border: none; color: #8C95B2">
+        <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body style="overflow: visible">
+      <div class="row" style="max-height: 60vh;overflow: auto;">
+        <div class="col-12 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.email'|translate}}</strong>
+            <strong class="col-10">{{ user?.email}}</strong>
+          </div>
+        </div>
+        <div class="col-12 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.label.status'|translate}}</strong>
+            <strong
+              class="col-10"> {{user?.activated ? ('user.label.active'|translate) : ('user.label.inactive'|translate)}}</strong>
+          </div>
+        </div>
+
+        <div class="col-12 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'label.group'|translate}} <span style="color: red"> *</span></strong>
+            <div class="col-10">
+              <div [formGroup]="formGroup">
+                <ng-select [hideSelected]="true"
+                           bindLabel="code"
+                           bindValue="id"
+                           appendTo=""
+                           formControlName="groupId"
+                           [clearable]="false"
+                           placeholder="Group">
+                  <ng-option
+                    *ngFor="let item of listWpGroup" [value]="item.id">
+                    <span showTooltip>{{item.name}}</span>
+                  </ng-option>
+                </ng-select>
+                <ngx-inline-message [message]="'Group'"
+                                    [formName]="formGroup.get('groupId')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 mb-4">
+          <div class="row">
+            <strong class="col-2">Ip</strong>
+            <div class="col-10 list-ip">
+              <div class="div-item">
+                <div class="d-flexs">
+                  <div class="ip-item" *ngFor="let item of listWpIpEdit; index as i">
+                    {{item.ipAddress}}
+                    <div class="actions">
+                      <div>
+                        <nb-icon icon="edit-outline" (click)="openPopupEditIp(i)"></nb-icon>
+                      </div>
+                      <div>
+                        <nb-icon icon="close-outline" (click)="deleteIpAddress(i)"></nb-icon>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button nbButton size="small" (click)="openPopupCreateIp();ipForm.reset()">
+                <nb-icon icon="plus-outline"></nb-icon>
+              </button>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.phoneNumber'|translate}}</strong>
+            <div class="col-10">
+              <div [formGroup]="formGroup">
+                <input [attr.disabled]="formGroup.value.typeUser === 1 ? 'disabled' : null" class="input-edit" nbInput
+                       fullWidth trim="blur"
+                       placeholder="Phone number"
+                       formControlName="phoneNumber">
+                <ngx-inline-message [message]="'phoneNumber'"
+                                    [formName]="formGroup.get('phoneNumber')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.role'|translate}}</strong>
+            <div class="col-10">
+              <div [formGroup]="formGroup">
+                <ng-select [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedRole" appendTo="">
+                  <ng-option
+                    *ngFor="let item of listRoleGroup" [value]="item.id">
+                    <span showTooltip>{{item.name}}</span>
+                  </ng-option>
+                </ng-select>
+                <ngx-inline-message [message]="'RoleGroup'"
+                                    [formName]="formGroup.get('moduleId')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.userHDFS'|translate}}</strong>
+            <div class="col-10">
+              <div [formGroup]="formGroup">
+                <ng-select [hideSelected]="true"
+                           multiple="true"
+                           bindLabel="code"
+                           bindValue="id" [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedHdfs" appendTo="">
+                  <ng-option
+                    *ngFor="let item of listBroweseUserHdfs" [value]="item?.hdfsUser?.id">
+                    <span showTooltip>{{item?.hdfsUser?.hdfsUser}}</span>
+                  </ng-option>
+                </ng-select>
+
+                <ngx-inline-message [message]="'RoleGroup'"
+                                    [formName]="formGroup.get('Hdfs')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.type'|translate}}</strong>
+            <div class="col-8">
+              <div [formGroup]="formGroup">
+                <nb-radio-group formControlName="typeUser"
+                                class="d-flex justify-content-between p-0 ml-0 radio">
+                  <nb-radio class="actives" [value]="0">{{'user.label.normal'| translate}}</nb-radio>
+                  <nb-radio class="locks" [value]="1">SSO</nb-radio>
+                </nb-radio-group>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer style="background: var(--background-container)">
+      <div class="edit-button d-flex justify-content-end">
+        <button style="margin-right: 10px" (click)="addRoleGroup(ref)"
+                [class.disabled]="formGroup.invalid || !selectedHdfs"
+                [disabled]="formGroup.invalid || !selectedHdfs"
+                status="basic">
+          <nb-icon style="padding-right: 5px" [icon]="'checkmark-outline'"></nb-icon>
+          {{"user.label.save" | translate}}
+        </button>
+        <button class="edit-button-cancel" (click)="ref.close('close')">
+          <nb-icon style="padding-right: 5px" [icon]="'close-outline'"></nb-icon>
+          {{'user.label.cancel' | translate}}
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</div>
+
+<ng-template #createWpIp let-data let-dgRef="dialogRef">
+  <nb-card style="width: 40vw;background: var(--background-container) !important;">
+    <nb-card-header class="d-flex justify-content-between">
+      <strong class="custom-show-data"
+              style="align-self: center;">{{data?.index || data?.index === 0 ? ('label.edit'|translate) : ('label.save'|translate)}}</strong>
+      <button nbButton ghost (click)="dgRef.close()" style="background: none; border: none; color: #8C95B2">
+        <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px"></nb-icon>
+      </button>
+    </nb-card-header>
+
+    <nb-card-body>
+      <div class="d-flex row mb-3">
+        <strong class="custom-show-data col-3">Ip Address<span class="pl-2" style="color: red">*</span></strong>
+        <div class="col-9">
+          <div [formGroup]="ipForm">
+            <input trim="blur" nbInput fullWidth class="input-edit" type="text" formControlName="ipAddress">
+            <ngx-inline-message [message]="'Ip Address'"
+                                [formName]="ipForm.get('ipAddress')"></ngx-inline-message>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end edit-button">
+        <button style="margin-right: 10px"
+                [class.disabled]="ipForm.value.ipAddress === null || !ipForm.valid"
+                [disabled]="ipForm.value.ipAddress === null || !ipForm.valid"
+                (click)="addIpAddress(dgRef,ipForm.value.ipAddress, data?.index);">
+          <nb-icon [icon]="'checkmark-outline'"></nb-icon>
+          <strong>{{data?.index || data?.index === 0 ? ('label.create'|translate) : ('label.save'|translate)}}</strong>
+        </button>
+        <button class="edit-button-cancel" (click)="dgRef.close()">
+          <nb-icon [icon]="'close-outline'"></nb-icon>
+          <strong>{{'userThrift.label.cancel'| translate}}</strong>
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #addOrEditRole let-data let-addOrEditRef="dialogRef">
+  <nb-card style="width: 500px;background: var(--background-container) !important;">
+    <nb-card-header>
+      <span>{{ !data ? ('user.label.addRole'|translate) : ('user.label.editRole'|translate)}} {{'user.label.for'|translate}}
+        <strong class="text-danger">{{user?.login}}</strong></span>
+    </nb-card-header>
+    <nb-card-body>
+      <div [formGroup]="formGroup">
+        <div class="row align-items-center mb-3">
+          <div class="col-3" showTooltip>{{'user.column.module'|translate}}</div>
+          <div class="col-9">
+            <ng-select formControlName="moduleId" placeholder="--Select--" *ngIf="!data" appendTo="">
+              <ng-option
+                *ngFor="let item of listModule" [value]="item.moduleId">
+                <span showTooltip>{{item.moduleName}}</span>
+              </ng-option>
+            </ng-select>
+            <ngx-inline-message [message]="'Module'"
+                                [formName]="formGroup.get('moduleId')"></ngx-inline-message>
+            <strong *ngIf="data">{{data?.moduleName}}</strong>
+          </div>
+        </div>
+
+        <div class="row align-items-center mb-3" *ngIf="formGroup?.value?.moduleId === 2">
+          <div class="col-3" showTooltip>{{'user.label.hdfsUser'|translate}}</div>
+          <div class="col-9">
+            <ng-select formControlName="userHdfsId" placeholder="--Select--" appendTo="">
+              <ng-option
+                *ngFor="let item of listUserHdfsId" [value]="item.id">
+                <span showTooltip>{{item.hdfsUser}}</span>
+              </ng-option>
+            </ng-select>
+            <ngx-inline-message [message]="'User Hdfs'"
+                                [formName]="formGroup.get('userHdfsId')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="row align-items-center mb-3">
+          <div class="col-3" showTooltip>{{'user.column.role2'|translate}}</div>
+          <div class="col-9">
+            <ng-select [multiple]="true" formControlName="listDPermission" placeholder="--Select--" appendTo="">
+              <ng-option
+                *ngFor="let item of listRole" [value]="item.id">
+                <span showTooltip>{{item.code}}</span>
+              </ng-option>
+            </ng-select>
+            <ngx-inline-message [message]="'Quyền'"
+                                [formName]="formGroup.get('listDPermission')"></ngx-inline-message>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="float-right d-flex edit-button">
+        <button class="edit-button-cancel" (click)="addOrEditRef.close()">{{'user.label.cancel'|translate}}</button>
+        <button class="ml-2" (click)="save(addOrEditRef, data)"
+                [disabled]="formGroup.invalid">{{'user.label.save'|translate}}</button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #confirmDelete let-data let-deleteRef="dialogRef">
+  <nb-card style="width: 400px;background: var(--background-container) !important;">
+    <nb-card-header>
+      <span>{{'module.label.deleteItem' | translate}}</span>
+    </nb-card-header>
+    <nb-card-body>
+      {{'module.label.confirmDelete' | translate}}
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="float-right d-flex edit-button">
+        <button class="edit-button-cancel" (click)="deleteRef.close()">{{'user.label.cancel'|translate}}</button>
+        <button class="ml-2"
+                (click)="delete(deleteRef, data)"> {{'module.label.confirm' | translate}}</button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+<ng-template #addOrEditRoleGroup let-data let-deleteRef="dialogRef">
+  <nb-card style="min-width: 500px">
+    <nb-card-header>
+      <span>{{'user.label.addRoleGroup' | translate}}</span>
+    </nb-card-header>
+    <nb-card-body>
+      <!--      <div [formGroup]="formGroup">-->
+      <!--        <div class="row align-items-center mb-3">-->
+      <!--          <div class="col-3" showTooltip>Role group</div>-->
+      <!--          <div class="col-9">-->
+      <!--            <ng-select formControlName="RoleGroup" placeholder="&#45;&#45;Select&#45;&#45;">-->
+      <!--              <ng-option-->
+      <!--                *ngFor="let item of listRoleGroup" [value]="item.name">-->
+      <!--                <span showTooltip>{{item.name}}</span>-->
+      <!--              </ng-option>-->
+      <!--            </ng-select>-->
+      <!--            <ngx-inline-message [message]="'RoleGroup'"-->
+      <!--                                [formName]="formGroup.get('moduleId')"></ngx-inline-message>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="float-right d-flex edit-button">
+        <button class="edit-button-cancel" (click)="deleteRef.close()">{{'user.label.cancel'|translate}}</button>
+        <button class="ml-2"
+                (click)="addRoleGroup(deleteRef)"> {{'user.label.save' | translate}}</button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

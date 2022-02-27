@@ -1,0 +1,82 @@
+.height-tab {
+  height: calc(100vh - 220px);
+
+  nb-card-header, nb-card-body {
+    background: var(--background-container);
+  }
+}
+
+.w-15 {
+  width: 15%;
+}
+
+.w-85 {
+  width: 85%;
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+#iport {
+  fill: var(--color-icon-text-area);
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  .export-file-mode {
+    nb-radio {
+      min-width: calc(100% / 3);
+    }
+  }
+
+  .outer-cicle, .inner-cicle {
+    width: 14px;
+    height: 14px;
+  }
+
+  input, button {
+    //height:30px;
+    //padding:10px;
+  }
+
+  * {
+    font-size: 13px;
+  }
+
+  span.pl-3 {
+    font-size: 12px;
+  }
+
+  .input-file-import {
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .file-input-validate {
+    white-space: nowrap;
+    padding: 5px 10px;
+  }
+
+  .radio-input {
+    span {
+      font-weight: 300;
+    }
+  }
+
+  nb-radio-group nb-radio label > span.outer-circle,
+  nb-radio-group nb-radio label > span.inner-circle {
+    transition: translateY(-50%) scale(0.6);
+  }
+}
+
+
+
+
+

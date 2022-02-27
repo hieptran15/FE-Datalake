@@ -1,0 +1,50 @@
+.add-thread {
+  .align-center {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.edit-button-hive {
+  border: 1px solid #a6b0cf !important;
+  border-radius: 5px !important;
+}
+
+nb-card.custom-p {
+  p {
+    color: var(--color-text-light);
+  }
+
+  h3 {
+    color: var(--color-text-light);
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  nb-card-body.edit-body {
+    border: 2px solid #363e54;
+    box-sizing: border-box;
+    border-radius: 5px;
+  }
+}
+
+.custom-link {
+  color: var(--color-text-light);
+  cursor: pointer;
+}
+
+.active-scroll {
+  color: #0F70F5 !important;
+}
+
+.edit-card-header {
+  padding: 1rem 0 !important;
+}
+
+.custom-font {
+  font-size: 1.35rem;
+}

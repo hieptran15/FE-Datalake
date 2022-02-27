@@ -1,0 +1,235 @@
+<div id="send-require" class="row" [formGroup]="formGroup">
+  <div class="col-12">
+    <nb-card>
+      <nb-card-header>
+        <label>{{window}}-Yêu cầu mở kết nối</label>
+      </nb-card-header>
+      <nb-card-body style="overflow: visible;">
+        <div class="row">
+          <div class="col-6">
+            <table class="col-12" border="1" cellpadding="0" cellspacing="0" width="100%">
+              <tr>
+                <td width="50%">
+                  <ng-select appendTo=""
+                    [selectableGroup]="true" [closeOnSelect]="false" multiple="true"
+                    fullWidth name="users" formControlName="user"
+                    style="width: 95%;" [clearable]="false" [placeholder]="'USERS'"
+                    [items]="users" bindLabel="account" bindValue="id"
+                  >
+                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                      <div *ngFor="let item of items" class="selected-multi-div">
+                        <span style="padding: 5px;" [title]="item.account">{{item.account && item.account.length > 10 ? item.account.substring(0, 8).concat('...') : item.account}}</span>
+                        <span class="select-icon-close" (click)="clear(item)">x</span>
+                      </div>
+                    </ng-template>
+                    <ng-template ng-option-tmp let-item="item">
+                      <input [checked]="formGroup.value.user && formGroup.value.user?.indexOf(item.id) > -1" type="checkbox" class="mr-1">
+                      <!--            <nb-checkbox [checked]="this.appForm.value.app.indexOf(item.appId) > -1" status="basic" class="mr-1"></nb-checkbox>-->
+                      <span>{{item.account + ' - ' + item.ip}}</span>
+                    </ng-template>
+                    <!--<ng-option *ngFor="let item of users" [value]="item.id">
+                      <input [checked]="formGroup.value.user && formGroup.value.user?.indexOf(item.id) > -1"
+                             type="checkbox" class="mr-1">
+                      <span
+                        [title]="item.account">{{ item.account && item.account.length > 10 ? item.account.substring(0, 10).concat('...') : item.account }}</span>
+                    </ng-option>-->
+                  </ng-select>
+                  <ng-container *ngIf="formGroup.get('user').invalid && formGroup.get('user').touched">
+                    <ngx-inline-message [message]="'User'" [formName]="formGroup.get('user')">
+                    </ngx-inline-message>
+                  </ng-container>
+                </td>
+                <td width="50%">
+                  <ng-select appendTo=""
+                    [selectableGroup]="true" [closeOnSelect]="false" [multiple]="true"
+                    fullWidth name="app" formControlName="app"
+                    [clearable]="false" style="width: 95%;" [placeholder]="'APP'"
+                    [items]="listAppParent" bindLabel="appName" bindValue="appId"
+                  >
+                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                      <div *ngFor="let item of items" class="selected-multi-div">
+                        <span style="padding: 5px;" [title]="item.appName">{{item.appName && item.appName.length > 10 ? item.appName.substring(0, 8).concat('...') : item.appName}}</span>
+                        <span class="select-icon-close" (click)="clear(item)">x</span>
+                      </div>
+                    </ng-template>
+                    <ng-template ng-option-tmp let-item="item">
+                      <input [checked]="formGroup.value.app && formGroup.value.app?.indexOf(item.appId) > -1" type="checkbox" class="mr-1">
+                      <!--            <nb-checkbox [checked]="this.appForm.value.app.indexOf(item.appId) > -1" status="basic" class="mr-1"></nb-checkbox>-->
+                      <span>{{item.appName}}</span>
+                    </ng-template>
+<!--                    <ng-option *ngFor="let item of listAppParent" [value]="item.appId">-->
+<!--                      <input [checked]="formGroup.value.app && formGroup.value.app?.indexOf(item.appId) > -1"-->
+<!--                             type="checkbox" class="mr-1">-->
+<!--                      <span-->
+<!--                        [title]="item.appName">{{ item.appName && item.appName.length > 10 ? item.appName.substring(0, 10).concat('...') : item.appName }}</span>-->
+<!--                    </ng-option>-->
+                  </ng-select>
+                  <ng-container *ngIf="formGroup.get('app').invalid && formGroup.get('app').touched">
+                    <ngx-inline-message [message]="'App'" [formName]="formGroup.get('app')">
+                    </ngx-inline-message>
+                  </ng-container>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center" style="width: 95%;">
+                    <div style="width: 30%;" class="m-0">
+                      <label>Bắt đầu: <span class="text-danger ml-2">*</span></label>
+                    </div>
+                    <div style="width: 70%;">
+                      <input type="text" style="width: 100%;" class="d-block input-edit" [nbDatepicker]="startTime" nbInput formControlName="startTime"/>
+                      <input type="text" class="start-time input-edit" [nbDatepicker]="startTime" nbInput placeholder="dd-MM-yyyy HH:mm"
+                             (change)="handleChangeEndTime($event)" [textMask]="mask"/>
+                      <nb-datepicker id="startTime1" format="dd-MM-yyyy HH:mm" #startTime></nb-datepicker>
+                      <ng-container *ngIf="formGroup.get('startTime').invalid && formGroup.get('startTime').touched">
+                        <ngx-inline-message [message]="'accessManager.label.startTime'" [formName]="formGroup.get('startTime')">
+                        </ngx-inline-message>
+                      </ng-container>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center" style="width: 95%;">
+                    <div style="width: 30%;">
+                      <label>Kết thúc: <span class="text-danger ml-2">*</span></label>
+                    </div>
+                    <div style="width: 70%;">
+                      <input type="text" style="width: 100%;" class="d-block input-edit" [nbDatepicker]="endTime" nbInput formControlName="endTime"/>
+                      <input type="text" class="end-time input-edit" [nbDatepicker]="endTime" nbInput placeholder="dd-MM-yyyy HH:mm"
+                             (change)="handleChangeEndTime($event)" [textMask]="mask"/>
+                      <nb-datepicker id="endTime1" format="dd-MM-yyyy HH:mm" #endTime></nb-datepicker>
+                      <ng-container *ngIf="formGroup.get('endTime').invalid && formGroup.get('endTime').touched">
+                        <ngx-inline-message [message]="'accessManager.label.endTime'" [formName]="formGroup.get('endTime')">
+                        </ngx-inline-message>
+                      </ng-container>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+<!--              <tr>-->
+<!--                <td colspan="2">-->
+<!--                  <div class="row">-->
+<!--                    <div class="col-3">-->
+<!--                      <label>Kết thúc: <span class="text-danger ml-2">*</span></label>-->
+<!--                    </div>-->
+<!--                    <div class="col-6">-->
+<!--                      <input type="text" class="d-block" [nbDatepicker]="endTime" nbInput formControlName="endTime"/>-->
+<!--                      <input type="text" class="end-time" [nbDatepicker]="endTime" nbInput placeholder="dd-MM-yyyy HH:mm"-->
+<!--                             (change)="handleChangeEndTime($event)" [textMask]="mask"/>-->
+<!--                      <nb-datepicker id="endTime1" format="dd-MM-yyyy HH:mm" #endTime></nb-datepicker>-->
+<!--                      <ng-container *ngIf="formGroup.get('endTime').invalid && formGroup.get('endTime').touched">-->
+<!--                        <ngx-inline-message [message]="'accessManager.label.endTime'" [formName]="formGroup.get('endTime')">-->
+<!--                        </ngx-inline-message>-->
+<!--                      </ng-container>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </td>-->
+<!--              </tr>-->
+            </table>
+          </div>
+          <div class="col-6">
+            <table border="1" cellpadding="0" cellspacing="0" width="100%">
+              <tr>
+                <td>
+                  <label>Cron Tab</label>
+                </td>
+                <td>
+                  <input class="input-edit" nbInput trim="blur" style="width: 100%;" placeholder="Ví dụ 0,15,30,45 * * * *" formControlName="cronTab" [maxLength]="50">
+                </td>
+                <td class="edit-button" rowspan="2" style="padding: 10px;">
+                  <button fullWidth class="text-uppercase"
+                  style="padding: 4px 16px;"
+                          [disabled]="formGroup.get('user').invalid || formGroup.get('app').invalid || !formGroup.value.startTime || !formGroup.value.endTime || formGroup.get('reason').invalid"
+                          (click)="sendRequire()">Gửi yêu cầu
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="mb-3"><label>Lý do: <span class="text-danger ml-2">*</span></label></div>
+                  <div><label>Đính kèm</label></div>
+                </td>
+                <td class="w-50">
+                  <div class="mb-3">
+                    <input class="input-edit" nbInput trim="blur" style="width: 100%;" placeholder="Nhập lý do mở kết nối" formControlName="reason" [maxLength]="200">
+                    <ng-container *ngIf="formGroup.get('reason').invalid && formGroup.get('reason').touched">
+                      <ngx-inline-message [message]="'accessManager.label.reason'" [formName]="formGroup.get('reason')">
+                      </ngx-inline-message>
+                    </ng-container>
+                  </div>
+                  <div class="d-flex justify-content-start align-items-center flex-wrap w-100">
+                    <input class="mr-2 d-none input-edit" style="width: 100%;" [class.required]="jobFileURL?.touched && jobFileURL?.errors?.required"
+                           #jobFileURL="ngModel" name="job-file-text" nbInput [(ngModel)]="newJob.fileURL"
+                           [ngModelOptions]="{standalone: true}" type="text" readonly/>
+                    <label style="background-color: #2e3648;
+                    border: 2px solid #363e54;
+                    border-radius: 5px;
+                    color: white;" for="attach-file" class="attach mr-2">
+                      <nb-icon [icon]="'plus-outline'"></nb-icon>
+                      Đính kèm
+                    </label>
+                    <input style="display: none" id="attach-file" nbInput type="file" name="attach-file" accept="*"
+                           (change)="onFileChange($event)" required/>
+                    <div style="width: 60%;"><p style="width: 100%; text-overflow: ellipsis; overflow: hidden; white-space: pre-wrap;">{{newJob.fileURL}}</p></div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-12">
+    <nb-card>
+      <nb-card-body>
+        <ngx-datatable class="fullscreen"
+                       [ngClass]="{'dark' : currentTheme !== 'default', 'bootstrap': currentTheme === 'default'}"
+                       [columnMode]="'flex'"
+                       [rows]="rows"
+                       [columns]="columns"
+                       rowHeight="auto"
+                       [count]="rows.length"
+                       [limit]="10"
+                       [headerHeight]="'auto'"
+                       [footerHeight]="'auto'"
+                       [messages]="{totalMessage:'user.label.record'|translate}"
+
+        >
+          <ng-container *ngFor="let col of columns">
+            <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                {{ column.name |translate}}
+              </ng-template>
+
+              <ng-template let-value="value" ngx-datatable-cell-template let-row="row" let-rowIndex='rowIndex'>
+                <ng-container [ngSwitch]="col.prop">
+
+                  <ng-container *ngSwitchCase="'index'">
+                    {{rowIndex + 1 + (page.pageNumber * page.size)}}
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'startTime'">
+                    <span class="row-data-show"
+                          title="{{value | date: 'dd/MM/yyyy HH:mm'}}">{{value | date:'dd/MM/yyyy HH:mm'}}</span>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'endTime'">
+                    <span class="row-data-show"
+                          title="{{value | date: 'dd/MM/yyyy HH:mm'}}">{{value | date:'dd/MM/yyyy HH:mm'}}</span>
+                  </ng-container>
+
+                  <ng-container *ngSwitchDefault>
+                    <span class="row-data-show"
+                          title="{{value}}">{{value.length > 50 ? value.substring(0, 50).concat('...') : value}}</span>
+                  </ng-container>
+
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+          </ng-container>
+        </ngx-datatable>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

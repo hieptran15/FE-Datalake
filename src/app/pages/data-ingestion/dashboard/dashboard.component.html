@@ -1,0 +1,84 @@
+<nb-layout>
+  <nb-layout-column [nbSpinner]="checkerrorServer"
+                    [nbSpinnerMessage]="'process.messageErrorServer' | translate"
+                    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;">
+    <nb-card>
+      <nb-card-header class="d-flex justify-content-between align-items-center">
+        <label>{{'monitor.flowChart' | translate}}</label>
+        <div style="width: 30%; display: flex; justify-content: flex-end;">
+          <ng-select
+            appendTo=""
+            [clearable]="false"
+            [items]="listTypeDataChart"
+            bindLabel="name"
+            name="valueChoose"
+            [(ngModel)]="valueChoose"
+            (change)="setTypeDataChart($event)"
+            style="width: 160px;" class="mr-3"
+          >
+          </ng-select>
+          <ng-select
+            appendTo=""
+            [clearable]="false"
+            [items]="listTimeType"
+            bindValue="value"
+            bindLabel="name"
+            name="timeType"
+            [(ngModel)]="timeType"
+            (change)="newChart()"
+            style="width: 35%;" class="mr-3"
+          >
+          </ng-select>
+          <ng-select
+            appendTo=""
+            [clearable]="false"
+            [items]="listSource"
+            bindValue=""
+            bindLabel=""
+            name="source"
+            [(ngModel)]="source"
+            (change)="newChart()"
+            style="width: 35%;"
+          >
+          </ng-select>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row" style="margin-top: 60px; margin-bottom: 60px">
+          <div class="col-6 h-100">
+            <div *ngIf="chartDatas.length !== 0">
+              <highcharts-chart
+                [Highcharts]="Highcharts"
+                [options]="chartOptions"
+                [(update)]="chartUpdate"
+                style="width: 100%;display: block;"
+                class="h-chart"
+              ></highcharts-chart>
+            </div>
+            <div
+              style="display: flex;justify-content: center;align-items: center;min-height: 600px;font-size: 16px;border-right: 2px solid #363e54;"
+              *ngIf="chartDatas.length === 0">
+              {{'validation.noData' | translate}}
+            </div>
+          </div>
+          <div class="col-6 h-100">
+            <div *ngIf="chartFiles.length !== 0">
+              <highcharts-chart
+                [Highcharts]="Highcharts"
+                [options]="chartOptions2"
+                [(update)]="chartUpdate"
+                style="width: 100%;display: block;"
+                class="h-chart"
+              ></highcharts-chart>
+            </div>
+            <div *ngIf="chartFiles.length === 0"
+                 style="display: flex;justify-content: center;align-items: center;min-height: 600px;font-size: 16px;">
+              {{'validation.noData' | translate}}
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+

@@ -1,0 +1,23 @@
+@import '~app/@theme/styles/themes';
+
+@include nb-install-component() {
+  nb-card {
+    width: 40vw !important;
+    max-height: 80vh !important;
+  }
+}
+
+.pre-scrollable {
+  //overflow: auto;
+  flex: 1;
+  @include nb-scrollbars(
+      nb-theme(chat-scrollbar-color),
+      nb-theme(chat-scrollbar-background-color),
+      nb-theme(chat-scrollbar-width));
+}
+//nb-card {
+//  min-width: 10rem;
+//  max-width: 20rem;
+//  margin: 0 auto 2rem;
+//}
+

@@ -1,0 +1,1937 @@
+<nb-card style="width: 90vw; background: #161C34;" class="add-thread" [nbSpinner]="isLoading"
+         [nbSpinnerMessage]="'Processing...'" nbSpinnerStatus="primary">
+  <nb-card-header class="d-flex justify-content-between">
+    <label>{{(flow ? "data-ingestion.label.updateThread" : "data-ingestion.label.createNewThread") | translate}}</label>
+    <div class="d-flex">
+      <button style="background: none; border: none; color: #8C95B2" class="mr-2" nbButton status="info"
+              (click)="dialogService.open(tutorial)">
+        <nb-icon
+          icon="question-mark-circle-outline"
+        ></nb-icon>
+      </button>
+      <button style="background: none; border: none; color: #8C95B2" nbButton status="danger" (click)="closePopup()">
+        <nb-icon icon="close-outline" style="font-size: 20px"></nb-icon>
+      </button>
+    </div>
+  </nb-card-header>
+  <nb-card-body class="overflow-auto" style="max-height: 80vh">
+    <form [formGroup]="formGroup">
+      <div class="row">
+        <div class="col-6">
+          <div class="row mb-3">
+            <div class="col-2 d-flex">
+              <label>{{"data-ingestion.label.nameThread" | translate}} <span style="color: red;">*</span></label></div>
+            <div class="col-10"><input class="input-edit" nbInput fullWidth trim="blur" formControlName="flowName">
+              <ngx-inline-message [message]="'data-ingestion.label.nameThread' | translate"
+                                  [formName]="formGroup.get('flowName')"></ngx-inline-message>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2 d-flex align-items-center"><label>{{"data-ingestion.column.group" | translate}}</label>
+            </div>
+            <div class="col-10">
+              <ng-select
+                [clearable]="false"
+                [items]="listGroup"
+                bindLabel="groupName"
+                bindValue="id"
+                formControlName="group"
+                [readonly]="flow"
+                appendTo="">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 d-flex justify-content-between">
+          <label class="mr-2">{{"data-ingestion.label.description" | translate}}</label>
+          <textarea nbInput class="edit-text-area" style="max-width: 85% !important; width: 85%"
+                    [rows]="4"
+                    formControlName="description"></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <nb-card style="min-height: 500px; background-color: var(--background-container)">
+            <nb-card-header
+              class="d-flex justify-content-between align-items-center edit-card-header">
+              <label>{{"data-ingestion.column.source" | translate}}</label>
+              <ng-select
+                [items]="listSource" [clearable]="false"
+                bindValue="value"
+                bindLabel="name"
+                name="sourceType" appendTo=""
+                formControlName="sourceType"
+                (change)="changeSource($event)"
+                [readonly]="flow"
+                style="width: 150px;"
+              >
+              </ng-select>
+            </nb-card-header>
+            <nb-card-body class="edit-body">
+              <div *ngIf="formGroup.value.sourceType === 'FTP'">
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.nameConnection" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <ng-select
+                      [clearable]="false"
+                      class="edit-button-hive"
+                      [items]="listConnectionForFTP"
+                      bindLabel="connectionName"
+                      bindValue="id"
+                      formControlName="sourceId"
+                      (change)="changeFTP($event)"
+                      [readonly]="flow"
+                      fullWidth appendTo=""></ng-select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.ftpServer" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <input trim="blur" class="input-edit" nbInput fullWidth [disabled]="true" name="ftp-server"
+                           [(ngModel)]="objectFTP.ftpServer" [ngModelOptions]="{standalone: true}">
+                  </div>
+                  <div class="col-2 align-center">
+                    <label>{{"data-ingestion.label.port" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-3">
+                    <input trim="blur" nbInput fullWidth class="input-edit" [disabled]="true" name="port"
+                           [(ngModel)]="objectFTP.ftpPort"
+                           [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.userName" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <input trim="blur" class="input-edit" nbInput fullWidth [disabled]="true" name="user-name"
+                           [(ngModel)]="objectFTP.ftpUsername" [ngModelOptions]="{standalone: true}">
+                  </div>
+                  <div class="col-2 align-center">
+                    <label>{{"data-ingestion.label.password" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-3">
+                    <nb-form-field class="w-100">
+                      <input class="input-edit" nbInput fullWidth disabled [type]="getInputType()" name="password"
+                             [(ngModel)]="objectFTP.ftpPassword" [ngModelOptions]="{standalone: true}">
+                      <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+                        <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                                 pack="eva"
+                                 [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                        </nb-icon>
+                      </button>
+                    </nb-form-field>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.path" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth formControlName="path">
+                    <ngx-inline-message [formName]="formGroup.get('path')"
+                                        [message]="'data-ingestion.label.path'"></ngx-inline-message>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.delimiter" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth [maxLength]="1"
+                           formControlName="delimiter">
+                    <ngx-inline-message [formName]="formGroup.get('delimiter')"
+                                        [message]="'data-ingestion.label.delimiter'"></ngx-inline-message>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-12">
+                    <nb-checkbox class="mr-5" [disabled]="flow"
+                                 status="basic"
+                                 [formControl]="formGroup.controls['isCompression']">{{"data-ingestion.label.extract" | translate}}</nb-checkbox>
+                    <nb-checkbox class="mr-5" [formControl]="formGroup.controls['isAddAttribute']"
+                                 status="basic"
+                                 [disabled]="flow">{{"data-ingestion.label.addField" | translate}}</nb-checkbox>
+                    <nb-checkbox status="basic"
+                                 [formControl]="formGroup.controls['isHaveSubfolder']" [disabled]="flow"
+                                 [hidden]="formGroup.value.sinkType === 'Kafka'"
+                    >{{"data-ingestion.label.directory" | translate}}</nb-checkbox>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.timezone" | translate}}</label>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth formControlName="deltaTimezone">
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="formGroup.value.sourceType === 'RDBMS'">
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.nameConnection" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <ng-select
+                      class="edit-button-hive"
+                      [clearable]="false"
+                      [items]="listConnectionForRDBMS"
+                      bindLabel="connectionName"
+                      bindValue="id"
+                      formControlName="sourceId"
+                      (change)="changeRDBMS($event)"
+                      [readonly]="flow"
+                      fullWidth appendTo=""></ng-select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.dbUrl" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth [disabled]="true" name="db-url"
+                           [(ngModel)]="objectRDBMS.dbConnectionUrl" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.dbClassname" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth [disabled]="true" name="db-classname"
+                           [(ngModel)]="objectRDBMS.dbDriverClassname" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.dbLocation" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth [disabled]="true" name="db-location"
+                           [(ngModel)]="objectRDBMS.dbDriverLocations" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.dbUsername" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth [disabled]="true" name="db-username"
+                           [(ngModel)]="objectRDBMS.dbUsername" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.dbPassword" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <nb-form-field class="w-100">
+                      <input class="input-edit" nbInput fullWidth disabled [type]="getInputType()" trim="blur"
+                             name="db-password"
+                             [(ngModel)]="objectRDBMS.dbPassword" [ngModelOptions]="{standalone: true}">
+                      <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+                        <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                                 pack="eva"
+                                 [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                        </nb-icon>
+                      </button>
+                    </nb-form-field>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.dbType" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <ng-select class="edit-button-hive"
+                               [clearable]="false"
+                               [items]="listDBType"
+                               bindLabel="name"
+                               bindValue="value"
+                               formControlName="dbType"
+                               fullWidth appendTo=""></ng-select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.sqlQuery" | translate}}</label>
+                  </div>
+                  <div class="col-9">
+                    <textarea class="edit-text-area" trim="blur" nbInput fullWidth formControlName="sqlQuery"
+                              rows="3"></textarea>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.delimiter" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <ng-select
+                      class="edit-button-hive"
+                      [clearable]="false"
+                      [items]="listDelimiter"
+                      bindLabel="name"
+                      bindValue="value"
+                      formControlName="delimiter"
+                      fullWidth appendTo=""></ng-select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.fetchSize" | translate}}</label>
+                  </div>
+                  <div class="col-9">
+                    <input trim="blur" class="input-edit" nbInput fullWidth formControlName="fetchSize"
+                           (keydown)="changeNumber($event)">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.maxRow" | translate}}</label>
+                  </div>
+                  <div class="col-9">
+                    <input trim="blur" class="input-edit" nbInput fullWidth formControlName="maxRow"
+                           (keydown)="changeNumber($event)">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.timezone" | translate}}</label>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" type="text" nbInput fullWidth
+                           formControlName="deltaTimezone"
+                           (keydown)="changeNumber($event)">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-12">
+                    <nb-checkbox status="basic" formControlName="isAddAttribute"
+                                 [disabled]="flow">{{"data-ingestion.label.addFieldInfo" | translate}}</nb-checkbox>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="formGroup.value.sourceType === 'HIVE'">
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.nameConnection" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <ng-select
+                      class="edit-button-hive"
+                      [clearable]="false"
+                      [items]="listConnectionForHIVE"
+                      bindLabel="connectionName"
+                      bindValue="id"
+                      formControlName="sourceId"
+                      (change)="changeHIVE($event)"
+                      [readonly]="flow"
+                      fullWidth appendTo=""></ng-select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.dbUrl" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input trim="blur" nbInput fullWidth [disabled]="true" class="input-edit" name="db-url"
+                           [(ngModel)]="objectHive.databaseUrl" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>Hive Configuration Resources</label>
+                  </div>
+                  <div class="col-9">
+                    <input trim="blur" nbInput fullWidth [disabled]="true" class="input-edit" name="db-classname"
+                           [(ngModel)]="objectHive.hiveConfigResources" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.dbUsername" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input trim="blur" nbInput fullWidth [disabled]="true" class="input-edit" name="db-username"
+                           [(ngModel)]="objectHive.databaseUser" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>Password</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <nb-form-field class="w-100">
+                      <input class="input-edit" nbInput fullWidth disabled [type]="getInputType()" trim="blur"
+                             name="db-password"
+                             [(ngModel)]="objectHive.databasePassword" [ngModelOptions]="{standalone: true}">
+                      <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+                        <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                                 pack="eva"
+                                 [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                        </nb-icon>
+                      </button>
+                    </nb-form-field>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>Max Wait Time</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth [disabled]="true" name="db-location"
+                           [(ngModel)]="objectHive.maxWaitTime" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>Max connection</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth [disabled]="true" name="db-location"
+                           [(ngModel)]="objectHive.maxTotalConnection" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>HiveQL Query</label>
+                  </div>
+                  <div class="col-9">
+                    <textarea class="edit-text-area" trim="blur" nbInput fullWidth formControlName="sqlQuery"
+                              rows="3"></textarea>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>Output Format</label>
+                  </div>
+                  <div class="col-4">
+                    <ng-select
+                      class="edit-button-hive"
+                      [clearable]="false"
+                      [items]="listChooseOutPutFormat"
+                      bindLabel="name"
+                      bindValue="value"
+                      formControlName="outPutFormat"
+                      fullWidth appendTo=""></ng-select>
+                  </div>
+                  <div class="col-2 align-center">
+                    <label>{{"data-ingestion.label.delimiter" | translate}}</label>
+                  </div>
+                  <div class="col-3">
+                    <ng-select
+                      class="edit-button-hive"
+                      [clearable]="false"
+                      [items]="listDelimiter"
+                      bindLabel="name"
+                      bindValue="value"
+                      formControlName="delimiter"
+                      fullWidth appendTo=""></ng-select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.fetchSize" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <input class="input-edit" trim="blur" nbInput fullWidth formControlName="fetchSize"
+                           (keydown)="changeNumber($event)">
+                  </div>
+                  <div class="col-2 align-center">
+                    <label>{{"data-ingestion.label.maxRow" | translate}}</label>
+                  </div>
+                  <div class="col-3">
+                    <input class="input-edit" trim="blur" nbInput fullWidth formControlName="maxRow"
+                           (keydown)="changeNumber($event)">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>CSV Header</label>
+                  </div>
+                  <div class="col-4">
+                    <ng-select
+                      class="edit-button-hive"
+                      [clearable]="false"
+                      [items]="listChooseCsvHeader"
+                      bindLabel="name"
+                      bindValue="value"
+                      formControlName="csvHeader"
+                      fullWidth appendTo=""></ng-select>
+                  </div>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <div class="col-6">
+          <nb-card style="min-height: 420px; background-color: var(--background-container)">
+            <nb-card-header class="d-flex justify-content-between align-items-center edit-card-header">
+              <label>SINK</label>
+              <ng-select
+                [items]="listDestination" [clearable]="false"
+                bindLabel="name"
+                bindValue="value"
+                name="destination" appendTo=""
+                formControlName="sinkType"
+                [readonly]="flow"
+                style="width: 150px;"
+              >
+              </ng-select>
+            </nb-card-header>
+            <nb-card-body class="edit-body">
+              <div *ngIf="formGroup.value.sinkType === 'HDFS'">
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.nameConnection" | translate}}</label> <span
+                    style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <ng-select
+                      class="edit-button-hive"
+                      [clearable]="false"
+                      [items]="listConnectionForHDFS"
+                      bindValue="id"
+                      bindLabel="connectionName"
+                      formControlName="sinkId"
+                      (change)="changeHDFS($event)"
+                      fullWidth appendTo=""
+                      [readonly]="flow"
+                    ></ng-select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.hdfsResource" | translate}}</label> <span
+                    style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input trim="blur" nbInput fullWidth [disabled]="true" class="input-edit" name="hdfs-resource"
+                           [(ngModel)]="objectHDFS['hdfsResource']" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.hdfsPath" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth formControlName="hdfsPath">
+                    <ngx-inline-message [formName]="formGroup.get('hdfsPath')"
+                                        [message]="'data-ingestion.label.hdfsPath'"></ngx-inline-message>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.hdfsGroup" | translate}}</label>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.hdfsUser" | translate}}</label>
+                  </div>
+                  <div class="col-9">
+                    <input trim="blur" class="input-edit" nbInput fullWidth>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="formGroup.value.sinkType === 'Kafka'">
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.nameConnection" | translate}}</label> <span
+                    style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <ng-select
+                      class="edit-button-hive"
+                      [clearable]="false"
+                      [items]="listConnectionForKafka"
+                      bindValue="id"
+                      bindLabel="connectionName"
+                      (change)="changeKafka($event)"
+                      [readonly]="flow"
+                      fullWidth appendTo="" formControlName="sinkId"></ng-select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.kafkaBroker" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input trim="blur" nbInput fullWidth [disabled]="true" class="input-edit" name="kafka-broker"
+                           [(ngModel)]="objectKafka.kafkaBrokers" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.kafkaTopics" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth formControlName="kafkaTopics">
+                    <ngx-inline-message [formName]="formGroup.get('kafkaTopics')"
+                                        [message]="'data-ingestion.label.kafkaTopics'"></ngx-inline-message>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="formGroup.value.sinkType === 'FTP'">
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>{{"data-ingestion.label.nameConnection" | translate}}</label> <span
+                    style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <ng-select
+                      class="edit-button-hive"
+                      [clearable]="false"
+                      [items]="listConnectionForSinkFTP"
+                      bindValue="id"
+                      bindLabel="connectionName"
+                      formControlName="sinkId"
+                      (change)="changeSinkFPT($event)"
+                      fullWidth appendTo=""
+                      [readonly]="flow"
+                    ></ng-select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>FTP server</label> <span
+                    style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <input trim="blur" nbInput fullWidth [disabled]="true" class="input-edit" name="hdfs-resource"
+                           [(ngModel)]="objectSinkFTP.ftpServer" [ngModelOptions]="{standalone: true}">
+                  </div>
+                  <div class="col-2 align-center">
+                    <label>Port</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-3">
+                    <input class="input-edit" trim="blur" [(ngModel)]="objectSinkFTP.ftpPort"
+                           [ngModelOptions]="{standalone: true}"
+                           [disabled]="true" nbInput fullWidth>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>Username</label>
+                  </div>
+                  <div class="col-4">
+                    <input class="input-edit" [disabled]="true" [(ngModel)]="objectSinkFTP.ftpUsername"
+                           [ngModelOptions]="{standalone: true}" trim="blur" nbInput fullWidth>
+                  </div>
+                  <div class="col-2 align-center">
+                    <label>Password</label>
+                  </div>
+                  <div class="col-3">
+                    <nb-form-field class="w-100">
+                      <input class="input-edit" nbInput fullWidth disabled [type]="getInputTypeFTP()" name="password"
+                             [(ngModel)]="objectSinkFTP.ftpPassword" [ngModelOptions]="{standalone: true}">
+                      <button nbSuffix nbButton ghost (click)="toggleShowPasswordFTP()">
+                        <nb-icon [icon]="showPasswordFTP ? 'eye-outline' : 'eye-off-2-outline'"
+                                 pack="eva"
+                                 [attr.aria-label]="showPasswordFTP ? 'hide password' : 'show password'">
+                        </nb-icon>
+                      </button>
+                    </nb-form-field>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-3 align-center">
+                    <label>Path</label>
+                  </div>
+                  <div class="col-9">
+                    <input class="input-edit" trim="blur" nbInput fullWidth formControlName="pathSink">
+                    <ngx-inline-message [formName]="formGroup.get('pathSink')"
+                                        [message]="'data-ingestion.label.path'"></ngx-inline-message>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-12">
+                    <nb-checkbox class="mr-5" status="basic" formControlName="isHaveSubfolderSink"
+                    >{{"data-ingestion.label.directory" | translate}}</nb-checkbox>
+                    <nb-checkbox class="mr-5"
+                                 [disabled]="flow"
+                                 status="basic"
+                                 [formControl]="formGroup.controls['isCompressionSink']">Compress
+                    </nb-checkbox>
+                  </div>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+          <nb-card *ngIf="formGroup.value.sourceType != 'FTP'"
+                   style="min-height: 290px">
+            <nb-card-header class="justify-content-between edit-card-header">
+              <label>{{"data-ingestion.label.scheduling" | translate}}</label>
+            </nb-card-header>
+            <nb-card-body class="edit-body">
+              <div class="row mb-3">
+                <div class="col-3 align-center">
+                  <label>{{"data-ingestion.label.typeCalendar" | translate}}</label>
+                </div>
+                <div class="col-5">
+                  <ng-select
+                    class="edit-button-hive"
+                    [clearable]="false"
+                    [items]="listCalendar"
+                    bindValue="value"
+                    bindLabel="name"
+                    formControlName="scheduleStrategy"
+                    appendTo=""></ng-select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-3 align-center">
+                  <label>{{"data-ingestion.column.calendar" | translate}} <span style="color: red">*</span></label>
+                </div>
+                <div class="col-8">
+                  <textarea class="edit-text-area" nbInput fullWidth formControlName="schedulePeriod" rows="5"
+                            (change)="checkSchedule($event)"></textarea>
+                  <ngx-inline-message [formName]="formGroup.get('schedulePeriod')"
+                                      [message]="'data-ingestion.column.calendar'"></ngx-inline-message>
+                  <div *ngIf="formGroup.value.scheduleStrategy === 'TIMER_DRIVEN' && isSec" class="text-danger"
+                       style="font-size: 80%; color: #dc3545">{{'data-ingestion.label.notFormat' | translate}}</div>
+                  <span class="text-warning" style="font-size: 80%"
+                        *ngIf="formGroup.value.scheduleStrategy === 'TIMER_DRIVEN'">Ví dụ: 20 sec, 10 min, 10 hour,...</span>
+                  <span class="text-warning" style="font-size: 80%"
+                        *ngIf="formGroup.value.scheduleStrategy === 'CRON_DRIVEN'">Ví dụ: 0 0 13 6 3 4</span>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <div class="col-6">
+          <nb-card style="background-color: var(--background-container)">
+            <nb-card-header class="justify-content-between edit-card-header">
+              <label>{{"data-ingestion.label.advancedSetup" | translate}}</label>
+            </nb-card-header>
+            <nb-card-body class="edit-body" style="overflow: visible;">
+              <div class="row mb-3 align-items-center">
+                <div class="col-3 align-center">
+                  <label>{{"data-ingestion.label.setup" | translate}}</label>
+                </div>
+                <div class="col-4">
+                  <textarea class="edit-text-area" nbInput fullWidth formControlName="advancedConfig"
+                            (change)="isJsonString()"></textarea>
+                  <span *ngIf="isJson" class="text-danger">Sai định dạng JSON</span>
+                </div>
+                <div class="col-2">
+                  <label>{{"data-ingestion.label.logLevel" | translate}}</label>
+                </div>
+                <div class="col-3">
+                  <ng-select
+                    class="edit-button-hive"
+                    [clearable]="false"
+                    [items]="listLogLevel"
+                    bindLabel="name"
+                    bindValue="value"
+                    formControlName="bulletinLevel"
+                    appendTo=""></ng-select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-3 align-center">
+                  <label>{{"data-ingestion.label.taskParallel" | translate}} <span style="color: red">*</span></label>
+                </div>
+                <div class="col-4">
+                  <input class="input-edit" trim="blur" nbInput fullWidth formControlName="concurrentTask"
+                         (keydown)="changeNumber($event)">
+                  <ngx-inline-message [formName]="formGroup.get('concurrentTask')"
+                                      [message]="'data-ingestion.label.taskParallel'"></ngx-inline-message>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <div class="col-6" *ngIf="formGroup.value.sourceType === 'FTP'">
+          <nb-card style="background-color: var(--background-container)">
+            <nb-card-header class="justify-content-between edit-card-header">
+              <label>{{"data-ingestion.label.scheduling" | translate}}</label>
+            </nb-card-header>
+            <nb-card-body class="edit-body" style="overflow: visible;">
+              <div class="row mb-3">
+                <div class="col-3 align-center">
+                  <label>{{"data-ingestion.label.typeCalendar" | translate}}</label>
+                </div>
+                <div class="col-5">
+                  <ng-select
+                    class="edit-button-hive"
+                    [clearable]="false"
+                    [items]="listCalendar"
+                    bindValue="value"
+                    bindLabel="name"
+                    formControlName="scheduleStrategy"
+                    appendTo=""></ng-select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-3 align-center">
+                  <label>{{"data-ingestion.column.calendar" | translate}} <span style="color:red">*</span></label>
+                </div>
+                <div class="col-8">
+                  <textarea class="edit-text-area" nbInput fullWidth formControlName="schedulePeriod"
+                            style="text-transform: lowercase"
+                            trim="blur" (keyup)="checkSchedule($event)"></textarea>
+                  <ngx-inline-message [formName]="formGroup.get('schedulePeriod')"
+                                      [message]="'data-ingestion.column.calendar'"></ngx-inline-message>
+                  <div *ngIf="formGroup.value.scheduleStrategy === 'TIMER_DRIVEN' && isSec" class="text-danger"
+                       style="font-size: 80%; color: #dc3545">{{'data-ingestion.label.notFormat' | translate}}</div>
+                  <span class="text-warning" style="font-size: 80%"
+                        *ngIf="formGroup.value.scheduleStrategy === 'TIMER_DRIVEN'">Ví dụ: 20 sec, 10 min, 10 hour,...</span>
+                  <span class="text-warning" style="font-size: 80%"
+                        *ngIf="formGroup.value.scheduleStrategy === 'CRON_DRIVEN'">Ví dụ: 0 0 13 6 3 4</span>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer class="d-flex edit-button justify-content-center">
+    <button (click)="creatFlow()" [disabled]="disabledButtonCreate()">
+      {{(flow ? "data-ingestion.label.update" : "data-ingestion.label.createNewThread") | translate}}
+    </button>
+  </nb-card-footer>
+</nb-card>
+
+<ng-template let-refTuto="dialogRef" #tutorial>
+  <nb-card style="height: calc(100vh - 200px); width: calc(100vw - 500px)">
+    <nb-card-header>
+      <div class="d-flex edit-button justify-content-between align-items-center">
+        <span>Hướng dẫn sử dụng module Ingestion & Provisioning</span>
+        <button style="background: none; border: none; color: #8C95B2; min-width: 0 !important; box-shadow: none" class="mr-2" (click)="refTuto.close()">
+          <nb-icon
+            icon="close-outline"
+          ></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row">
+        <nb-card style=" background-color: var(--background-container)!important;" class="col-3">
+              <span style='font-size:13.0pt;font-family:"Times New Roman",serif'><br
+                clear=all style='page-break-before:always'>
+              </span>
+          <!--          <p (click)="scroll(Toc65748525)" class="custom-link MsoToc2"><a>I.<span style='color:windowtext;-->
+          <!--text-decoration:none'>  </span>C&#7845;u hình T&#7841;o lu&#7891;ng m&#7899;i<span-->
+          <!--            style='color:windowtext;display:none;text-decoration:none'> </span><span-->
+          <!--            style='color:windowtext;display:none;text-decoration:none'>3</span></a></p>-->
+
+          <!--          <p (click)="scroll(Toc65748529)" class="custom-link MsoToc2"><a>II.<span style='color:windowtext;-->
+          <!--text-decoration:none'>  </span>C&#7845;u hình connection<span-->
+          <!--            style='color:windowtext;display:none;text-decoration:none'>. </span><span-->
+          <!--            style='color:windowtext;display:none;text-decoration:none'>3</span></a></p>-->
+          <p (click)="scroll(Toc65748530, 'fpt')" [ngClass]="{'active-scroll': keyChecked === 'fpt'}" class="custom-link  MsoToc2"><a> 1.<span style='color:windowtext;
+text-decoration:none'> </span>C&#7845;u hình FTP Connection<span
+            style='color:windowtext;display:none;text-decoration:none'>. </span><span
+            style='color:windowtext;display:none;text-decoration:none'>3</span></a></p>
+
+          <p (click)="scroll(Toc65748531, 'rdbm')" [ngClass]="{'active-scroll': keyChecked === 'rdbm'}" class="custom-link MsoToc2"><a> 2.<span style='color:windowtext;
+text-decoration:none'> </span>C&#7845;u hình RDBMS Connection<span
+            style='color:windowtext;display:none;text-decoration:none'>. </span><span
+            style='color:windowtext;display:none;text-decoration:none'>5</span></a></p>
+
+          <p (click)="scroll(Toc65748532, 'hdfs')" [ngClass]="{'active-scroll': keyChecked === 'hdfs'}" class="custom-link MsoToc2"><a> 3.<span style='color:windowtext;
+text-decoration:none'> </span>C&#7845;u hình HDFS Connection<span
+            style='color:windowtext;display:none;text-decoration:none'>. </span><span
+            style='color:windowtext;display:none;text-decoration:none'>8</span></a></p>
+
+          <p (click)="scroll(Toc65748533, 'kafka')" [ngClass]="{'active-scroll': keyChecked === 'kafka'}" class="custom-link MsoToc2"><a> 4.<span style='color:windowtext;
+text-decoration:none'> </span>C&#7845;u hình Kafka Connection<span
+            style='color:windowtext;display:none;text-decoration:none'>. </span><span
+            style='color:windowtext;display:none;text-decoration:none'>9</span></a></p>
+
+          <p (click)="scroll(Toc65748534, 'calander')" [ngClass]="{'active-scroll': keyChecked === 'calander'}" class="custom-link MsoToc2"><a>5.C&#7845;u hình L&#7853;p l&#7883;ch
+            cho lu&#7891;ng<span
+              style='color:windowtext;display:none;text-decoration:none'>. </span><span
+              style='color:windowtext;display:none;text-decoration:none'>10</span></a></p>
+
+          <p (click)="scroll(Toc65748535, 'advance')" [ngClass]="{'active-scroll': keyChecked === 'advance'}" class="custom-link MsoToc2"><a>6.C&#7845;u hình Thi&#7871;t l&#7853;p
+            nâng cao<span
+              style='color:windowtext;display:none;text-decoration:none'>. </span><span
+              style='color:windowtext;display:none;text-decoration:none'>13</span></a></p>
+        </nb-card>
+        <nb-card class="col-9 custom-p"
+                 style="height: calc(100vh - 350px); background-color: var(--background-container)!important">
+          <nb-card-body>
+            <h3 style='margin-left:.25in'><a #Toc65748530 class="custom-font">1.<span
+              style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>C&#7845;u hình t&#7841;o FTP Connection</a></h3>
+
+            <p class=MsoNormal>&nbsp;</p>
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>C&#7845;u hình cho FTP connection trong lu&#7891;ng</p>
+            <p class=picture><img width=auto height=auto id="Picture 4"
+                                  src="assets/tutorial-ingestion/images_002.png">
+            </p>
+
+            <p class=MsoCaption>Hình 1. C&#7845;u hình các tr&#432;&#7901;ng cho lu&#7891;ng
+              s&#7917; d&#7909;ng FTP connection (ngu&#7891;n)</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 1. C&#7845;u hình các tr&#432;&#7901;ng cho lu&#7891;ng
+              s&#7917; d&#7909;ng FTP connection (ngu&#7891;n)</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Tên trường</span></p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; m&#7863;c &#273;&#7883;nh</span></p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; cho phép</span></p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Mô t&#7843;</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Path</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&#272;&#432;&#7901;ng d&#7851;n &#273;&#7871;n th&#432; m&#7909;c
+                    FTP c&#7847;n l&#7845;y d&#7919; li&#7879;u</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Delimiter</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Ký t&#7921; &#273;&#7875; phân tách các tr&#432;&#7901;ng
+                    d&#7919; li&#7879;u.</p>
+                  <p class=MsoNormal>Ví d&#7909;: |</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Gi&#7843;i nén</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Tích ch&#7885;n n&#7871;u d&#7919; li&#7879;u có ch&#7913;a
+                    File nén và c&#7847;n gi&#7843;i nén</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Thêm tr&#432;&#7901;ng</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Thêm 2 tr&#432;&#7901;ng mô t&#7843; vào t&#7915;ng b&#7843;n
+                    ghi</p>
+                  <p class=MsoNormal>-           Tên folder trên FTP</p>
+                  <p class=MsoNormal>-           Ngày l&#7845;y file &#273;&#7883;nh d&#7841;ng
+                    yyyyMMdd</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Có ch&#7913;a th&#432; m&#7909;c con</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Tích ch&#7885;n n&#7871;u Path ch&#7913;a các th&#432; m&#7909;c
+                    con bên trong và c&#7847;n quét c&#7843; các th&#432; m&#7909;c con &#273;ó</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Delta Timezone</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>0</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Là ch&#7881; s&#7889; th&#7875; hi&#7879;n &#273;&#7897; l&#7879;ch
+                    múi th&#7901;i gian gi&#7919;a server ftp và server Data
+                    Ingesion/Provisioning.</p>
+                  <p class=MsoNormal>Ví d&#7909;: FTP server &#7903; Tanzania (GMT +3), server
+                    tri&#7875;n khai VBDT &#7903; Vi&#7879;t Nam (GMT +7), nh&#432; v&#7853;y
+                    Delta Timezone s&#7869; b&#7857;ng 4</p>
+                </td>
+              </tr>
+            </table>
+            <p class=MsoNormal>&nbsp;</p>
+            <!--cau hinh RDBMS-->
+            <h3 style='margin-left:.25in'><a #Toc65748531>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>C&#7845;u hình RDBMS Connection</a></h3>
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>C&#7845;u hình cho RDBMS connection trong lu&#7891;ng</p>
+
+            <p class=picture><img width=auto height=auto id="Picture 6"
+                                  src="assets/tutorial-ingestion/images_003.png">
+            </p>
+
+            <p class=MsoCaption>Hình 2. C&#7845;u hình các tr&#432;&#7901;ng cho Lu&#7891;ng
+              s&#7917; d&#7909;ng RDBMS connection</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 2. C&#7845;u hình các tr&#432;&#7901;ng cho Lu&#7891;ng
+              s&#7917; d&#7909;ng RDBMS connection</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Tên trường</span></p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; m&#7863;c &#273;&#7883;nh</span></p>
+                </td>
+                <td width=120 valign=top style='width:1.25in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; cho phép</span></p>
+                </td>
+                <td width=300 valign=top style='width:224.75pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Mô t&#7843;</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>DB Type</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Generic</p>
+                </td>
+                <td width=120 valign=top style='width:1.25in;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Generic</p>
+                  <p class=MsoNormal>Oracle</p>
+                  <p class=MsoNormal>Oracle 12+</p>
+                  <p class=MsoNormal>MS SQL 2021+</p>
+                  <p class=MsoNormal>MS SQL 2008</p>
+                  <p class=MsoNormal>MySQL</p>
+                </td>
+                <td width=300 valign=top style='width:224.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Ki&#7875;u database, &#273;&#432;&#7907;c s&#7917; d&#7909;ng
+                    &#273;&#7875; sinh racode c&#7909; th&#7875; cho t&#7915;ng lo&#7841;i
+                    database. Trong nhi&#7873;u tr&#432;&#7901;ng h&#7907;p, ch&#7881; c&#7847;n
+                    dùng ki&#7875;u  Generic là &#273;&#7911;, nh&#432;ng m&#7897;t s&#7889;
+                    database (ch&#7859;ng h&#7841;n Oracle) yêu c&#7847;u các custom SQL</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Delimiter</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=120 valign=top style='width:1.25in;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=300 valign=top style='width:224.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Ký t&#7921; phân tách các tr&#432;&#7901;ng d&#7919; li&#7879;u
+                    c&#7911;a b&#7843;ng khi l&#7845;y v&#7873;. VBDT hi&#7879;n t&#7841;i h&#7895;
+                    tr&#7907; các ký t&#7921; sau:</p>
+                  <p class=MsoNormal>D&#7845;u ch&#7845;m ‘.’</p>
+                  <p class=MsoNormal>D&#7845;u ph&#7849;y ‘,’</p>
+                  <p class=MsoNormal>D&#7845;u ch&#7845;m ph&#7849;y ‘;’</p>
+                  <p class=MsoNormal>D&#7845;u s&#7885;c &#273;&#7913;ng ‘|’</p>
+                  <p class=MsoNormal>D&#7845;u ph&#7847;n tr&#259;m ‘%’</p>
+                  <p class=MsoNormal>D&#7845;u cách ‘ ’</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Fetch size</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>100000</p>
+                </td>
+                <td width=120 valign=top style='width:1.25in;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=300 valign=top style='width:224.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>S&#7889; l&#432;&#7907;ng t&#7889;i &#273;a các b&#7843;n
+                    ghi &#273;&#432;&#7907;c l&#7845;y v&#7873; t&#7841;i m&#7897;t th&#7901;i
+                    &#273;i&#7875;m, tham s&#7889; này không ph&#7843;i lúc nào c&#361;ng
+                    &#273;&#432;&#7907;c th&#7921;c hi&#7879;n chính xác b&#7903;i database
+                    driver.<br>
+                    Thi&#7871;t l&#7853;p giá tr&#7883; = 0 &#273;&#7875; b&#7887; qua tham s&#7889;
+                    này</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Max row per file</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>20000</p>
+                </td>
+                <td width=120 valign=top style='width:1.25in;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=300 valign=top style='width:224.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>S&#7889; l&#432;&#7907;ng t&#7889;i &#273;a b&#7843;n ghi
+                    &#273;&#432;&#7907;c l&#7845;y v&#7873; gom vào 1 file. N&#7871;u giá tr&#7883;
+                    &#273;&#432;&#7907;c thi&#7871;t l&#7853;p = 0 thì m&#7885;i b&#7843;n ghi l&#7845;y
+                    v&#7873; &#273;&#432;&#7907;c gom vào 1 file duy nh&#7845;t</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Delta Timezone</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>0</p>
+                </td>
+                <td width=120 valign=top style='width:1.25in;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=300 valign=top style='width:224.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Là ch&#7881; s&#7889; th&#7875; hi&#7879;n &#273;&#7897; l&#7879;ch
+                    múi th&#7901;i gian gi&#7919;a server ftp và server Data
+                    Ingesion/Provisioning.</p>
+                  <p class=MsoNormal>Ví d&#7909;: FTP server &#7903; Tanzania (GMT +3), server
+                    tri&#7875;n khai VBDT &#7903; Vi&#7879;t Nam (GMT +7), nh&#432; v&#7853;y
+                    Delta Timezone s&#7869; b&#7857;ng 4</p>
+                </td>
+              </tr>
+            </table>
+
+            <p class=MsoNormal>&nbsp;</p>
+            <!--cau hinh HDFS-->
+            <h3 style='margin-left:.25in'><a #Toc65748532>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>C&#7845;u hình HDFS Connection</a></h3>
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>C&#7845;u hình cho HDFS connection trong lu&#7891;ng</p>
+
+            <p class=picture><img width=auto height=auto id="Picture 5"
+                                  src="assets/tutorial-ingestion/images_004.png">
+            </p>
+
+            <p class=MsoCaption>Hình 3. C&#7845;u hình HDFS Connection trong lu&#7891;ng</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 3. C&#7845;u hình HDFS Connection trong lu&#7891;ng</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=102 valign=top style='width:76.25pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Tên trường</span></p>
+                </td>
+                <td width=48 valign=top style='width:.5in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; m&#7863;c &#273;&#7883;nh</span></p>
+                </td>
+                <td width=114 valign=top style='width:85.5pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; cho phép</span></p>
+                </td>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Mô t&#7843;</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=102 valign=top style='width:76.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>HDFS path</p>
+                </td>
+                <td width=48 valign=top style='width:.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=114 valign=top style='width:85.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=312 valign=top style='width:233.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&#272;&#432;&#7901;ng d&#7851;n cha ch&#7913;a các file s&#7869;
+                    &#273;&#432;&#7907;c vi&#7871;t vào, s&#7869; &#273;&#432;&#7907;c t&#7841;o
+                    n&#7871;u ch&#432;a t&#7891;n t&#7841;i</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=102 valign=top style='width:76.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>HDFS owner group</p>
+                </td>
+                <td width=48 valign=top style='width:.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=114 valign=top style='width:85.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=312 valign=top style='width:233.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Thay &#273;&#7893;i owner c&#7911;a HDFS file thành giá tr&#7883;
+                    này sau khi nó &#273;&#432;&#7907;c vi&#7871;t</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=102 valign=top style='width:76.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>HDFS owner user</p>
+                </td>
+                <td width=48 valign=top style='width:.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=114 valign=top style='width:85.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=312 valign=top style='width:233.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Thay &#273;&#7893;i group c&#7911;a HDFS file thành giá tr&#7883;
+                    này sau khi nó &#273;&#432;&#7907;c vi&#7871;t</p>
+                </td>
+              </tr>
+            </table>
+
+            <p class=MsoNormal style='margin-left:.75in'><span style='font-size:13.0pt'>&nbsp;</span></p>
+            <!--cau hinh Kafka-->
+            <h3 style='margin-left:.25in'><a #Toc65748533>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>C&#7845;u hình Kafka Connection</a></h3>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>C&#7845;u hình cho Kafka Connection trong lu&#7891;ng</p>
+
+            <p class=picture><img width=auto height=auto id="Picture 8"
+                                  src="assets/tutorial-ingestion/images_005.png">
+            </p>
+
+            <p class=MsoCaption>Hình 4. C&#7845;u hình cho Kafka Connection trong lu&#7891;ng</p>
+
+            <p class=MsoCaption>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 4. C&#7845;u hình cho Kafka Connection trong lu&#7891;ng</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=102 valign=top style='width:76.25pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Tên trường</span></p>
+                </td>
+                <td width=48 valign=top style='width:.5in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; m&#7863;c &#273;&#7883;nh</span></p>
+                </td>
+                <td width=114 valign=top style='width:85.5pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; cho phép</span></p>
+                </td>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Mô t&#7843;</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=102 valign=top style='width:76.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Kafka topics</p>
+                </td>
+                <td width=48 valign=top style='width:.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=114 valign=top style='width:85.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=312 valign=top style='width:233.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Tên c&#7911;a Kafka Topic s&#7869; publish message</p>
+                </td>
+              </tr>
+            </table>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <h2 style='margin-left:0in;text-indent:0in'><a #Toc65748534>5. C&#7845;u
+              hình L&#7853;p l&#7883;ch cho lu&#7891;ng</a></h2>
+
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>L&#7853;p l&#7883;ch cho lu&#7891;ng</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=picture><img width=auto height=auto id="Picture 9"
+                                  src="assets/tutorial-ingestion/images_006.png">
+            </p>
+
+            <p class=MsoCaption>Hình 9. L&#7853;p l&#7883;ch cho lu&#7891;ng</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 10. L&#7853;p l&#7883;ch cho lu&#7891;ng</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=78 valign=top style='width:58.25pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b>Tên tr&#432;<span style='color:black'>&#7901;ng</span></b></p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b><span style='color:black'>Giá tr&#7883; m&#7863;c
+  &#273;&#7883;nh</span></b></p>
+                </td>
+                <td width=132 valign=top style='width:99.0pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b><span style='color:black'>Giá tr&#7883; cho phép</span></b></p>
+                </td>
+                <td width=294 valign=top style='width:220.25pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b><span style='color:black'>Mô t&#7843;</span></b></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=78 valign=top style='width:58.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>Lo&#7841;i l&#7883;ch</span></p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>Timer driven</span></p>
+                </td>
+                <td width=132 valign=top style='width:99.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoListParagraphCxSpFirst><span style='font-family:Symbol'>-<span
+                    style='font:7.0pt "Times New Roman"'>&nbsp; </span></span>Timer driven</p>
+                  <p class=MsoListParagraphCxSpLast><span style='font-family:Symbol'>-<span
+                    style='font:7.0pt "Times New Roman"'>&nbsp; </span></span>Event driven</p>
+                </td>
+                <td width=294 valign=top style='width:220.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>Là chi&#7871;n l&#432;&#7907;c
+  l&#7853;p l&#7883;ch cho lu&#7891;ng, có th&#7875; l&#7921;a chonh:</span></p>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>Timer driven: lu&#7891;ng
+  ch&#7841;y theo t&#7915;ng kho&#7843;ng th&#7901;i gian &#273;&#7873;u &#273;&#7863;n.(kho&#7843;ng
+  th&#7901;i gian &#273;&#432;&#7907;c thi&#7871;t l&#7853;p &#7903; ph&#7847;n
+  L&#7883;ch), ví d&#7909;: 30 sec (30 giây ch&#7841;y lu&#7891;ng 1 l&#7847;n)
+  </span></p>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>CRON driven: lu&#7891;ng s&#7869;
+  ch&#7841;y &#273;&#7883;nh k&#7923;, linh ho&#7841;t h&#417;n Timer driven
+  thông qua 1 chu&#7895;i.</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=78 valign=top style='width:58.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>L&#7883;ch</span></p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>&nbsp;</span></p>
+                </td>
+                <td width=132 valign=top style='width:99.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>&nbsp;</span></p>
+                </td>
+                <td width=294 valign=top style='width:220.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>V&#7899;i Timer driven: ví
+  d&#7909; 30 sec</span></p>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>V&#7899;i CRON driven: Chi
+  ti&#7871;t c&#7845;u hình theo h&#432;&#7899;ng d&#7851;n (*)</span></p>
+                  <p class=MsoNormal><span style='font-size:13.0pt'>&nbsp;</span></p>
+                </td>
+              </tr>
+            </table>
+
+            <p class=MsoNormal><span style='font-size:13.0pt'>&nbsp;</span></p>
+
+            <p class=MsoNormal style='text-indent:.5in'>(*) H&#432;&#7899;ng d&#7851;n c&#7845;u
+              hình chu&#7895;i CRON driven</p>
+
+            <p class=MsoNormal style='margin-left:.5in'>Chu&#7895;i g&#7891;m 6 tr&#432;&#7901;ng
+              b&#7855;t bu&#7897;c và 1 tr&#432;&#7901;ng tu&#7923; ch&#7885;n, các tr&#432;&#7901;ng
+              cách nhau b&#7903;i d&#7845;u cách. Các tr&#432;&#7901;ng và giá tr&#7883; cho
+              phép th&#7875; hi&#7879;n qua b&#7843;ng sau:</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 11. Cách c&#7845;u hình Cron driven</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0 width=576
+                   style='width:6.0in;margin-left:35.75pt;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b><span style='font-size:12.0pt'>Tr&#432;&#7901;ng</span></b></p>
+                </td>
+                <td width=264 valign=top style='width:198.25pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b><span style='font-size:12.0pt'>Giá tr&#7883; h&#7907;p
+  l&#7879;</span></b></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>Seconds</span></p>
+                </td>
+                <td width=264 valign=top style='width:198.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>0-59</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>Minutes</span></p>
+                </td>
+                <td width=264 valign=top style='width:198.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>0-59</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>Hours</span></p>
+                </td>
+                <td width=264 valign=top style='width:198.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>0-23</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>Day of Month</span></p>
+                </td>
+                <td width=264 valign=top style='width:198.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>1-31</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>Month</span></p>
+                </td>
+                <td width=264 valign=top style='width:198.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>1-12 ho&#7863;c JAN-DEC</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>Day of Week</span></p>
+                </td>
+                <td width=264 valign=top style='width:198.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>1-7 ho&#7863;c SUN-SAT</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=312 valign=top style='width:233.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>Year (optional)</span></p>
+                </td>
+                <td width=264 valign=top style='width:198.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='font-size:12.0pt;font-family:"inherit",serif;
+  letter-spacing:-.1pt'>empty, 1970-2099</span></p>
+                </td>
+              </tr>
+            </table>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoNormal>B&#7841;n ch&#7881; &#273;&#7883;nh các tr&#432;&#7901;ng d&#7919;
+              li&#7879;u theo các cách sau:</p>
+
+            <p class=MsoListParagraphCxSpFirst style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>S&#7889;: ch&#7881; &#273;&#7883;nh m&#7897;t ho&#7863;c nhi&#7873;u
+              giá tr&#7883; h&#7907;p l&#7879; (các giá tr&#7883; tách nhau b&#7903;i d&#7845;u
+              ph&#7849;y)</p>
+
+            <p class=MsoListParagraphCxSpMiddle style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Kho&#7843;ng giá tr&#7883;: ch&#7881; &#273;&#7883;nh m&#7897;t
+              kho&#7843;ng theo format &lt;s&#7889;&gt;-&lt;s&#7889;&gt;</p>
+
+            <p class=MsoListParagraphCxSpLast style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>S&#7917; d&#7909;ng gia s&#7889;: ch&#7881; &#273;&#7883;nh gia s&#7889;
+              b&#7857;ng cách s&#7917; d&#7909;ng &lt;giá tr&#7883; b&#7855;t &#273;&#7847;u&gt;/&lt;gia
+              s&#7889;&gt;<br>
+              Ví d&#7909; &#7903; tr&#432;&#7901;ng Minutes, 0/15 cho bi&#7871;t các phút 0,
+              15, 30 và 45</p>
+
+            <p class=MsoNormal>M&#7897;t s&#7889; ký t&#7921; &#273;&#7863;c bi&#7879;t h&#7907;p
+              l&#7879;:</p>
+
+            <p class=MsoListParagraphCxSpFirst style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>cho bi&#7871;t m&#7885;i giá tr&#7883; &#273;&#7873;u h&#7907;p l&#7879;
+              cho tr&#432;&#7901;ng này</p>
+
+            <p class=MsoListParagraphCxSpMiddle style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>? cho bi&#7871;t không có giá tr&#7883; nào c&#7909; th&#7875;
+              &#273;&#432;&#7907;c ch&#7881; &#273;&#7883;nh . Ký t&#7921; này h&#7907;p l&#7879;
+              trong tr&#432;&#7901;ng Days of Month và Days of Week</p>
+
+            <p class=MsoListParagraphCxSpLast style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>L b&#7841;n có th&#7875; thêm L vào cu&#7889;i giá tr&#7883; Days
+              of Week &#273;&#7875; ch&#7881; &#273;&#7883;nh l&#7847;n xu&#7845;t hi&#7879;n
+              cu&#7889;i cùng c&#7911;a ngày này trong tháng. Ví d&#7909; 1L t&#7913;c là
+              ngày Ch&#7911; nh&#7853;t cu&#7889;i cùng trong tháng</p>
+
+            <p class=MsoNormal>Ví d&#7909;:</p>
+
+            <p class=MsoListParagraphCxSpFirst style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Chu&#7895;i <span style='background:lightgrey'>0 0 13 * * ?</span>
+              ngh&#297;a là b&#7841;n mu&#7889;n lu&#7891;ng ch&#7841;y vào 1 gi&#7901; chi&#7873;u
+              m&#7895;i ngày</p>
+
+            <p class=MsoListParagraphCxSpMiddle style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Chu&#7895;i <span style='background:lightgrey'>0 20 14 ? MON-FRI</span>
+              ngh&#297;a là b&#7841;n mu&#7889;n lu&#7891;ng ch&#7841;y vào m&#7895;i 14 gi&#7901;
+              20 phút t&#7915; th&#7913; Hai &#273;&#7871;n th&#7913; Sáu</p>
+
+            <p class=MsoListParagraphCxSpLast style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Chu&#7895;i <span style='background:lightgrey'>0 15 10 ? * 6L
+2011-2017</span> ngh&#297;a là b&#7841;n mu&#7889;n lu&#7891;ng ch&#7841;y vào
+              m&#7895;i 10 gi&#7901; 15 phút, th&#7913; Sáu cu&#7889;i cùng c&#7911;a tháng,t&#7915;
+              n&#259;m 2011 &#273;&#7871;n 2017</p>
+
+            <p class=MsoNormal><span style='font-size:13.0pt'>Chi </span>ti&#7871;t v&#7873;
+              cron có th&#7875; tham kh&#7843;o: <a
+                href="https://www.quartz-scheduler.org/documentation/quartz-2.2.2/tutorials/tutorial-lesson-06.html"><span
+                style='color:windowtext;background:lightgrey;text-decoration:none'>https://www.quartz-scheduler.org/documentation/quartz-2.2.2/tutorials/tutorial-lesson-06.html</span></a>
+            </p>
+
+            <p class=MsoNormal><span style='font-size:13.0pt'>&nbsp;</span></p>
+
+            <h2 style='margin-left:0in;text-indent:0in'><a #Toc65748535>6. C&#7845;u
+              hình Thi&#7871;t l&#7853;p nâng cao</a></h2>
+
+            <p class=picture><img border=0 width=auto height=auto id="Picture 10"
+                                  src="assets/tutorial-ingestion/images_007.png">
+            </p>
+
+            <p class=MsoCaption>Hình 10. Thi&#7871;t l&#7853;p nâng cao cho lu&#7891;ng</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Thi&#7871;t l&#7853;p: chu&#7895;i JSON ch&#7913;a các c&#7863;p
+              key-value th&#7875; hi&#7879;n c&#7845;u hình nâng cao cho lu&#7891;ng, c&#7911;a
+              c&#7843; ngu&#7891;n và &#273;ích. Các tr&#432;&#7901;ng cho phép ph&#7909; thu&#7897;c
+              t&#7915;ng lo&#7841;i connection s&#7917; d&#7909;ng. C&#7909; th&#7875;:</p>
+
+            <p class=MsoNormal style='margin-left:.5in'>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 12. C&#7845;u hình nâng cao cho FTP khi t&#7841;o
+              lu&#7891;ng</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=131 valign=top style='width:98.2pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b><span style='color:black'>Tên trường (key)</span></b></p>
+                </td>
+                <td width=84 valign=top style='width:63.05pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b><span style='color:black'>Giá tr&#7883; m&#7863;c
+  &#273;&#7883;nh</span></b></p>
+                </td>
+                <td width=115 valign=top style='width:86.55pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b><span style='color:black'>Giá tr&#7883; cho phép</span></b></p>
+                </td>
+                <td width=245 valign=top style='width:183.7pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><b><span style='color:black'>Mô t&#7843;</span></b></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=131 valign=top style='width:98.2pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>follow-symplink</p>
+                </td>
+                <td width=84 valign=top style='width:63.05pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>false</p>
+                </td>
+                <td width=115 valign=top style='width:86.55pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoListParagraphCxSpFirst style='margin-left:13.15pt;text-indent:
+  -13.15pt'><span style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span></span>false</p>
+                  <p class=MsoListParagraphCxSpMiddle style='margin-left:13.15pt;text-indent:
+  -13.15pt'><span style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span></span>true</p>
+                </td>
+                <td width=245 valign=top style='width:183.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoListParagraphCxSpMiddle style='margin-left:13.5pt;text-indent:
+  -13.5pt'><span style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span></span>true: l&#7845;y v&#7873; c&#7843; các t&#7879;p d&#7841;ng
+                    symlink</p>
+                  <p class=MsoListParagraphCxSpLast style='margin-left:13.5pt;text-indent:-13.5pt'><span
+                    style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span></span>false: b&#7887; qua các t&#7879;p d&#7841;ng symlink</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=131 valign=top style='width:98.2pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>File Filter Regex</p>
+                </td>
+                <td width=84 valign=top style='width:63.05pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=115 valign=top style='width:86.55pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=245 valign=top style='width:183.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Cung c&#7845;p m&#7897;t Java Regular Expression &#273;&#7875;
+                    l&#7885;c tên t&#7879;p. N&#7871;u b&#7897; l&#7885;c &#273;&#432;&#7907;c
+                    cung c&#7845;p, ch&#7881; các t&#7879;p có tên kh&#7899;p v&#7899;i Regular
+                    Expression trên m&#7899;i &#273;&#432;&#7907;c l&#7845;y</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=131 valign=top style='width:98.2pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Path Filter Regex</p>
+                </td>
+                <td width=84 valign=top style='width:63.05pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=115 valign=top style='width:86.55pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=245 valign=top style='width:183.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Khi tích ch&#7885;n “Có th&#432; m&#7909;c con” trong giao
+                    di&#7879;n t&#7841;o lu&#7891;ng m&#7899;i, ch&#7881; nh&#7919;ng th&#432; m&#7909;c
+                    con có &#273;&#432;&#7901;ng d&#7851;n kh&#7899;p v&#7899;i Regular
+                    Expression này m&#7899;i &#273;&#432;&#7907;c quét</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=131 valign=top style='width:98.2pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Proxy Type</p>
+                </td>
+                <td width=84 valign=top style='width:63.05pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>DIRECT</p>
+                </td>
+                <td width=115 valign=top style='width:86.55pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoListParagraphCxSpFirst style='margin-left:13.15pt;text-indent:
+  -13.15pt'><span style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span></span>DIRECT</p>
+                  <p class=MsoListParagraphCxSpMiddle style='margin-left:13.15pt;text-indent:
+  -13.15pt'><span style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span></span>HTTP</p>
+                  <p class=MsoListParagraphCxSpLast style='margin-left:13.15pt;text-indent:
+  -13.15pt'><span style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span></span>SOCKS</p>
+                </td>
+                <td width=245 valign=top style='width:183.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Ki&#7875;u proxy &#273;&#432;&#7907;c s&#7917; d&#7909;ng
+                    cho file transfer</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=131 valign=top style='width:98.2pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Proxy Host</p>
+                </td>
+                <td width=84 valign=top style='width:63.05pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=115 valign=top style='width:86.55pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=245 valign=top style='width:183.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Fully Qualified Hostname ho&#7863;c &#273;&#7883;a ch&#7881;
+                    IP c&#7911;a proxy server</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=131 valign=top style='width:98.2pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Http Proxy User</p>
+                </td>
+                <td width=84 valign=top style='width:63.05pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=115 valign=top style='width:86.55pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=245 valign=top style='width:183.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Http proxy Username</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=131 valign=top style='width:98.2pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Http Proxy Password</p>
+                </td>
+                <td width=84 valign=top style='width:63.05pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=115 valign=top style='width:86.55pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=245 valign=top style='width:183.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Http Proxy Password</p>
+                </td>
+              </tr>
+            </table>
+
+            <p class=MsoNormal><span style='font-size:13.0pt'>&nbsp;</span></p>
+
+            <p class=MsoListParagraphCxSpFirst style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Log level: có các mode <b>DEBUG, WARN, INFO, ERROR, NONE</b></p>
+
+            <p class=MsoListParagraphCxSpLast style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>S&#7889; Task ch&#7841;y song song: tham s&#7889; này ch&#7881;
+              &#273;&#7883;nh s&#7889; lu&#7891;ng mà b&#7897; x&#7917; lý s&#7869; s&#7917;
+              d&#7909;ng, hay s&#7889; d&#7919; li&#7879;u &#273;&#432;&#7907;c x&#7917; lý
+              cùng m&#7897;t th&#7901;i &#273;i&#7875;m. T&#259;ng tham s&#7889; này cho phép
+              t&#259;ng s&#7889; l&#432;&#7907;ng d&#7919; li&#7879;u &#273;&#432;&#7907;c x&#7917;
+              lý t&#7841;i cùng m&#7897;t th&#7901;i &#273;i&#7875;m, tu&#7923; thu&#7897;c
+              vào tài nguyên c&#7845;p cho h&#7879; th&#7889;ng. </p>
+
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template>

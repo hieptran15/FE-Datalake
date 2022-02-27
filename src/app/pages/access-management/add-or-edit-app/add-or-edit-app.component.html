@@ -1,0 +1,89 @@
+<nb-card class="add-or-edit-access edit-button" style="width: 50vw;" [formGroup]="appForm" [nbSpinner]="loading" nbSpinnerStatus="primary">
+  <nb-card-header class="d-flex justify-content-between">
+    <span>{{ isEddit ? 'Thay đổi thông tin ứng dụng' : 'Thêm mới ứng dụng' }}</span>
+    <button class="button-close" size="small" (click)="ref.close()">
+      <nb-icon icon="close-outline"></nb-icon>
+    </button>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row" [formGroup]="appForm">
+      <div class="mb-2 col-12" *ngIf="!isEddit">
+        <nb-radio-group [(ngModel)]="app" [ngModelOptions]="{standalone: true}" name="app" class="d-flex justify-content-start radio-text">
+          <nb-radio [value]="true" class="mr-2">Ứng dụng cha</nb-radio>
+          <nb-radio [value]="false">Ứng dụng con</nb-radio>
+        </nb-radio-group>
+      </div>
+      <div class="col-3 mb-2">
+        <label><span>{{ 'Tên ứng dụng:' }}</span> <span class="text-danger ml-2">*</span></label>
+      </div>
+      <div class="col-7 mb-2">
+        <input class="input-edit" nbInput fullWidth trim="blur" formControlName="appName" [maxLength]="100">
+        <ng-container *ngIf="appForm.get('appName').invalid && appForm.get('appName').touched">
+          <ngx-inline-message [message]="'Tên ứng dụng'" [formName]="appForm.get('appName')">
+          </ngx-inline-message>
+        </ng-container>
+      </div>
+      <div class="col-3 mb-2">
+        <label><span>{{ 'Ip:' }}</span> <span class="text-danger ml-2">*</span></label>
+      </div>
+      <div class="col-7 mb-2">
+        <input class="input-edit" nbInput fullWidth trim="blur" formControlName="ip" [maxLength]="50">
+        <ng-container *ngIf="appForm.get('ip').invalid && appForm.get('ip').touched">
+          <ngx-inline-message [message]="'Ip'" [formName]="appForm.get('ip')">
+          </ngx-inline-message>
+        </ng-container>
+      </div>
+      <div class="col-3 mb-2">
+        <label><span>{{ 'Port:' }}</span> <span class="text-danger ml-2">*</span></label>
+      </div>
+      <div class="col-7 mb-2">
+        <input class="input-edit" nbInput fullWidth trim="blur" formControlName="port" [maxLength]="50">
+        <ng-container *ngIf="appForm.get('port').invalid && appForm.get('port').touched">
+          <ngx-inline-message [message]="'Port'" [formName]="appForm.get('port')">
+          </ngx-inline-message>
+        </ng-container>
+      </div>
+      <div class="col-3 mb-2" *ngIf="app">
+        <label><span>{{ 'Cluster:' }}</span> <span class="text-danger ml-2">*</span></label>
+      </div>
+      <div class="col-7 mb-2" *ngIf="app">
+        <ng-select
+          [selectableGroup]="true" [closeOnSelect]="true"
+          [items]="listCluster" bindLabel="clusterName" fullWidth formControlName="cluster"
+          bindValue="id" name="access-cluster"
+          placeholder="{{'global.select.placeholder' |translate}}"
+          notFoundText="{{'global.select.notFoundText' |translate}}"
+          clearAllText="{{'global.select.clearAllText' |translate}}"
+        >
+        </ng-select>
+        <ng-container *ngIf="appForm.get('cluster').invalid && appForm.get('cluster').touched">
+          <ngx-inline-message [message]="'Cluster'" [formName]="appForm.get('cluster')">
+          </ngx-inline-message>
+        </ng-container>
+      </div>
+      <div class="col-3 mb-2">
+        <label><span>{{ app ? 'Ứng dụng con:' : 'Ứng dụng cha:' }}</span></label>
+      </div>
+      <div class="col-7 mb-2">
+        <ng-select
+          [selectableGroup]="true" [closeOnSelect]="false" multiple="true"
+          [items]="app ? listChildrenApp : listParentApp" bindLabel="appName" fullWidth formControlName="app"
+          bindValue="appId" name="access-cluster"
+          placeholder="{{ app ? 'Ứng dụng con' : 'Ứng dụng cha' }}"
+          notFoundText="{{'global.select.notFoundText' |translate}}"
+          clearAllText="{{'global.select.clearAllText' |translate}}"
+        >
+          <ng-template ng-option-tmp let-item="item">
+            <input [checked]="appForm.value.app && appForm.value.app?.indexOf(item.appId) > -1" type="checkbox" class="mr-1">
+<!--            <nb-checkbox [checked]="this.appForm.value.app.indexOf(item.appId) > -1" status="basic" class="mr-1"></nb-checkbox>-->
+            <span>{{item.appName}}</span>
+          </ng-template>
+        </ng-select>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer class="d-flex edit-button justify-content-end">
+    <button class="mr-2" [disabled]="appForm.get('appName').invalid || appForm.get('ip').invalid || appForm.get('port').invalid || (appForm.get('cluster').invalid && app)" (click)="save()">Lưu</button>
+    <button (click)="ref.close()">Hủy</button>
+  </nb-card-footer>
+</nb-card>

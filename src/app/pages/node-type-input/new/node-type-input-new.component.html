@@ -1,0 +1,140 @@
+<nb-card class="dialog dialog-md">
+  <nb-card-header>
+    {{title}}
+  </nb-card-header>
+  <nb-card-body>
+    <ng-container [formGroup]="inputFg">
+      <div class="form-group">
+        <label class="label">Loại ứng dụng</label>
+        <ng-select fullWidth formControlName="nodeType"
+                   [items]="nodeTypes" bindValue="itemValue" bindLabel="itemName">
+        </ng-select>
+        <ngx-inline-message [message]="'Loại ứng dụng'"
+                            [formName]="inputFg.get('nodeType')"></ngx-inline-message>
+      </div>
+      <div class="row">
+        <div class="col-lg-6 form-group">
+          <label class="label">Tên trường</label>
+          <input type="text" nbInput fullWidth formControlName="fieldName"/>
+          <ngx-inline-message [message]="'Tên trường'"
+                              [formName]="inputFg.get('fieldName')"></ngx-inline-message>
+        </div>
+        <div class="col-lg-6 form-group">
+          <label class="label">Tên hiển thị</label>
+          <input type="text" nbInput fullWidth formControlName="label"/>
+          <ngx-inline-message [message]="'Tên hiển thị'"
+                              [formName]="inputFg.get('label')"></ngx-inline-message>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="label">Loại control</label>
+        <ng-select fullWidth formControlName="inputType"
+                   [items]="inputTypes" bindValue="itemValue" bindLabel="itemName">
+        </ng-select>
+        <ngx-inline-message [message]="'Loại control'"
+                            [formName]="inputFg.get('inputType')"></ngx-inline-message>
+      </div>
+      <div class="form-group" [formGroup]="inputFg">
+        <label class="label">Mô tả</label>
+        <textarea nbInput fullWidth formControlName="description"></textarea>
+        <ngx-inline-message [message]="'Mô tả'"
+                            [formName]="inputFg.get('description')"></ngx-inline-message>
+      </div>
+      <div class="form-group">
+        <label class="label">Giá trị mặc định</label>
+        <input type="text" nbInput fullWidth formControlName="defaultValue"/>
+        <ngx-inline-message [message]="'Giá trị mặc định'"
+                            [formName]="inputFg.get('defaultValue')"></ngx-inline-message>
+      </div>
+      <div class="row">
+        <div class="col-lg-6 form-group">
+          <label class="label">Thứ tự</label>
+          <input type="text" nbInput fullWidth formControlName="priority"/>
+          <ngx-inline-message [message]="'Thứ tự'"
+                              [formName]="inputFg.get('priority')"></ngx-inline-message>
+        </div>
+        <div class="col-lg-6 form-group">
+          <label class="label">&nbsp;</label>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" formControlName="isRequired" id="isRequired">
+            <label class="form-check-label" for="isRequired">Không được bỏ trống</label>
+          </div>
+          <ngx-inline-message [message]="'Không được bỏ trống'"
+                              [formName]="inputFg.get('isRequired')"></ngx-inline-message>
+        </div>
+      </div>
+    </ng-container>
+    <div class="form-group"
+         *ngIf="inputFg.get('inputType').value === 'SELECT' || inputFg.get('inputType').value === 'RADIO'">
+      <label class="label">Source</label>
+      <ngx-datatable class="dark fullscreen"
+                     [columnMode]="'force'"
+                     [rows]="sourceItems"
+                     [count]="sourceItems.length"
+                     rowHeight="auto"
+                     [headerHeight]="'auto'"
+                     [rowHeight]="50"
+                     [footerHeight]="50"
+                     [messages]="{totalMessage:'bản ghi'}"
+      >
+        <!--        <ng-container *ngFor="let col of sourceColumns">-->
+        <ngx-datatable-column name="Tên" [resizeable]="false" [sortable]="false" prop="label">
+          <ng-template let-row="row" ngx-datatable-cell-template let-rowIndex="rowIndex">
+            <ng-container *ngIf="editingItems[rowIndex]">
+              <input nbInput fullWidth [(ngModel)]="editingItems[rowIndex].label"/>
+            </ng-container>
+            <ng-container *ngIf="!editingItems[rowIndex]">
+              {{row.label}}
+            </ng-container>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Giá trị" [resizeable]="false" [sortable]="false" prop="value">
+          <ng-template let-row="row" ngx-datatable-cell-template let-rowIndex="rowIndex">
+            <ng-container *ngIf="editingItems[rowIndex]">
+              <input nbInput fullWidth [(ngModel)]="editingItems[rowIndex].value"/>
+            </ng-container>
+            <ng-container *ngIf="!editingItems[rowIndex]">
+              {{row.value}}
+            </ng-container>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column [resizeable]="false" [sortable]="false">
+          <ng-template ngx-datatable-header-template>
+            <button class="mx-auto" nbButton size="small" (click)="addSourceItem()" status="success">
+              <nb-icon icon="plus"></nb-icon>
+              Thêm item
+            </button>
+          </ng-template>
+          <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row">
+            <button nbButton size="small" *ngIf="!editingItems[rowIndex]" status="primary"
+                    (click)="editSourceItem(row, rowIndex)" title="Sửa">
+              <nb-icon icon="edit"></nb-icon>
+            </button>
+            <button class="" nbButton size="small" *ngIf="editingItems[rowIndex]" status="primary"
+                    (click)="saveSourceItem(rowIndex)" title="Lưu">
+              <nb-icon icon="save"></nb-icon>
+            </button>
+            <button nbButton size="small" class="ml-1" status="danger" *ngIf="!editingItems[rowIndex]"
+                    (click)="removeSourceItem(rowIndex)" title="Xóa">
+              <nb-icon icon="trash-2-outline"></nb-icon>
+            </button>
+            <button nbButton size="small" class="ml-1" status="danger" *ngIf="editingItems[rowIndex]"
+                    (click)="cancelEditSourceItem(rowIndex)" title="Hủy">
+              <nb-icon icon="close-outline"></nb-icon>
+            </button>
+
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="float-right">
+      <button nbButton type="button" status="danger" (click)="ref.close()">Hủy</button>
+      <button type="button" nbButton class="ml-2" status="primary" (click)="save()" [disabled]="isSaving">Lưu</button>
+    </div>
+  </nb-card-footer>
+</nb-card>
+
+
+

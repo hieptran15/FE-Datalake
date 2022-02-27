@@ -1,0 +1,108 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  nb-card {
+    min-width: 800px;
+    //min-height: 550px;
+    //max-height: 600px;
+  }
+}
+
+button.disabled {
+  opacity: 0.5;
+  background-color: var(--color-button-disable) !important;
+}
+
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.list-ip {
+  position: relative;
+
+  .div-item {
+    background-color: var(--background-table);
+    border: 2px solid var(--background-table);
+    padding: 0;
+    border-radius: 5px;
+
+    .d-flexs {
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: 100px;
+      border-radius: 5px;
+      width: calc(100% - 33px);
+      padding: 5px 10px;
+
+      .ip-item {
+        display: inline-block;
+        height: 40px;
+        line-height: 40px;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 3px;
+        margin-right: 5px;
+        margin-top: 5px;
+        background-color: #1d75b3;
+        position: relative;
+
+        &:hover {
+          .actions {
+            display: flex;
+          }
+        }
+
+        .actions {
+          position: absolute;
+          right: 0;
+          top: -9px;
+          display: none;
+          height: 20px;
+
+          & > div {
+            background: grey;
+            border-radius: 50%;
+            cursor: pointer;
+
+            nb-icon {
+              line-height: 2;
+            }
+
+            &:hover {
+              background: var(--color-background-btn-create-role);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  button {
+    background-color: #3e4b6f !important;
+    position: absolute;
+    right: 20px;
+    top: 5px;
+    color: white !important;
+    border: none;
+    opacity: 0.8;
+
+    &:hover {
+      background-color: #363e54;
+      opacity: 1;
+    }
+  }
+}
+

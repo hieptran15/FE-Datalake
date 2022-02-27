@@ -1,0 +1,133 @@
+<nb-card>
+  <nb-card-header> Thông tin ứng dụng {{data?.nodeName}}</nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="row form-group" *ngIf="data?.nodeName">
+          <label class="col-lg-4 label">Tên ứng dụng: </label>
+          <label class="col-lg-8 ">{{data?.nodeName}}</label>
+        </div>
+        <div class="row form-group" *ngIf="data?.nodeType">
+          <label class="col-lg-4 label">Loại ứng dụng: </label>
+          <label class="col-lg-8 ">{{data?.nodeType}}</label>
+        </div>
+        <div class="row form-group" *ngIf="data?.clusterName">
+          <label class="col-lg-4 label">Tên cụm: </label>
+          <label class="col-lg-8 ">{{data?.clusterName}}</label>
+        </div>
+      </div>
+      <div class=" form-group col-lg-2 " *ngIf="data?.iconId">
+        <div style="width: 100%; height: 55px;">
+          <img src="{{env.imageUrl + data?.iconId}}" class="img-fluid" style="max-height: 100%;"/>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="data?.imageIds">
+      <label class="label">Danh sách ảnh</label>
+      <owl-carousel-o [options]="customOptions">
+        <ng-template carouselSlide *ngFor="let slide of data?.imageIds">
+          <div style="width: 100%; height: 200px; position: relative">
+            <img src="{{env.imageUrl + slide}}" class="avatarImage"/>
+          </div>
+        </ng-template>
+      </owl-carousel-o>
+    </div>
+    <!--    style="word-break: break-all" class="row form-group"-->
+    <div class="row" style="word-break: break-all" *ngIf="data?.tags">
+      <div class="col-lg-3">
+        <label style="padding: 0px" class=" label">Tags: </label>
+      </div>
+      <div class="col-lg-9">
+        <label style="padding-left: 0px;margin-left: 0 !important; padding-right: 1px;"
+               class=" ml-0">{{data?.tags}}</label>
+      </div>
+    </div>
+
+    <ng-container *ngIf="urls && urls.length">
+      <div>
+        <label class="label" style="padding-top: 10px; margin-left: 0px">Danh sách url</label>
+      </div>
+      <nb-list>
+        <nb-list-item *ngFor="let data of urls">
+          <a href="{{ data?.url }}" target="_blank">{{ data?.url }}</a>
+        </nb-list-item>
+      </nb-list>
+    </ng-container>
+    <div class="row" *ngIf="data?.servers && data?.servers.length > 0" style="padding-top: inherit !important;">
+      <div class="form-group row col-lg-8">
+        <label class="label" style="padding-top: 10px; margin-left: 15px">Danh sách server</label>
+      </div>
+      <div class="col-lg-4">
+        <input style="margin-left: 30px" type="text" nbInput fullWidth placeholder="Từ khóa" [(ngModel)]="keywordSever"
+               (ngModelChange)="loadServer()">
+      </div>
+    </div>
+    <div>
+      <nb-accordion>
+        <nb-accordion-item *ngFor="let data of servers">
+          <nb-accordion-item-header>
+            {{data?.name}}
+          </nb-accordion-item-header>
+          <nb-accordion-item-body>
+            <div *ngIf="data?.host">
+              <div class="row">
+                <div class="col-3">
+                  <label>Ip/Port: </label>
+                </div>
+                <div class="col-9">
+                  <label style="color: #8f9bb3" class="ml-2"> {{data?.host}}</label>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="data?.path">
+              <div class="row">
+                <div class="col-3">
+                  <label>Path: </label>
+                </div>
+                <div class="col-9">
+                  <label style="color: #8f9bb3" class="ml-2"> {{data?.path}}</label>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="data?.tags">
+              <div class="row">
+                <div class="col-3">
+                  <label>Tag: </label>
+                </div>
+                <div class="col-9">
+                  <label class="ml-2" style="color: #8f9bb3"> {{data?.tags}}</label>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="data?.description">
+              <label>Mô tả: </label>
+              <div style="color: #8f9bb3" class="scrollable" [innerHTML]="data?.description"></div>
+            </div>
+          </nb-accordion-item-body>
+        </nb-accordion-item>
+      </nb-accordion>
+    </div>
+
+    <div class="form-group mt-3" *ngIf="data?.description">
+      <label class="label">Mô tả</label>
+      <div class="scrollable" [innerHTML]="data?.description"></div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="d-flex justify-content-between">
+      <div>
+        <button class="mr-2" nbButton status="info" (click)="edit(data)">
+          <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon> Sửa
+        </button>
+        <button class="" nbButton status="danger" (click)="delete(data)">
+          <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon> Xóa
+        </button>
+      </div>
+      <button nbButton status="warning" type="button" (click)="ref.close()">Đóng</button>
+    </div>
+    <!--    <a nbButton status="primary" target="_blank" href="{{data?.url}}" class="ml-2" *ngIf="data?.urls">Đường dẫn</a>-->
+  </nb-card-footer>
+
+  <!--  pre-scrollable-->
+
+</nb-card>

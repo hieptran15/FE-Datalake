@@ -1,0 +1,39 @@
+<nb-layout>
+  <nb-layout-column>
+    <div class="card-body-4-dashboard">
+      <div class=" row d-flex flex-row justify-content-between column-4-dashboard" style="margin-bottom:14px">
+        <div class="d-flex align-items-center">
+          <span>Tổng quan hệ thống </span>
+        </div>
+        <div id="opposite">
+          <ng-select
+            class="selectDashBoard"
+            (change)="(checkDashboard)"
+            [(ngModel)]="Dashboard"
+            [clearable]="false"
+            appendTo=""
+          >
+            <ng-option
+              *ngFor="let item of listCmCluster"
+              [value]="item?.clusterName"
+            >
+              {{ item?.clusterName }}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isAdmin === 'ROLE_ADMIN'">
+      <ngx-datalake-dashboard-admin [dashboardValue]="Dashboard"></ngx-datalake-dashboard-admin>
+    </div>
+    <div *ngIf="isAdmin !== 'ROLE_ADMIN'">
+      <ngx-datalake-dashboard-user [dashboardValue]="Dashboard"></ngx-datalake-dashboard-user>
+    </div>
+  </nb-layout-column>
+  <!--  <nb-layout-column *ngIf="isAdmin !== 'ROLE_ADMIN'">-->
+  <!--    <ngx-datalake-dashboard-user></ngx-datalake-dashboard-user>-->
+  <!--  </nb-layout-column>-->
+  <!--  <nb-layout-column>-->
+  <!--    <ngx-datalake-dashboard-user></ngx-datalake-dashboard-user>-->
+  <!--  </nb-layout-column>-->
+</nb-layout>

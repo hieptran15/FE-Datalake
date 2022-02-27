@@ -1,0 +1,258 @@
+<nb-layout>
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;background: var(--background-container);"
+    [nbSpinner]="isLoading" [nbSpinnerMessage]="'Processing'" nbSpinnerStatus="primary">
+    <nb-card>
+      <nb-card-body style="padding: 0">
+        <ngx-datatable class="dark fullscreen" #table
+                       [columnMode]="'force'"
+                       [limit]="limit"
+                       [rows]="rowData"
+                       [headerHeight]="'auto'"
+                       [rowHeight]="'auto'"
+                       [footerHeight]="'auto'"
+                       [columns]="columnsTable"
+                       [messages]="
+{totalMessage: 'data-ingestion.label.record' | translate}">
+          <ng-container *ngFor="let col of columnsTable">
+            <ngx-datatable-column prop="{{col.prop}}" name="{{col.name | translate}}" [flexGrow]="col.flexGrow"
+                                  [sortable]="col.prop === 'id' || col.prop === 'userName' ? true : false"
+            >
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <ng-container [ngSwitch]="col.prop">
+                  <ng-container *ngSwitchDefault>
+                    <span class="w-100 text-center">{{ column.name |translate}}</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'id'">
+                    <!--                    <div style="width:100px" class="d-flex justify-content-center"><span class="text-center">{{ column.name |translate}}</span></div>-->
+                    <span style="width:100px" class="text-center">{{ column.name |translate}}</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'status'">
+                    <div class="text-center"><span class="w-100">{{ column.name |translate}}</span></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'action'">
+                    <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+              <ng-template class="row-hover" let-row="row" let-value="value" let-rowIndex="rowIndex"
+                           ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="col.prop">
+                  <ng-container *ngSwitchCase="'id'">
+                    <div style="width:100px" class="d-flex justify-content-center"><span
+                      class="text-center">{{row?.id}}</span></div>
+
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <div class="d-flex justify-content-center"><span
+                      [title]="value"> {{ value ? value : 'N/A' }} </span></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'fileUrl'">
+                    <div class="d-flex flex-row align-items-center justify-content-center">
+                      <span [title]="value"
+                            [ngStyle]="{'color': (value) ? 'var(--color-button)' : 'var(--color-text-light)'}"> {{ value ? value : 'N/A' }} </span>
+                      <div class="row-file-downloadfile"
+                           [ngStyle]="{'color': (value) ? 'var(--color-button)' : '#777E90'}"
+                           (click)="downloadFile(row)">
+                        <nb-icon icon="download-outline" *ngIf="value"></nb-icon>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'status'">
+                    <div *ngIf="value === 1" class="edit-status-active">
+                      <div class="status-bg-opacity"></div>
+                      <div class="custom-show-data status-greend">Finished
+                      </div>
+                    </div>
+                    <div *ngIf="value === 0" class="edit-status-lock">
+                      <div class="status-bg-opacity"></div>
+                      <div class="custom-show-data status-red"
+                      >Error
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'action'">
+                    <div
+                      class="w-100 d-flex justify-content-center">
+                      <button class="edit"
+                              nbButton ghost
+                              nbTooltip="{{'Details'}}"
+                              (click)="openDetailForm(formDetail,row)"
+                      >
+                        <nb-icon icon="eye-outline" pack="eva" size="tiny"></nb-icon>
+                      </button>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-footer>
+              <ng-template
+                ngx-datatable-footer-template
+                let-rowCount="rowCount"
+                let-pageSize="pageSize"
+                let-selectedCount="selectedCount"
+                let-curPage="curPage"
+                let-offset="offset">
+                <div style="padding: 5px 10px;width:200px">
+                  <div *ngIf="rowCount > 0">
+                    <span>{{'Hiển thị' | translate}} {{(curPage - 1) * limit + 1}}
+                      - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}
+                      /{{rowCount}} {{'bản ghi' | translate}}</span>
+                  </div>
+                  <div *ngIf="rowCount === 0">
+                    <span>0 {{'data-ingestion.label.record' | translate}}</span>
+                  </div>
+                </div>
+                <datatable-pager
+                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+                  [pagerRightArrowIcon]="'datatable-icon-right'"
+                  [page]="curPage"
+                  [size]="pageSize"
+                  [count]="rowCount"
+                  [hidden]="!((rowCount / pageSize) > 1)"
+                  (change)="table.onFooterPage($event)">
+                </datatable-pager>
+              </ng-template>
+            </ngx-datatable-footer>
+          </ng-container>
+        </ngx-datatable>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+
+
+<ng-template #formDetail let-data let-ref="dialogRef">
+  <nb-card style="min-width: 735px">
+    <nb-card-header class="d-flex justify-content-between" style="margin-bottom:0">
+      <div class="header-text">
+        <span>Chi tiết log : </span>
+      </div>
+      <button
+        style="background: none; border: none; color: #8c95b2"
+        size="small"
+        (click)="ref.close()"
+      >
+        <nb-icon icon="close-outline"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="formPerformLog" style="overflow: visible;padding-top:15px">
+      <!--      <div style="margin: 0" class="row">-->
+      <!--        <div class="custom-textarea d-flex justify-content-between">-->
+      <!--          <span>Name</span>-->
+      <!--          <div class="custom-textarea__item">-->
+      <!--            <input class="input-edit" nbInput fullWidth-->
+      <!--            formControlName="Name">-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <div class="d-flex row mb-3 align-items-center row-form ">
+        <label class="col-2 read-only-form-control" for="form-user"
+        >User:<span>*</span></label
+        >
+        <div class="col-4 read-only-form-control">
+          <input
+            id="form-user"
+            class="input-edit"
+            trim="blur"
+            nbInput
+            fullWidth
+            formControlName="User"
+            readonly
+          />
+
+          <ngx-inline-message [message]="'User'"
+                              [formName]="formPerformLog.get('User')"></ngx-inline-message>
+
+        </div>
+
+
+        <label class="col-2 read-only-form-control" for="form-date"
+        >Thời gian thực hiện:<span>*</span></label
+        >
+        <div class="col-4 read-only-form-control">
+          <input
+            id="form-date"
+            class="input-edit"
+            trim="blur"
+            nbInput
+            fullWidth
+            formControlName="Date"
+            readonly
+          />
+          <ngx-inline-message [message]="'Date'"
+                              [formName]="formPerformLog.get('Date')"></ngx-inline-message>
+
+        </div>
+
+      </div>
+
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <label class="col-2 read-only-form-control" for="form-action"
+        >Tác động :<span>*</span></label
+        >
+        <div class="col-4 read-only-form-control">
+          <input
+            id="form-action"
+            class="input-edit"
+            trim="blur"
+            nbInput
+            fullWidth
+            formControlName="Action"
+            readonly
+          />
+          <ngx-inline-message [message]="'Action'"
+                              [formName]="formPerformLog.get('Action')"></ngx-inline-message>
+
+        </div>
+        <label class="col-2" for="form-file"
+        >File:<span>*</span></label
+        >
+        <div class="col-4">
+          <input id="form-file"
+                 class="input-edit"
+                 trim="blur"
+                 nbInput
+                 fullWidth
+                 formControlName="File"
+          />
+          <div class="input-downloadfile" *ngIf="this.isFileUrl"
+               (click)="downloadFile(data.data)">
+            <span>{{data.data.fileUrl}}</span>
+            <nb-icon icon="download-outline"></nb-icon>
+          </div>
+          <ngx-inline-message [message]="'File'"
+                              [formName]="formPerformLog.get('File')"></ngx-inline-message>
+        </div>
+      </div>
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <label class="col-2" for="form-status"
+        >Trạng thái:<span>*</span></label
+        >
+        <div class="col-4">
+          <input id="form-status"
+                 class="input-edit"
+                 trim="blur"
+                 nbInput
+                 fullWidth
+                 formControlName="Status"
+          />
+          <ngx-inline-message [message]="'Status'"
+                              [formName]="formPerformLog.get('Status')"></ngx-inline-message>
+
+        </div>
+      </div>
+
+    </nb-card-body>
+<!--    <nb-card-footer-->
+<!--      class="d-flex edit-button justify-content-center align-items-center pb-3"-->
+<!--    >-->
+<!--      <button [class.disabled]="!formPerformLog.valid" [disabled]="!formPerformLog.valid"-->
+<!--              (click)="Confirm();" class="mr-2">-->
+<!--        Xác nhận-->
+<!--      </button>-->
+<!--      <button class="edit-button-cancel" (click)="ref.close()">Cancel</button>-->
+<!--    </nb-card-footer>-->
+  </nb-card>
+</ng-template>

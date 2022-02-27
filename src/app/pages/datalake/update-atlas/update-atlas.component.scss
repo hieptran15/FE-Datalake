@@ -1,0 +1,20 @@
+.height-tab {
+  min-height: calc(100vh - 220px);
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  nb-card {
+    background: var(--background-container);
+    background-color: var(--background-container);
+  }
+}

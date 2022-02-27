@@ -1,0 +1,91 @@
+<!--<nav aria-label="breadcrumb">-->
+<!--  <ol class="breadcrumb" style="margin-bottom: 0 !important; background-color: #181E38;">-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+<!--         >VDP-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none"-->
+<!--         >Cấu hình hệ thống-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item" aria-current="page">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/db-oracle-manager"-->
+<!--         >-->
+<!--        DB Oracle manager-->
+<!--      </a>-->
+<!--    </li>-->
+<!--  </ol>-->
+<!--</nav>-->
+<nb-layout>
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;">
+    <nb-card>
+      <nb-card-header style="padding: 0 10px;">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="tab-left d-flex">
+            <div [ngClass]="{selected: isDBSelected === 'DB_INFO'}" (click)="checkDBKey('DB_INFO')"
+                 class="tab-left__item">
+              DB info
+            </div>
+            <div [ngClass]="{selected: isDBSelected === 'DB_SPACE'}" (click)="checkDBKey('DB_SPACE')"
+                 class="tab-left__item">
+              Quản lý Table space
+            </div>
+            <div [ngClass]="{selected: isDBSelected === 'DB_USER'}" (click)="checkDBKey('DB_USER')"
+                 class="tab-left__item">
+              Quản lý User
+            </div>
+          </div>
+          <div *ngIf="isPupupDB" style="margin-right: 20px">
+            <ng-select style="max-width: initial; width: 250px" [items]="listDB"
+                       bindLabel="dbName"
+                       [(ngModel)]="DBname"
+                       appendTo=""
+                       [clearSearchOnAdd]="true"
+                       [clearable]="false"
+                       (change)="changeDB($event)"
+            >
+              <ng-option>
+                <span showTooltip></span>
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body style="overflow: visible">
+        <div *ngIf="isDBSelected === 'DB_INFO'">
+          <ngx-db-info (checkDropdownDB)="dataDbInfo($event)"></ngx-db-info>
+        </div>
+        <div *ngIf="isDBSelected === 'DB_SPACE'">
+          <ngx-db-manager-table-space *ngIf="dbItems" [dbItems]="dbItems"></ngx-db-manager-table-space>
+        </div>
+        <div *ngIf="isDBSelected === 'DB_USER'">
+          <ngx-db-manager-user *ngIf="dbItems" [DBname]="dbItems"></ngx-db-manager-user>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+<ng-template #DBEmpty let-dgRef="dialogRef">
+  <nb-card style="width: 31vw;background: #181E38 !important;">
+    <nb-card-header class="d-flex justify-content-between">
+      <strong class="custom-show-data" style="align-self: center;">Note</strong>
+    </nb-card-header>
+
+    <nb-card-body>
+      <div>
+        Chưa có thông tin DB! Vui lòng thêm thông tin DB trước khi thực hiện chức năng.
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end edit-button">
+        <button class="edit-button-cancel" (click)="closeNoteEmptyDB(dgRef)">
+          <nb-icon [icon]="'close-outline'"></nb-icon>
+          <strong>Close</strong>
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

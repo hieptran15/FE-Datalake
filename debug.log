@@ -1,0 +1,32 @@
+[0929/180626.064:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.064:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.067:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.064:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.064:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.073:ERROR:exception_snapshot_win.cc(99)] thread ID 11948 not found in process
+[0929/180626.073:ERROR:exception_snapshot_win.cc(99)] thread ID 14208 not found in process
+[0929/180626.073:ERROR:exception_snapshot_win.cc(99)] thread ID 10476 not found in process
+[0929/180626.073:ERROR:exception_snapshot_win.cc(99)] thread ID 10460 not found in process
+[0929/180626.073:ERROR:exception_snapshot_win.cc(99)] thread ID 13624 not found in process
+[0929/180626.086:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.086:ERROR:exception_snapshot_win.cc(99)] thread ID 11516 not found in process
+[0929/180626.087:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.087:ERROR:exception_snapshot_win.cc(99)] thread ID 13844 not found in process
+[0929/180626.090:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.090:ERROR:exception_snapshot_win.cc(99)] thread ID 8764 not found in process
+[0929/180626.108:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.108:ERROR:exception_snapshot_win.cc(99)] thread ID 10468 not found in process
+[0929/180626.112:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0929/180626.112:ERROR:exception_snapshot_win.cc(99)] thread ID 6784 not found in process
+[0929/180626.128:ERROR:process_info.cc(329)] VirtualQueryEx: Access is denied. (0x5)
+[0929/180626.128:ERROR:process_info.cc(556)] ReadMemoryInfo failed
+[0929/180626.128:ERROR:process_memory_win.cc(39)] Failed to initialize ProcessInfo.
+[0929/180626.128:ERROR:scoped_process_suspend.cc(40)] NtResumeProcess: An attempt was made to access an exiting process. (0xc000010a)
+[0125/203910.779:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: The operation completed successfully. (0x0)
+[0201/234329.170:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: The operation completed successfully. (0x0)
+[0202/093529.747:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: The operation completed successfully. (0x0)
+[0202/165620.024:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: The operation completed successfully. (0x0)
+[0202/180302.322:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: The operation completed successfully. (0x0)
+[0202/192410.583:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: The operation completed successfully. (0x0)
+[0222/145555.716:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: The operation completed successfully. (0x0)
+[0226/105600.545:ERROR:http_transport_win.cc(276)] WinHttpSendRequest: The operation completed successfully. (0x0)

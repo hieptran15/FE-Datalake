@@ -1,0 +1,133 @@
+<nb-card>
+  <nb-card-header class="edit-button">
+    Danh sách cụm
+    <button type="button" class="float-right" status="success" (click)="addApplicationCluster()" size="small">
+      <nb-icon icon="plus-outline">
+      </nb-icon>
+    </button>
+  </nb-card-header>
+  <nb-card-body>
+    <ngx-datatable class="dark fullscreen"
+                   #myTable
+                   [columnMode]="'flex'"
+                   [rows]="applicationClusters"
+                   [columns]="columns"
+                   [headerHeight]="'auto'"
+                   [rowHeight]="'auto'"
+                   [footerHeight]="'auto'"
+                   [treeToRelation]="'id'"
+                   [treeFromRelation]="'parentId'"
+                   (treeAction)="onTreeAction($event)"
+                   [rowClass]="getRowClass"
+                   [messages]="{emptyMessage:'', totalMessage: 'cụm server'}"
+                   (page)="setPage($event)"
+    >
+      // row detailt
+      <ngx-datatable-row-detail [rowHeight]="500" #myDetailRow>
+        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+          <div style="height: auto!important;" *ngIf="dataSub?.get(row.id)?.data?.length > 0">
+            <ngx-datatable class="dark fullscreen"
+                           style="height: auto;width: 100%;padding: 10px"
+                           [columnMode]="'flex'"
+                           [rows]="dataSub?.get(row.id)?.data"
+                           [columns]="childrenColumns"
+                           [headerHeight]="'auto'"
+                           [rowHeight]="'auto'"
+                           [footerHeight]="'auto'"
+                           [externalPaging]="true"
+                           [count]="dataSub?.get(row.id)?.page.totalElements"
+                           [offset]="dataSub?.get(row.id)?.page.pageNumber"
+                           [limit]="dataSub?.get(row.id)?.page.size"
+                           [rowClass]="getRowClass"
+                           [messages]="{emptyMessage:'', totalMessage: 'cụm ứng dụng'}"
+                           (page)="getChildren(dataSub?.get(row.id)?.level , dataSub?.get(row.id), $event)"
+            >
+              <ng-container *ngFor="let col of childrenColumns">
+                <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">
+                  <ng-template let-columnSub="column" ngx-datatable-header-template>
+                    {{ columnSub.name}}
+                  </ng-template>
+                  <ng-template let-rowSub="row" let-valueSub="value" let-rowIndex="rowIndex"
+                               ngx-datatable-cell-template>
+                    <ng-container [ngSwitch]="col.prop">
+                      <ng-container *ngSwitchCase="'clusterName'">
+                        <nb-icon icon="layers-outline"></nb-icon>
+                        {{ valueSub }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'id'">
+                        {{rowIndex + 1 + (getDataSub(row?.id)?.page?.pageNumber * getDataSub(row?.id)?.page?.size)}}
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        {{ valueSub }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'action_btn'" class="text-right">
+                        <div>
+                          <button class="p-1" nbButton status="warning" ghost (click)="edit(rowSub)">
+                            <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+                          </button>
+                          <button class="p-1" nbButton status="danger" ghost (click)="delete(rowSub)">
+                            <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>
+                          </button>
+                          <button class="p-1" nbButton *ngIf="!rowSub?.parentId" ghost status="success"
+                                  (click)="addApplicationCluster(rowSub)">
+                            <nb-icon icon="plus-outline">
+                            </nb-icon>
+                          </button>
+                        </div>
+                      </ng-container>
+
+                    </ng-container>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ng-container>
+            </ngx-datatable>
+          </div>
+        </ng-template>
+      </ngx-datatable-row-detail>
+      <ng-container *ngFor="let col of columns">
+        <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            {{ column.name}}
+          </ng-template>
+          <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <ng-container [ngSwitch]="col.prop">
+              <ng-container *ngSwitchCase="'clusterName'">
+                <nb-icon icon="layers-outline"></nb-icon>
+                {{ value }}
+              </ng-container>
+              <ng-container *ngSwitchCase="'id'">
+                <button size="tiny" nbButton (click)="onTreeAction(row)" status="primary" *ngIf="row?.numOfChildren">
+                  <nb-icon icon="arrow-ios-downward-outline"
+                           *ngIf="row?.treeStatus === 'collapsed' || !row.treeStatus "></nb-icon>
+                  <nb-icon icon="arrow-ios-upward-outline" *ngIf="row?.treeStatus === 'expanded'"></nb-icon>
+                  <div *ngIf="row?.treeStatus === 'loading'">
+                    <nb-icon icon="spinner" pack="fa" class="fa-spin"></nb-icon>
+                  </div>
+                </button>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                {{ value }}
+              </ng-container>
+              <ng-container *ngSwitchCase="'action_btn'" class="text-right">
+                <div>
+                  <button class="p-1" nbButton status="warning" ghost (click)="edit(row)">
+                    <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+                  </button>
+                  <button class="p-1" nbButton status="danger" ghost (click)="delete(row)">
+                    <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>
+                  </button>
+                  <button class="p-1" nbButton *ngIf="!row?.parentId" ghost status="success"
+                          (click)="addApplicationCluster(row)">
+                    <nb-icon icon="plus-outline">
+                    </nb-icon>
+                  </button>
+                </div>
+              </ng-container>
+
+            </ng-container>
+          </ng-template>
+        </ngx-datatable-column>
+      </ng-container>
+    </ngx-datatable>
+  </nb-card-body>
+</nb-card>

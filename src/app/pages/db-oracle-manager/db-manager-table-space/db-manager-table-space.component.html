@@ -1,0 +1,251 @@
+<div [nbSpinner]="isLoading" [nbSpinnerMessage]="'process.processing' | translate" nbSpinnerStatus="primary">
+  <div style="margin-bottom: 32px;margin-top: 20px;" class="d-flex justify-content-between">
+    <div style="padding: 0 6px" class="col-3 d-flex page">
+      <span>{{'Hiển thị'}}</span>
+      <ng-select [items]="limits"
+                 class="selectPage"
+                 bindLabel="name"
+                 [(ngModel)]="limit"
+                 [clearable]="false"
+                 appendTo="">
+      </ng-select>
+      <span>{{'bản ghi'}}</span>
+    </div>
+    <div style="padding-right: 8px" class="d-flex col-9 justify-content-end">
+      <div style="margin-right: 20px" class="position-relative">
+        <input (keyup.enter)="fillter()" [(ngModel)]="valueSearch" class="input-edit" nbInput fullWidth trim="blur"
+
+               placeholder="Nội dung tìm kiếm"
+        >
+        <nb-icon (click)="fillter()" nbPrefix icon="search-outline" pack="eva"
+                 style="position: absolute;top: 8px;z-index: 3; right: 10px;color: #999"></nb-icon>
+      </div>
+      <div class="mr-3">
+        <div class="edit-button">
+          <button *hasAnyAuthority="authoritiesConstant.DB_ORACLE_MANAGER.DB_ORACLE_MANAGER_WRITE"
+                  (click)="resetForm();dialogService.open(addTableSpaceOrDataFile, {context:{title:'DATAFILE'},closeOnBackdropClick:false})"
+                  style="color: white;" size="small"
+                  class="ml-auto">
+            <nb-icon icon="plus" pack="eva"></nb-icon>
+            <strong>
+              Add data file
+            </strong>
+          </button>
+        </div>
+      </div>
+      <div>
+        <div class="edit-button">
+          <button *hasAnyAuthority="authoritiesConstant.DB_ORACLE_MANAGER.DB_ORACLE_MANAGER_WRITE"
+                  (click)="resetForm();dialogService.open(addTableSpaceOrDataFile, {context:{title:'TABLESPACE'},closeOnBackdropClick:false})"
+                  style="color: white;" size="small"
+                  class="ml-auto">
+            <nb-icon icon="plus" pack="eva"></nb-icon>
+            <strong>
+              Add table space
+            </strong>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom: 50px">
+    <ngx-datatable class="dark fullscreen" #table
+                   [columnMode]="'force'"
+                   [limit]="limit"
+                   [rows]="rowData"
+                   [headerHeight]="'auto'"
+                   [rowHeight]="'auto'"
+                   [footerHeight]="'auto'"
+                   [columns]="columnsGroup"
+                   [messages]="{totalMessage: 'data-ingestion.label.record' | translate}">
+      <ng-container *ngFor="let col of columnsGroup">
+        <ngx-datatable-column prop="{{col.prop}}" name="{{col.name | translate}}" [flexGrow]="col.flexGrow"
+                              [sortable]="false">
+          <ng-template let-column="column" ngx-datatable-header-template>
+            <ng-container [ngSwitch]="col.prop">
+              <ng-container *ngSwitchDefault>
+                {{ column.name |translate }}
+              </ng-container>
+              <ng-container *ngSwitchCase="'stt'">
+                <div class="text-center"><span class="w-100">{{ column.name |translate}}</span></div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'sizeMb'">
+                <div class="text-center"><span class="w-100">{{ column.name |translate}}</span></div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'maxSizeGb'">
+                <div class="text-center"><span class="w-100">{{ column.name |translate}}</span></div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'userSizeMb'">
+                <div class="text-center"><span class="w-100">{{ column.name |translate}}</span></div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'autoextensible'">
+                <div class="text-center"><span class="w-100">{{ column.name |translate}}</span></div>
+              </ng-container>
+            </ng-container>
+          </ng-template>
+          <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <ng-container [ngSwitch]="col.prop">
+              <ng-container *ngSwitchCase="'stt'">
+                <div class="text-center">{{rowIndex + 1}}</div>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <span [title]="value"> {{ value ? value : 'N/A' }} </span>
+              </ng-container>
+              <ng-container *ngSwitchCase="'sizeMb'">
+                <div class="text-center">
+                  <span
+                    [title]="value"> {{ value ? (ParseFloat(value)).toLocaleString(undefined, {minimumFractionDigits: 2}) : 'N/A' }} </span>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'maxSizeGb'">
+                <div class="text-center">
+                  <span [title]="value"> {{ value ? formatNumber(value) : 'N/A' }} </span>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'userSizeMb'">
+                <div class="text-center">
+                  <span [title]="value"> {{ value ? (ParseFloat(value)).toLocaleString(undefined, {minimumFractionDigits: 2}) : 'N/A' }} </span>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'autoextensible'">
+                <div class="text-center">
+                  <span [title]="value"> {{ value ? value : 'N/A' }} </span>
+                </div>
+              </ng-container>
+            </ng-container>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-footer>
+          <ng-template
+            ngx-datatable-footer-template
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset">
+            <div style="padding: 5px 10px;width:200px">
+              <div *ngIf="rowCount > 0">
+                    <span>{{'Hiển thị'}} {{(curPage - 1) * limit + 1}}
+                      - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}
+                      /{{rowCount}} {{'bản ghi'}}</span>
+              </div>
+              <div *ngIf="rowCount === 0">
+                <span>0 {{'data-ingestion.label.record' | translate}}</span>
+              </div>
+            </div>
+            <datatable-pager
+              [pagerLeftArrowIcon]="'datatable-icon-left'"
+              [pagerRightArrowIcon]="'datatable-icon-right'"
+              [page]="curPage"
+              [size]="pageSize"
+              [count]="rowCount"
+              [hidden]="!((rowCount / pageSize) > 1)"
+              (change)="table.onFooterPage($event)">
+            </datatable-pager>
+          </ng-template>
+        </ngx-datatable-footer>
+
+      </ng-container>
+    </ngx-datatable>
+  </div>
+</div>
+<ng-template #addTableSpaceOrDataFile let-data let-ref="dialogRef">
+  <nb-card (click)="hiddenErrorMessage()" style="width: 40vw;background: #181E38 !important;">
+    <nb-card-header>
+      <div class="d-flex justify-content-between align-items-center">
+        <div *ngIf="data.title === 'TABLESPACE'">Tạo mới table space</div>
+        <div *ngIf="data.title === 'DATAFILE'">Tạo mới Data file</div>
+        <div>
+          <button nbButton ghost (click)="ref.close()" style="background: none; border: none; color: #8C95B2">
+            <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body style="overflow: visible">
+      <div [formGroup]="formGroup">
+        <div *ngIf="data.title === 'DATAFILE'" class="row">
+          <div class="col-3">
+            Table space*:
+          </div>
+          <div class="col-9">
+            <ng-select [items]="listTableSpace"
+                       [hideSelected]="true"
+                       formControlName="tablespaceName"
+                       [closeOnSelect]="true"
+                       appendTo=""
+            >
+            </ng-select>
+            <ngx-inline-message [message]="'Table space'"
+                                [formName]="formGroup.get('tablespaceName')"></ngx-inline-message>
+          </div>
+        </div>
+        <div *ngIf="data.title === 'TABLESPACE'" class="row">
+          <div class="col-3">
+            Table space name*:
+          </div>
+          <div class="col-9">
+            <input class="input-edit" nbInput fullWidth trim="blur"
+                   formControlName="tablespaceName">
+            <ngx-inline-message [message]="'Table space name'"
+                                [formName]="formGroup.get('tablespaceName')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-3">
+            Data file path*:
+          </div>
+          <div class="col-9">
+            <input class="input-edit" nbInput fullWidth trim="blur"
+                   formControlName="fileName">
+            <ngx-inline-message [message]="'Data file path'"
+                                [formName]="formGroup.get('fileName')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-3">
+            Size*:
+          </div>
+          <div class="col-9">
+            <input (keydown)="changeNumber($event)" (change)="checkValidateSize($event)" class="input-edit" nbInput
+                   fullWidth trim="blur"
+                   formControlName="sizeMb">
+            <ngx-inline-message [message]="'Size'"
+                                [formName]="formGroup.get('sizeMb')"></ngx-inline-message>
+            <small *ngIf="checkSize" class="text-danger">Số nhập vào phải >= 1000000 và <= 32212254720 </small>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-3">
+            Max size:
+          </div>
+          <div class="col-9">
+            <input (keydown)="changeNumber($event)" (change)="checkValidateMaxSize($event)" class="input-edit" nbInput
+                   fullWidth trim="blur"
+                   formControlName="maxSizeGb">
+            <ngx-inline-message [message]="'Max size'"
+                                [formName]="formGroup.get('maxSizeGb')"></ngx-inline-message>
+            <small *ngIf="checkMaxSize" class="text-danger">Số nhập vào phải >= 1000000 và <= 32212254720 </small>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-center edit-button">
+        <button *ngIf="data.title === 'TABLESPACE'"
+                [disabled]="formGroup.value.tablespaceName === '' || formGroup.value.fileName === '' || formGroup.value.sizeMb === '' || checkMaxSize || checkSize"
+                (click)="addDataSpaces(ref)">
+          <nb-icon icon="save-outline"></nb-icon>
+          <strong>CREATE TABLE SPACE</strong>
+        </button>
+        <button *ngIf="data.title === 'DATAFILE'"
+                [disabled]="formGroup.value.dbName === null || formGroup.value.fileName === '' || formGroup.value.sizeMb === '' || checkMaxSize || checkSize"
+                (click)="addDataFiles(ref)">
+          <nb-icon icon="save-outline"></nb-icon>
+          <strong>ADD DATA FILE</strong>
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+

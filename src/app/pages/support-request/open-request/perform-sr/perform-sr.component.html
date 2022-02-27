@@ -1,0 +1,919 @@
+<nb-layout class="perform-sr-page d-flex flex-row align-content-between">
+
+  <!--  <h1>test</h1>-->
+  <nb-layout-column>
+    <nb-card size="large" *ngIf="this.typeRequest==='iptables'">
+      <div class="py-2 d-flex flex-row justify-content-start align-items-center">
+        <div class="title-sr-page">Thông tin thực hiện phiếu yêu cầu :</div>
+        <!--        <div *ngIf="value === 1" class="edit-status-active">-->
+        <!--          <div class="status-bg-opacity"></div>-->
+        <!--          <div class="custom-show-data status-greend">Active</div>-->
+        <!--        </div>-->
+        <!--        <div *ngIf="value === 0" class="edit-status-lock">-->
+        <!--          <div class="status-bg-opacity"></div>-->
+        <!--          <div class="custom-show-data status-red">Lock</div>-->
+        <!--        </div>-->
+        <div [ngStyle]="styleLabel">&nbsp;{{ LabelPerformsr }}</div>
+      </div>
+      <div class="stepper-area p-2">
+        <nb-stepper orientation="vertical" #stepper linear="true" disableStepNavigation
+                    [(selectedIndex)]="stepperIndex">
+          <nb-step [completed]="isCompletedStep1" [label]="step1">
+            <ng-template #step1>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress1===false">
+                <span>1</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra server </span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 1 : Kiểm tra server')"
+                        *ngIf="isLoadingProgress1===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres1===true">
+                  <span>{{LoadingProgressNumber1}}%</span>
+                  <div class="progress1 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress1===false"
+                     (click)="resetLoadingProgress1('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+
+          </nb-step>
+          <nb-step [completed]="isCompletedStep2" [label]="step2">
+            <ng-template #step2>
+
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress2===false">
+                <span>2</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra trạng thái iptables </span>
+                  <!--                  <span class="step-error" *ngIf="isLoadingProgress1===false">Lỗi hệ thống &nbsp;<i-->
+                  <!--                    class="fas fa-exclamation-circle"></i></span>-->
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 2 : Kiểm tra trạng thái iptables')"
+                        *ngIf="isLoadingProgress2===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres2===true">
+                  <span>{{LoadingProgressNumber2}}%</span>
+                  <div class="progress2 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress2===false"
+                     (click)="resetLoadingProgress2('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep3" [label]="step3">
+            <ng-template #step3>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress3===false">
+                <span>3</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra thông tin người dùng và IP </span>
+                  <!--                  <span class="step-error" *ngIf="isLoadingProgress1===false">Lỗi hệ thống &nbsp;<i-->
+                  <!--                    class="fas fa-exclamation-circle"></i></span>-->
+                  <span class="step-error"
+                        (click)="OpenErrorPopup(ViewError,'Bước 3 : Kiểm tra thông tin người dùng và IP ')"
+                        *ngIf="isLoadingProgress3===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres3===true">
+<!--                  <span>{{LoadingProgressNumber3}}%</span>-->
+<!--                  <div class="progress1 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>-->
+<!--                    <span-->
+<!--                      class="progress-right"> <span class="progress-bar"></span> </span>-->
+<!--                    &lt;!&ndash;          <div class="progress-value">100%</div>&ndash;&gt;-->
+<!--                  </div>-->
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress3===false"
+                     (click)="resetLoadingProgress3('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+                <div class="step-progress-downloadfile" (click)="downloadFile()" *ngIf="isOpenDownloadFile===true">
+                  <nb-icon icon="download-outline"></nb-icon>
+                  <span>&nbsp;&nbsp;{{fileDownload}}</span>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep4" [label]="step4">
+            <ng-template #step4>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress4===false">
+                <span>4</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Thực hiện phiếu yêu cầu </span>
+                  <!--                  <span class="step-error" *ngIf="isLoadingProgress1===false">Lỗi hệ thống &nbsp;<i-->
+                  <!--                    class="fas fa-exclamation-circle"></i></span>-->
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 4 : Thực hiện phiếu yêu cầu')"
+                        *ngIf="isLoadingProgress4===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="this.isCompleteProgres4===true">
+<!--                  <span>{{LoadingProgressNumber4}}%</span>-->
+<!--                  <div class="progress1 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>-->
+<!--                    <span-->
+<!--                      class="progress-right"> <span class="progress-bar"></span> </span>-->
+<!--                    &lt;!&ndash;          <div class="progress-value">100%</div>&ndash;&gt;-->
+<!--                  </div>-->
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress4===false"
+                     (click)="resetLoadingProgress4('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep5" [label]="step5">
+            <ng-template #step5>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress5===false">
+                <span>5</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Hoàn thành </span>
+                  <!--                  <span class="step-error" *ngIf="isLoadingProgress1===false">Lỗi hệ thống &nbsp;<i-->
+                  <!--                    class="fas fa-exclamation-circle"></i></span>-->
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 5 : Hoàn thành ')"
+                        *ngIf="isLoadingProgress5===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres5===true">
+
+                  <span>{{LoadingProgressNumber5}}%</span>
+                  <div class="progress6 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress5===false"
+                     (click)="resetLoadingProgress5('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep6" [hidden]="true">
+            <!--            <div class="step-container">-->
+            <!--              <h3>finish</h3>-->
+            <!--              &lt;!&ndash;              <button nbButton (click)="stepper.reset()">Try again</button>&ndash;&gt;-->
+            <!--            </div>-->
+          </nb-step>
+        </nb-stepper>
+      </div>
+
+
+    </nb-card>
+
+
+    <nb-card size="large" *ngIf="this.typeRequest==='lb_connection'">
+
+      <nb-card-body>
+        <div class="py-2 d-flex flex-row justify-content-start align-items-center">
+          <div class="title-sr-page">Thông tin thực hiện phiếu yêu cầu :</div>
+          <!--        <div *ngIf="value === 1" class="edit-status-active">-->
+          <!--          <div class="status-bg-opacity"></div>-->
+          <!--          <div class="custom-show-data status-greend">Active</div>-->
+          <!--        </div>-->
+          <!--        <div *ngIf="value === 0" class="edit-status-lock">-->
+          <!--          <div class="status-bg-opacity"></div>-->
+          <!--          <div class="custom-show-data status-red">Lock</div>-->
+          <!--        </div>-->
+          <div [ngStyle]="styleLabel">&nbsp;{{ LabelPerformsr }}</div>
+        </div>
+        <nb-stepper orientation="vertical" #stepper linear="true" disableStepNavigation [selectedIndex]="stepperIndex">
+          <nb-step [completed]="isCompletedStep1" [label]="step21">
+            <ng-template #step21>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress1===false">
+                <span>1</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra server và gói cài  </span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 1 : Kiểm tra server và gói cài')"
+                        *ngIf="isLoadingProgress1===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres1===true">
+                  <span>{{LoadingProgressNumber1}}%</span>
+                  <div class="progress1 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress1===false"
+                     (click)="resetLoadingProgress1('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep2" [label]="step22">
+            <ng-template #step22>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress2===false">
+                <span>2</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra RP App  </span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 2 : Kiểm tra RP App')"
+                        *ngIf="isLoadingProgress2===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres2===true">
+                  <span>{{LoadingProgressNumber2}}%</span>
+                  <div class="progress2 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress2===false"
+                     (click)="resetLoadingProgress2('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep3" [label]="step23">
+            <ng-template #step23>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress3===false">
+                <span>3</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra thông tin người dùng và IP </span>
+                  <span class="step-error"
+                        (click)="OpenErrorPopup(ViewError,'Bước 2 : Kiểm tra thông tin người dùng và IP')"
+                        *ngIf="isLoadingProgress3===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres3===true">
+<!--                  <span>{{LoadingProgressNumber3}}%</span>-->
+<!--                  <div class="progress1 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>-->
+<!--                    <span-->
+<!--                      class="progress-right"> <span class="progress-bar"></span> </span>-->
+<!--                    &lt;!&ndash;          <div class="progress-value">100%</div>&ndash;&gt;-->
+<!--                  </div>-->
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress3===false"
+                     (click)="resetLoadingProgress3('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+                <div class="step-progress-downloadfile" (click)="downloadFile()" *ngIf="isOpenDownloadFile===true">
+                  <nb-icon icon="download-outline"></nb-icon>
+                  <span>&nbsp;&nbsp;{{fileDownload}}</span>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep4" [label]="step24">
+            <ng-template #step24>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress4===false">
+                <span>4</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra thrift</span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 2 : Kiểm tra thrift')"
+                        *ngIf="isLoadingProgress4===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres4===true">
+                  <span>{{LoadingProgressNumber4}}%</span>
+                  <div class="progress4 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress4===false"
+                     (click)="resetLoadingProgress4('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep1" [label]="step25">
+            <ng-template #step25>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress5===false">
+                <span>5</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Thực hiện phiếu yêu cầu</span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 2 : Thực hiện phiếu yêu cầu')"
+                        *ngIf="isLoadingProgress5===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres5===true">
+                  <div  class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+<!--                  <span>{{LoadingProgressNumber5}}%</span>-->
+<!--                  <div class="progress1 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>-->
+<!--                    <span-->
+<!--                      class="progress-right"> <span class="progress-bar"></span> </span>-->
+<!--                    &lt;!&ndash;          <div class="progress-value">100%</div>&ndash;&gt;-->
+<!--                  </div>-->
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress5===false"
+                     (click)="resetLoadingProgress5('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+
+          </nb-step>
+
+          <nb-step [completed]="isCompletedStep6" [label]="step26">
+            <ng-template #step26>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress6===false">
+                <span>6</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Hoàn thành !</span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 6 : Hoàn thành !')"
+                        *ngIf="isLoadingProgress6===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres6===true">
+                  <span>{{LoadingProgressNumber6}}%</span>
+                  <div class="progress6 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress6===false"
+                     (click)="resetLoadingProgress6('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+
+          </nb-step>
+          <nb-step [completed]="isCompletedStep6" [hidden]="true">
+            <!--            <div class="step-container">-->
+            <!--              <h3>finish</h3>-->
+            <!--              &lt;!&ndash;              <button nbButton (click)="stepper.reset()">Try again</button>&ndash;&gt;-->
+            <!--            </div>-->
+          </nb-step>
+        </nb-stepper>
+
+      </nb-card-body>
+      <!--      <nb-card-footer>-->
+      <!--        <div>-->
+      <!--          <button (click)="ControlStepper()">Next</button>-->
+      <!--        </div>-->
+      <!--      </nb-card-footer>-->
+    </nb-card>
+
+
+    <nb-card size="large" *ngIf="this.typeRequest==='thrift_connection'">
+      <nb-card-body>
+        <div class="py-2 d-flex flex-row justify-content-start align-items-center">
+          <div class="title-sr-page">Thông tin thực hiện phiếu yêu cầu :</div>
+          <!--        <div *ngIf="value === 1" class="edit-status-active">-->
+          <!--          <div class="status-bg-opacity"></div>-->
+          <!--          <div class="custom-show-data status-greend">Active</div>-->
+          <!--        </div>-->
+          <!--        <div *ngIf="value === 0" class="edit-status-lock">-->
+          <!--          <div class="status-bg-opacity"></div>-->
+          <!--          <div class="custom-show-data status-red">Lock</div>-->
+          <!--        </div>-->
+          <!--          <nb-step label="Titulo"-->
+          <!--                   [completed]="indirectTasksHasCompleted()"-->
+          <!--                   [stepControl]="{valid: indirectTasksHasCompleted(), reset: null}">-->
+          <div [ngStyle]="styleLabel">&nbsp;{{ LabelPerformsr }}</div>
+        </div>
+        <nb-stepper orientation="vertical" #stepper linear="true" disableStepNavigation
+                    [selectedIndex]="stepperIndex">
+          <nb-step [completed]="isCompletedStep1" [label]="step31">
+            <ng-template #step31>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress1===false">
+                <span>1</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra server  </span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 1 : Kiểm tra server')"
+                        *ngIf="isLoadingProgress1===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres1===true">
+                  <span>{{LoadingProgressNumber1}}%</span>
+                  <div class="progress1 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress1===false"
+                     (click)="resetLoadingProgress1('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep2" [label]="step32">
+            <ng-template #step32>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress2===false">
+                <span>2</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra trạng thái iptables  </span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 1 : Kiểm tra trạng thái iptables')"
+                        *ngIf="isLoadingProgress2===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres2===true">
+                  <span>{{LoadingProgressNumber2}}%</span>
+                  <div class="progress2 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress2===false"
+                     (click)="resetLoadingProgress2('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+          </nb-step>
+          <nb-step [completed]="isCompletedStep3" [label]="step33">
+            <ng-template #step33>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress3===false">
+                <span>3</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra thông tin người dùng và IP  </span>
+                  <span class="step-error"
+                        (click)="OpenErrorPopup(ViewError,'Bước 3 : Kiểm tra thông tin người dùng và IP')"
+                        *ngIf="isLoadingProgress3===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres3===true">
+<!--                  <span>{{LoadingProgressNumber3}}%</span>-->
+<!--                  <div class="progress1 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>-->
+<!--                    <span-->
+<!--                      class="progress-right"> <span class="progress-bar"></span> </span>-->
+<!--                    &lt;!&ndash;          <div class="progress-value">100%</div>&ndash;&gt;-->
+<!--                  </div>-->
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress3===false"
+                     (click)="resetLoadingProgress3('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+                <div class="step-progress-downloadfile" (click)="downloadFile()" *ngIf="isOpenDownloadFile===true">
+                  <nb-icon icon="download-outline"></nb-icon>
+                  <span>&nbsp;&nbsp;{{fileDownload}}</span>
+                </div>
+              </div>
+            </ng-template>
+
+          </nb-step>
+          <nb-step [completed]="isCompletedStep4" [label]="step34">
+            <ng-template #step34>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress4===false">
+                <span>4</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Kiểm tra thrift </span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 4 : Kiểm tra thrift')"
+                        *ngIf="isLoadingProgress4===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres4===true">
+                  <span>{{LoadingProgressNumber4}}%</span>
+                  <div class="progress4 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress4===false"
+                     (click)="resetLoadingProgress4('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+
+          </nb-step>
+          <nb-step [completed]="isCompletedStep5" [label]="step35">
+            <ng-template #step35>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress5===false">
+                <span>5</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Thực hiện phiếu yêu cầu </span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 5 : Thực hiện phiếu yêu cầu')"
+                        *ngIf="isLoadingProgress5===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres5===true">
+                  <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+
+                  <!--                  <span>{{LoadingProgressNumber5}}%</span>-->
+<!--                  <div class="progress1 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>-->
+<!--                    <span-->
+<!--                      class="progress-right"> <span class="progress-bar"></span> </span>-->
+<!--                    &lt;!&ndash;          <div class="progress-value">100%</div>&ndash;&gt;-->
+<!--                  </div>-->
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress5===false"
+                     (click)="resetLoadingProgress5('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+
+          </nb-step>
+          <nb-step [completed]="isCompletedStep6" [label]="step36">
+            <ng-template #step36>
+              <div></div>
+              <div style="display: none;position: relative"></div>
+              <div class="icon-error" *ngIf="isLoadingProgress6===false">
+                <span>6</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column" style="position: relative">
+                  <span class="step">Hoàn thành  </span>
+                  <span class="step-error" (click)="OpenErrorPopup(ViewError,'Bước 6 :Hoàn thành ')"
+                        *ngIf="isLoadingProgress6===false">Lỗi hệ thống &nbsp;<i
+                    class="fas fa-exclamation-circle"></i></span>
+                </div>
+                <div class="step-progress" *ngIf="isCompleteProgres6===true">
+                  <span>{{LoadingProgressNumber6}}%</span>
+                  <div class="progress6 blue"><span class="progress-left"> <span class="progress-bar"></span> </span>
+                    <span
+                      class="progress-right"> <span class="progress-bar"></span> </span>
+                    <!--          <div class="progress-value">100%</div>-->
+                  </div>
+                </div>
+                <div class="reset-step-progress" *ngIf="isLoadingProgress6===false"
+                     (click)="resetLoadingProgress6('true')">
+                  <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="18px"
+                       viewBox="0 0 24 24" width="18px" fill="#000000">
+                    <g>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                      <rect fill="none" height="24" width="24"/>
+                    </g>
+                    <g>
+                      <g/>
+                      <path
+                        d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </ng-template>
+
+          </nb-step>
+          <nb-step [completed]="isCompletedStep6" [hidden]="true">
+            <!--            <div class="step-container">-->
+            <!--              <h3>finish</h3>-->
+            <!--              &lt;!&ndash;              <button nbButton (click)="stepper.reset()">Try again</button>&ndash;&gt;-->
+            <!--            </div>-->
+          </nb-step>
+        </nb-stepper>
+
+      </nb-card-body>
+
+    </nb-card>
+
+  </nb-layout-column>
+  <!--    <nb-layout-footer class="footer-sr-page">-->
+
+  <!--      &lt;!&ndash;    <nb-layout class="footer-page">&ndash;&gt;-->
+  <!--      &lt;!&ndash;      <nb-layout-column>&ndash;&gt;-->
+  <!--      <nb-card class="w-100">-->
+  <!--        <div class="footer-sr-page w-100" style="background:var(&#45;&#45;bg-back)">-->
+  <!--          <button (click)="ControlStepper()">Next</button>-->
+  <!--        </div>-->
+  <!--      </nb-card>-->
+  <!--    </nb-layout-footer>-->
+
+</nb-layout>
+
+
+<ng-template #ViewError let-data let-ref="dialogRef">
+  <nb-card style="min-width: 735px">
+    <nb-card-header class="title-step-header">
+      <div class="d-flex justify-content-between p-0 m-0"><span class="">Chi tiết lỗi </span>
+        <button style="background: none; border: none; color: #8C95B2" size="small" (click)="ref.close()">
+          <nb-icon icon="close-outline"></nb-icon>
+        </button>
+      </div>
+
+    </nb-card-header>
+    <nb-card-body class="title-step-body">
+      <div class="d-flex justify-content-between p-0"><span class="title-step-error">{{data.title}}</span>
+
+      </div>
+      <div class="row">
+        <div class="custom-textarea">
+          <span>Lý do:</span>
+          <div class="custom-textarea__item">
+            <textarea class="edit-text-area" [textContent]="data.body">
+            </textarea>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <!--    <nb-card-footer>-->
+    <!--      <button (click)="ref.close()">Đóng</button>-->
+    <!--    </nb-card-footer>-->
+  </nb-card>
+</ng-template>
+
+
+<ng-template #StepAction let-data let-ref="dialogRef">
+  <nb-card class="step-action-background">
+    <nb-card-header class="title-step-header">
+      <div class="d-flex justify-content-between m-0"><span class="">{{data.title}}</span>
+        <button style="background: none; border: none; color: #8C95B2" size="small" (click)="ref.close()">
+          <nb-icon icon="close-outline"></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="action-popup-body">
+      <div class="h-100 d-flex position-relative flex-column align-items-baseline">
+        <div><span>{{data.body}}</span></div>
+        <div class="w-100 button-area edit-button d-flex justify-content-center">
+          <button
+                  (click)="RunStep(ref,data.type)">Xác nhận
+          </button>
+          <button class="edit-button-cancel" (click)="ref.close()">Đóng</button>
+        </div>
+      </div>
+    </nb-card-body>
+    <!--    <nb-card-footer>-->
+
+    <!--    </nb-card-footer>-->
+  </nb-card>
+</ng-template>
+
+

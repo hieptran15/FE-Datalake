@@ -1,0 +1,73 @@
+.height-tab {
+  //height: calc(100vh - 240px);
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+    background: var(--bg-back);
+  }
+
+  //nb-tab {
+  //  * {
+  //    color: var(--color-text-light);
+  //  }
+  //}
+
+  nb-tabset .tab.active .tab-link {
+    background-color: transparent;
+    color: var(--color-text-not-selected);
+  }
+
+  nb-tabset .tab.active .tab-link::before {
+    background-color: var(--color-text-not-selected);
+  }
+
+  nb-tabset .tab:hover .tab-link {
+    color: var(--color-text-light);
+    background-color: transparent;
+  }
+
+  nb-tabset .tab:hover .tab-link::before {
+    background-color: var(--color-text-not-selected);
+  }
+
+  nb-tabset .tabset {
+    //border-bottom: 3px solid #363e54;
+  }
+}
+
+.p-absolute {
+  position: absolute;
+  top: 3px;
+  right: 2%;
+}
+
+.scale {
+  transform: scale(0.7);
+}
+
+nb-card.position-relative {
+  background: var(--background-container);
+}
+
+
+//custom page option nb-header
+span.tabtext {
+  color: var(--color-text-not-selected);
+}
+
+:host ::ng-deep datatable-body-cell nb-icon {
+  background-color: unset;
+  color: unset;
+  * {
+    background-color: unset;
+    color: unset;
+  }
+}

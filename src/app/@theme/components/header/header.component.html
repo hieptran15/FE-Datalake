@@ -1,0 +1,188 @@
+<div class="header-container">
+  <div class="logo-container" style="padding-left: 10px">
+    <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
+      <nb-icon icon="menu-outline"></nb-icon>
+    </a>
+    <nav style="padding: 0" aria-label="breadcrumb">
+      <ol class="breadcrumb" style="margin-bottom: 0 !important; background-color: #181E38;">
+        <li class="breadcrumb-item">
+          <a class="text-decoration-none" routerLink="/page/dashboards"
+          >VDP
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a class="text-decoration-none"
+          >{{ dataBreadCrumb?.title}}
+          </a>
+        </li>
+        <li *ngIf="dataBreadCrumb?.groupText" class="breadcrumb-item" aria-current="page">
+          <a class="text-decoration-none"
+             [ngStyle]="dataBreadCrumb.urlParent?{'pointer-events': 'auto'} : {'pointer-events': 'none'}"
+             style="pointer-events: none"
+             [routerLink]="[dataBreadCrumb.urlParent ? dataBreadCrumb.urlParent : '']"
+          >
+            {{dataBreadCrumb?.groupText}}
+          </a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page" *ngIf="dataBreadCrumb?.titleChild">
+          <a class="text-decoration-none" [routerLink]="[dataBreadCrumb?.urlPage]"
+          >
+            {{dataBreadCrumb?.titleChild}}
+          </a>
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <!--  <nb-select [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">-->
+  <!--    <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>-->
+  <!--  </nb-select>-->
+</div>
+<div class="header-container">
+  <nb-actions size="small">
+    <!--    <nb-action class="control-item ml-n1">-->
+    <!--      <a routerLink="flows">-->
+    <!--        <nb-icon [icon]="'bolt'" pack="fa" nbTooltip="Danh sách các luông tự tạo" nbTooltipStatus="primary"-->
+    <!--                 nbTooltipPlacement="bottom"></nb-icon>-->
+    <!--      </a>-->
+    <!--      <a>-->
+    <!--        <nb-icon icon="move-outline" pack="fa"></nb-icon>-->
+    <!--      </a>-->
+    <!--    </nb-action>-->
+    <nb-action class="control-item ml-n1">
+      <div class="d-flex align-items-center edit-icon-dark-mode">
+        <div class="d-flex align-items-center dark-item">
+          <nb-icon style="margin-right: 3px"
+                   icon="moon-outline"></nb-icon>
+          Dark
+        </div>
+        <nb-toggle (change)="changeTheme()" [(ngModel)]="toggleThemes"></nb-toggle>
+        <div class="d-flex align-items-center light-item">
+          Light
+          <nb-icon style="margin-left: 3px"
+                   icon="sun-outline"></nb-icon>
+        </div>
+      </div>
+    </nb-action>
+    <nb-action class="control-item ml-n1">
+      <div nbTooltipPlacement="left" nbTooltip="Full Screen" class="full-screen" (click)="fullScreen('fullScreen')">
+        <nb-icon [icon]="'move-outline'" pack="eva"
+                 nbTooltipPlacement="bottom"></nb-icon>
+      </div>
+    </nb-action>
+    <!--    <nb-action class="control-item ml-n1">-->
+    <!--      <ng-select-->
+    <!--        class="edit-lang-drop"-->
+    <!--        appendTo=""-->
+    <!--        [clearable]="false"-->
+    <!--        [items]="listLanguageType"-->
+    <!--        bindValue="value"-->
+    <!--        bindLabel="name"-->
+    <!--        name="timeType"-->
+    <!--        [clearSearchOnAdd]="false"-->
+    <!--        [(ngModel)]="langType"-->
+    <!--        (change)="selectLanguage()"-->
+    <!--        style="min-width: 5vw;"-->
+    <!--      >-->
+    <!--      </ng-select>-->
+    <!--    </nb-action>-->
+    <nb-action class="control-item ml-n1" *nbIsGranted="['view', 'user']">
+      <div class="edit-account d-flex">
+        <div class="avatar">
+          <img src="./assets/images/avatar-default.jpg">
+        </div>
+        <div class="title d-flex">
+          <!--          <nb-user [nbContextMenu]="user?.staffCode ? userMenu1 : userMenu"-->
+          <!--                   [onlyPicture]="userPictureOnly"-->
+          <!--                   [name]="user?.email!=null ? user?.email?.substring(0, user?.email?.lastIndexOf('@')):'admin'"-->
+          <!--          >-->
+          <!--          </nb-user>-->
+          <!--          <nb-icon [icon]="'arrow-ios-downward-outline'" pack="eva"-->
+          <!--                   nbTooltipPlacement="bottom"></nb-icon>-->
+          <div [nbContextMenu]="user?.staffCode ? userMenu1 : userMenu" class="d-flex align-items-center">
+            <div>{{user?.email != null ? user?.email?.substring(0, user?.email?.lastIndexOf('@')) : 'ADMIN'}}</div>
+            <nb-icon [icon]="'arrow-ios-downward-outline'" pack="eva"
+                     nbTooltipPlacement="bottom"></nb-icon>
+          </div>
+        </div>
+      </div>
+    </nb-action>
+    <!--    <nb-action [ngClass]="checkActiveRoute('data-ingestion') ? 'active' : ''" class="control-item ml-n1">-->
+    <!--      <a routerLink="data-ingestion/dashboard">-->
+    <!--        <nb-icon [icon]="'funnel'" pack="eva" nbTooltip="Quản lý kế nối" nbTooltipStatus="primary"-->
+    <!--                 nbTooltipPlacement="bottom"></nb-icon>-->
+    <!--      </a>-->
+    <!--    </nb-action>-->
+    <!--    <nb-action class="control-item ml-n1" nbTooltip="Trang chủ" nbTooltipStatus="primary" nbTooltipPlacement="bottom"-->
+    <!--               [ngClass]="checkActiveRoute('/pages/dashboard') ? 'active' : ''">-->
+    <!--      <a routerLink="/pages/dashboard">-->
+    <!--        <nb-icon [icon]="'project-diagram'" pack="fa"></nb-icon>-->
+    <!--      </a>-->
+    <!--    </nb-action>-->
+    <!--    <nb-action *hasAnyAuthority="'GROUP_CHART'"-->
+    <!--               [ngClass]="checkActiveRoute('group-chart') ? 'active' : ''" class="control-item ml-n1">-->
+    <!--      <a routerLink="group-chart">-->
+    <!--        <nb-icon [icon]="'pie-chart-outline'" pack="eva" nbTooltip="App Monitor/ Vận hành và quản lý ứng dụng"-->
+    <!--                 nbTooltipStatus="primary" nbTooltipPlacement="bottom"></nb-icon>-->
+    <!--      </a>-->
+    <!--    </nb-action>-->
+    <!--    <nb-action class="control-item ml-n1 k-cursor-pointer "-->
+    <!--               [ngClass]="checkActiveRoute(utilityMenusLink) ? 'active' : ''"-->
+    <!--               nbTooltip="Tiện ích" nbTooltipStatus="primary" nbTooltipPlacement="top">-->
+    <!--      <a [nbPopover]="utilityMenu"-->
+    <!--         nbPopoverTrigger="click" nbPopoverPlacement="bottom">-->
+    <!--        <nb-icon icon="grid-outline" pack="eva"></nb-icon>-->
+    <!--      </a>-->
+    <!--    </nb-action>-->
+    <!--    <nb-action class="control-item ml-n1 k-cursor-pointer"-->
+    <!--               [ngClass]="checkActiveRoute(systemConfigMenusLink) ? 'active' : ''"-->
+    <!--               nbTooltip="Cấu hình hệ thống" nbTooltipStatus="primary" nbTooltipPlacement="top">-->
+    <!--      <a [nbPopover]="configMenu"-->
+    <!--         nbPopoverTrigger="click" nbPopoverPlacement="bottom">-->
+    <!--        <nb-icon icon="settings-outline" pack="eva"></nb-icon>-->
+    <!--      </a>-->
+    <!--    </nb-action>-->
+    <!--    <nb-action [ngClass]="checkActiveRoute('/pages/access-management') ? 'active' : ''" class="control-item ml-n1"-->
+    <!--               nbTooltip="Quản lý truy cập" nbTooltipStatus="primary" nbTooltipPlacement="bottom"-->
+    <!--               *hasAnyAuthority="'ACCESS_MANAGEMENT'">-->
+    <!--      <a routerLink="/pages/access-management">-->
+    <!--        <nb-icon [icon]="'radio-outline'" pack="eva"></nb-icon>-->
+    <!--      </a>-->
+    <!--    </nb-action>-->
+    <!--        <nb-action class="user-action" *nbIsGranted="['view', 'user']">-->
+    <!--          <nb-user [nbContextMenu]="user?.staffCode ? userMenu1 : userMenu"-->
+    <!--                   [onlyPicture]="userPictureOnly"-->
+    <!--                   [name]="user?.email!=null ? user?.email?.substring(0, user?.email?.lastIndexOf('@')):'Unknown'">-->
+    <!--          </nb-user>-->
+    <!--        </nb-action>-->
+  </nb-actions>
+</div>
+<!--<ng-template #configMenu>-->
+<!--  <nb-card style="margin-bottom:1px; border: none" class="menu-border">-->
+<!--    <ng-container *ngFor="let item of systemConfigMenus">-->
+<!--      <nb-list style="border-bottom:0">-->
+<!--        <nb-list-item [ngClass]="checkActiveRoute(item.link) ? 'child-menu-active' : ''">-->
+<!--          <a [routerLink]="item.link"-->
+<!--             nbTooltipStatus="primary" nbTooltipPlacement="top" style="color: #f1ffff; text-decoration: none;">-->
+<!--            <nb-icon [icon]="item.icon" pack="eva" status="basic">></nb-icon>-->
+<!--            {{item.menu}}-->
+<!--          </a>-->
+<!--        </nb-list-item>-->
+<!--      </nb-list>-->
+<!--    </ng-container>-->
+<!--  </nb-card>-->
+<!--</ng-template>-->
+<!--<ng-template #utilityMenu>-->
+<!--  <nb-card style="margin-bottom:1px; border: none" class="menu-border">-->
+<!--    <ng-container *ngFor="let item of utilityMenus">-->
+<!--      <nb-list style="border-bottom:0">-->
+<!--        <nb-list-item [ngClass]="checkActiveRoute(item.link) ? 'child-menu-active' : ''">-->
+<!--          <a [routerLink]="item.link"-->
+<!--             nbTooltipStatus="primary" nbTooltipPlacement="top" style="color: #f1ffff; text-decoration: none;">-->
+<!--            <nb-icon [icon]="item.icon" pack="eva" status="basic">></nb-icon>-->
+<!--            {{item.menu}}-->
+<!--          </a>-->
+<!--        </nb-list-item>-->
+<!--      </nb-list>-->
+<!--    </ng-container>-->
+<!--  </nb-card>-->
+<!--</ng-template>-->

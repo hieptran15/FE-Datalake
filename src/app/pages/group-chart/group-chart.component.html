@@ -1,0 +1,638 @@
+<!--<nav aria-label="breadcrumb">-->
+<!--  <ol class="breadcrumb" style="margin-bottom: 0 !important;background-color: #181E38;">-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+<!--         >VDP-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none"-->
+<!--         >Thông tin hệ thống-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item" aria-current="page">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+<!--         >App monitor-->
+<!--      </a>-->
+<!--    </li>-->
+<!--  </ol>-->
+<!--</nav>-->
+<nb-layout xmlns="http://www.w3.org/1999/html">
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;"
+    [nbSpinner]="checkerrorServer"
+    [nbSpinnerMessage]="'process.messageErrorServer' | translate">
+    <nb-card class="dashboard-user-background">
+      <nb-card-header
+        style="background: transparent; margin-bottom: 20px;padding: 0;border-bottom:1px solid transparent !important;">
+        <!--        <div class="buttons d-flex justify-content-between align-items-center">-->
+        <!--          <span class="title-page">Tình trạng ứng dụng </span>-->
+        <!--          <div class="d-flex justify-content-between align-items-center">-->
+        <!--            <div style="margin-right: 20px" class="d-flex justify-content-between">-->
+        <!--              &lt;!&ndash;            <div style="padding-left: 2px" class="d-flex page">&ndash;&gt;-->
+        <!--              &lt;!&ndash;              <span>{{'Hiển thị'}}</span>&ndash;&gt;-->
+        <!--              &lt;!&ndash;              <ng-select [items]="limits"&ndash;&gt;-->
+        <!--              &lt;!&ndash;                         bindLabel="name"&ndash;&gt;-->
+        <!--              &lt;!&ndash;                         [(ngModel)]="limit"&ndash;&gt;-->
+        <!--              &lt;!&ndash;                         [clearable]="false">&ndash;&gt;-->
+        <!--              &lt;!&ndash;              </ng-select>&ndash;&gt;-->
+        <!--              &lt;!&ndash;              <span>{{'bản ghi'}}</span>&ndash;&gt;-->
+        <!--              &lt;!&ndash;            </div>&ndash;&gt;-->
+        <!--              <div style="padding-right: 0px" class="d-flex justify-content-end">-->
+        <!--                &lt;!&ndash;                <div style="margin-right: 20px">&ndash;&gt;-->
+        <!--                &lt;!&ndash;                  <ng-select style="width: 168px;" fullWidth appendTo="" bindValue="value"&ndash;&gt;-->
+        <!--                &lt;!&ndash;                             bindLabel="label" placeholder="&#45;&#45;Type of process&#45;&#45;"&ndash;&gt;-->
+        <!--                &lt;!&ndash;                  >&ndash;&gt;-->
+        <!--                &lt;!&ndash;                  </ng-select>&ndash;&gt;-->
+        <!--                &lt;!&ndash;                </div>&ndash;&gt;-->
+        <!--                <div style="padding-right: 4px;min-width: 60%" class="position-relative">-->
+        <!--                  <input class="input-edit" nbInput fullWidth trim="blur"-->
+        <!--                         [(ngModel)]="valueText"-->
+        <!--                         (keyup.enter)="searchChartCardDetails()"-->
+        <!--                         placeholder="Nội dung tìm kiếm"-->
+        <!--                  >-->
+        <!--                  <nb-icon (click)="searchChartCardDetails()" nbPrefix icon="search-outline" pack="eva"-->
+        <!--                           style="position: absolute;top: 8px;z-index: 3; right: 12px;color: #999"></nb-icon>-->
+        <!--                </div>-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--            <div class="d-flex edit-button">-->
+        <!--              <div style="width: 300px">-->
+        <!--                <ng-select fullWidth placeholder="Nội dung tìm kiếm" appendTo="" (change)="search($event)">-->
+        <!--                  <ng-option *ngFor="let item of listGroupName" [value]="item.groupName"><span class="w-100"-->
+        <!--                                                                                               [title]="item.groupName">{{item.groupName}}</span>-->
+        <!--                  </ng-option>-->
+        <!--                </ng-select>-->
+        <!--              </div>-->
+        <!--              <button class="ml-3" (click)="handleAddChart()">-->
+        <!--                <nb-icon icon="plus-outline"></nb-icon>-->
+        <!--                Tạo mới-->
+        <!--              </button>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
+
+        <div class="buttons d-flex justify-content-between align-items-center">
+          <span class="title-page">Tình trạng ứng dụng</span>
+          <div class="d-flex justify-content-between align-items-center">
+            <div style="margin-right: 20px" class="d-flex justify-content-between">
+              <div style="padding-right: 0px" class="d-flex justify-content-end">
+                <div style="padding-right: 4px;min-width: 60%" class="position-relative">
+                  <input class="input-edit" nbInput fullWidth trim="blur"
+                         [(ngModel)]="valueText"
+                         (keyup.enter)="searchChartCardDetails()"
+                         placeholder="Nội dung tìm kiếm"
+                         style="background-color: var(--background-container) !important;"
+                  >
+                  <nb-icon (click)="searchChartCardDetails()" nbPrefix icon="search-outline" pack="eva"
+                           style="position: absolute;top: 8px;z-index: 3; right: 12px;color: #999"></nb-icon>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex edit-button">
+              <div style="width: 300px" class="select-dashboard-card">
+                <ng-select fullWidth placeholder="Nội dung tìm kiếm" appendTo=""
+                           (change)="search($event)">
+                  <ng-option *ngFor="let item of listGroupName" [value]="item.groupName"><span class="w-100"
+                                                                                               [title]="item.groupName">{{item.groupName}}</span>
+                  </ng-option>
+                </ng-select>
+              </div>
+              <button class="ml-3" (click)="handleAddChart()">
+                <nb-icon icon="plus-outline"></nb-icon>
+                Tạo mới
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </nb-card-header>
+      <nb-card-body *ngIf="isChartCard" style="background: transparent; padding: 0;overflow-x: hidden">
+        <div class="row scroll-chart">
+          <div style="padding: 0;border-radius:5px;" class="col-lg-3 col-md-4 col-sm-6 dashboard-user-card"
+               *ngFor="let data of results">
+            <ngx-chart-card [data]="data" (handleEdit)="handleEditChart($event)"
+                            (handleDelete)="dialogService.open(confirmDialog, {context: {id: $event}})"></ngx-chart-card>
+          </div>
+        </div>
+      </nb-card-body>
+      <!--      <nb-card-body *ngIf="iscardDetails">-->
+      <!--        <div *ngIf="typeOfViewDetails === 1">-->
+      <!--          <ngx-datatable class="dark fullscreen"-->
+      <!--                         #table-->
+      <!--                         [columnMode]="'flex'"-->
+      <!--                         [rows]="resultsDataDetails"-->
+      <!--                         [count]="resultsDataDetails.length"-->
+      <!--                         [limit]="10"-->
+      <!--                         [headerHeight]="'auto'"-->
+      <!--                         [rowHeight]="'auto'"-->
+      <!--                         [footerHeight]="'auto'"-->
+      <!--                         [columns]="columnsType1"-->
+      <!--                         [messages]="{totalMessage:' total items'}"-->
+      <!--          >-->
+      <!--            <ng-container *ngFor="let col of columnsType1">-->
+      <!--              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">-->
+      <!--                <ng-template let-column="column" ngx-datatable-header-template>-->
+      <!--                  <span>{{ column.name}}</span>-->
+      <!--                </ng-template>-->
+      <!--                <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>-->
+      <!--                  <ng-container [ngSwitch]="col.prop">-->
+      <!--                    <ng-container *ngSwitchDefault>-->
+      <!--                          <span [title]="value">-->
+      <!--                            {{ value }}-->
+      <!--                          </span>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'stt'">-->
+      <!--                      <div class="text-center">{{rowIndex + 1}}</div>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'status'">-->
+      <!--                          <span [title]="value === 0 ? 'Processed' : value === 1 ? 'No Processed' : 'Checking'"-->
+      <!--                                [ngClass]="{'text-success': value === 0,'text-danger': value === 1,'text-warning': value === 2}">-->
+      <!--                            {{ value === 0 ? 'Processed' : value === 1 ? 'No Processed' : 'Checking'}}-->
+      <!--                          </span>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'dateTime'">-->
+      <!--                          <span [title]="value">-->
+      <!--                            {{value | date: 'MM/dd/yyyy'}}-->
+      <!--                          </span>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'action_btn'">-->
+      <!--                      <div>-->
+      <!--                        <button class="p-1" nbButton status="success" ghost>-->
+      <!--                          <nb-icon icon="refresh-outline" pack="eva" size="tiny"></nb-icon>-->
+      <!--                        </button>-->
+      <!--                        <button class="p-1" nbButton status="info" ghost>-->
+      <!--                          <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>-->
+      <!--                        </button>-->
+      <!--                      </div>-->
+      <!--                    </ng-container>-->
+      <!--                  </ng-container>-->
+      <!--                </ng-template>-->
+      <!--              </ngx-datatable-column>-->
+      <!--              <ngx-datatable-footer>-->
+      <!--                <ng-template-->
+      <!--                  ngx-datatable-footer-template-->
+      <!--                  let-rowCount="rowCount"-->
+      <!--                  let-pageSize="pageSize"-->
+      <!--                  let-selectedCount="selectedCount"-->
+      <!--                  let-curPage="curPage"-->
+      <!--                  let-offset="offset">-->
+      <!--                  <div style="padding: 5px 10px;width:250px">-->
+      <!--                    <div *ngIf="rowCount > 0">-->
+      <!--                      &lt;!&ndash;                            Showing {{(offset * pageSize)+1}} to {{(rowCount>&ndash;&gt;-->
+      <!--                      &lt;!&ndash;                            (curPage*pageSize))?(curPage*pageSize):(rowCount)}} of&ndash;&gt;-->
+      <!--                      &lt;!&ndash;                            {{(rowCount)}} records.&ndash;&gt;-->
+      <!--                      &lt;!&ndash;                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * 10 + 1}} - {{rowCount - curPage * 10 >= 0 ? (curPage - 1) * 10 + 10 : rowCount}}/{{rowCount}}, page: {{curPage}}/{{getTotalPage(rowCount, pageSize)}}</span>&ndash;&gt;-->
+      <!--                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * 10 + 1}}-->
+      <!--                        - {{rowCount - curPage * 10 >= 0 ? (curPage - 1) * 10 + 10 : rowCount}}-->
+      <!--                        /{{rowCount}} {{'data-ingestion.label.record' | translate}}</span>-->
+      <!--                    </div>-->
+      <!--                    <div *ngIf="rowCount === 0">-->
+      <!--                      <span>0 records</span>-->
+      <!--                    </div>-->
+      <!--                  </div>-->
+      <!--                  <datatable-pager-->
+      <!--                    [pagerLeftArrowIcon]="'datatable-icon-left'"-->
+      <!--                    [pagerRightArrowIcon]="'datatable-icon-right'"-->
+      <!--                    [page]="curPage"-->
+      <!--                    [size]="pageSize"-->
+      <!--                    [count]="rowCount"-->
+      <!--                    [hidden]="!((rowCount / pageSize) > 1)"-->
+      <!--                    (change)="table.onFooterPage($event)">-->
+      <!--                  </datatable-pager>-->
+      <!--                </ng-template>-->
+      <!--              </ngx-datatable-footer>-->
+      <!--            </ng-container>-->
+      <!--          </ngx-datatable>-->
+      <!--        </div>-->
+      <!--        <div *ngIf="typeOfViewDetails === 2">-->
+      <!--          <ngx-datatable class="dark fullscreen"-->
+      <!--                         #table-->
+      <!--                         [columnMode]="'force'"-->
+      <!--                         [rows]="resultsDataDetails"-->
+      <!--                         [count]="resultsDataDetails.length"-->
+      <!--                         [headerHeight]="'auto'"-->
+      <!--                         [rowHeight]="'auto'"-->
+      <!--                         [footerHeight]="'auto'"-->
+      <!--                         [columns]="columnsType2"-->
+      <!--                         [messages]="{totalMessage:' total items'}"-->
+      <!--          >-->
+      <!--            <ng-container *ngFor="let col of columnsType2">-->
+      <!--              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [width]="col.colWidth"-->
+      <!--                                    [minWidth]="col.minWidth">-->
+      <!--                <ng-template let-column="column" ngx-datatable-header-template>-->
+      <!--                  <ng-container [ngSwitch]="col.prop">-->
+      <!--                    <ng-container *ngSwitchDefault>-->
+      <!--                      <span class="custom-show-data">{{ column.name |translate }}</span>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'action_btn'">-->
+      <!--                      <span class="custom-show-data">{{ column.name |translate }}</span>-->
+      <!--                    </ng-container>-->
+      <!--                  </ng-container>-->
+      <!--                </ng-template>-->
+      <!--                <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>-->
+      <!--                  <ng-container [ngSwitch]="col.prop">-->
+      <!--                    &lt;!&ndash;                <ng-container *ngSwitchCase="'id'">&ndash;&gt;-->
+      <!--                    &lt;!&ndash;                  {{rowIndex + 1 + (page.pageNumber * page.size)}}&ndash;&gt;-->
+      <!--                    &lt;!&ndash;                </ng-container>&ndash;&gt;-->
+      <!--                    <ng-container *ngSwitchCase="'stt'">-->
+      <!--                      <div class="text-center">{{rowIndex + 1}}</div>-->
+      <!--                    </ng-container>-->
+
+
+      <!--                    <ng-container *ngSwitchDefault>-->
+      <!--                      <div class="text-center">-->
+      <!--                         <span [title]="value">-->
+      <!--                          {{ value }}-->
+      <!--                        </span>-->
+      <!--                      </div>-->
+
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'status'">-->
+      <!--                      <div class="text-center">-->
+      <!--                         <span [title]="value === 0 ? 'Running' : value === 1 ? 'Stop' : 'Timeout'"-->
+      <!--                               [ngClass]="{'text-success': value === 0,'text-danger': value === 1,'text-warning': value === 2}">-->
+      <!--                          {{ value === 0 ? 'Running' : value === 1 ? 'Stop' : 'Timeout'}}-->
+      <!--                        </span>-->
+      <!--                      </div>-->
+
+      <!--                    </ng-container>-->
+      <!--                    <ng-container style="text-align: center;" *ngSwitchCase="'action_btn'">-->
+      <!--                      <div class="d-flex justify-content-center align-items-center">-->
+      <!--                        <button style="color: white" class="p-1" nbButton ghost-->
+      <!--                                (click)="openViewLogDialog(resultsDataDetails[rowIndex])">-->
+      <!--                          <nb-icon icon="file-text-outline"></nb-icon>-->
+      <!--                        </button>-->
+      <!--                        <div style="cursor: pointer" class="d-flex justify-content-center">-->
+      <!--                                                  <span class="actions" [nbPopover]="listAction"-->
+      <!--                                                        nbPopoverTrigger="click"-->
+      <!--                                                        nbPopoverPlacement="left"-->
+      <!--                                                        [nbPopoverContext]="{index: rowIndex}">-->
+      <!--                                                    <nb-icon icon="more-vertical-outline"></nb-icon>-->
+      <!--                                                  </span>-->
+      <!--                        </div>-->
+      <!--                      </div>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'action2'" style="align-items: center">-->
+
+      <!--                    </ng-container>-->
+      <!--                  </ng-container>-->
+      <!--                </ng-template>-->
+      <!--              </ngx-datatable-column>-->
+      <!--              <ngx-datatable-footer>-->
+      <!--                <ng-template-->
+      <!--                  ngx-datatable-footer-template-->
+      <!--                  let-rowCount="rowCount"-->
+      <!--                  let-pageSize="pageSize"-->
+      <!--                  let-selectedCount="selectedCount"-->
+      <!--                  let-curPage="curPage"-->
+      <!--                  let-offset="offset">-->
+      <!--                  <div style="padding: 5px 10px;width:250px">-->
+      <!--                    <div *ngIf="rowCount > 0">-->
+      <!--                      &lt;!&ndash;                            Showing {{(offset * pageSize)+1}} to {{(rowCount>&ndash;&gt;-->
+      <!--                      &lt;!&ndash;                            (curPage*pageSize))?(curPage*pageSize):(rowCount)}} of&ndash;&gt;-->
+      <!--                      &lt;!&ndash;                            {{(rowCount)}} records.&ndash;&gt;-->
+      <!--                      &lt;!&ndash;                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * 10 + 1}} - {{rowCount - curPage * 10 >= 0 ? (curPage - 1) * 10 + 10 : rowCount}}/{{rowCount}}, page: {{curPage}}/{{getTotalPage(rowCount, pageSize)}}</span>&ndash;&gt;-->
+      <!--                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * 10 + 1}}-->
+      <!--                        - {{rowCount - curPage * 10 >= 0 ? (curPage - 1) * 10 + 10 : rowCount}}-->
+      <!--                        /{{rowCount}} {{'data-ingestion.label.record' | translate}}</span>-->
+      <!--                    </div>-->
+      <!--                    <div *ngIf="rowCount === 0">-->
+      <!--                      <span>0 records</span>-->
+      <!--                    </div>-->
+      <!--                  </div>-->
+      <!--                  <datatable-pager-->
+      <!--                    [pagerLeftArrowIcon]="'datatable-icon-left'"-->
+      <!--                    [pagerRightArrowIcon]="'datatable-icon-right'"-->
+      <!--                    [page]="curPage"-->
+      <!--                    [size]="pageSize"-->
+      <!--                    [count]="rowCount"-->
+      <!--                    [hidden]="!((rowCount / pageSize) > 1)"-->
+      <!--                    (change)="table.onFooterPage($event)">-->
+      <!--                  </datatable-pager>-->
+      <!--                </ng-template>-->
+      <!--              </ngx-datatable-footer>-->
+      <!--            </ng-container>-->
+      <!--          </ngx-datatable>-->
+      <!--        </div>-->
+      <!--        <div *ngIf="typeOfViewDetails === 3">-->
+      <!--          <ngx-datatable class="dark fullscreen"-->
+      <!--                         [columnMode]="'flex'"-->
+      <!--                         [rows]="resultsDataDetails"-->
+      <!--                         [count]="resultsDataDetails.length"-->
+      <!--                         [limit]="10"-->
+      <!--                         [headerHeight]="'auto'"-->
+      <!--                         [rowHeight]="'auto'"-->
+      <!--                         [footerHeight]="'auto'"-->
+      <!--                         [columns]="columnsType3"-->
+      <!--                         [messages]="{totalMessage:' total items'}"-->
+      <!--          >-->
+      <!--            <ng-container *ngFor="let col of columnsType3">-->
+      <!--              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">-->
+      <!--                <ng-template let-column="column" ngx-datatable-header-template>-->
+      <!--                  <span>{{ column.name}}</span>-->
+      <!--                </ng-template>-->
+      <!--                <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>-->
+      <!--                  <ng-container [ngSwitch]="col.prop">-->
+      <!--                    &lt;!&ndash;                <ng-container *ngSwitchCase="'id'">&ndash;&gt;-->
+      <!--                    &lt;!&ndash;                  {{rowIndex + 1 + (page.pageNumber * page.size)}}&ndash;&gt;-->
+      <!--                    &lt;!&ndash;                </ng-container>&ndash;&gt;-->
+      <!--                    <ng-container *ngSwitchDefault>-->
+      <!--                          <span [title]="value">-->
+      <!--                            {{ value }}-->
+      <!--                          </span>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'stt'">-->
+      <!--                      <div class="text-center">{{rowIndex + 1}}</div>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'status'">-->
+      <!--                          <span [title]="value === 0 ? 'Error' : value === 1 ? 'Running' : 'Waiting'"-->
+      <!--                                [ngClass]="{'text-success': value === 1,'text-danger': value === 0,'text-warning': value === 2}">-->
+      <!--                            {{ value === 0 ? 'Error' : value === 1 ? 'Running' : 'Waiting'}}-->
+      <!--                          </span>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'startTime'">-->
+      <!--                          <span>-->
+      <!--                            {{value | date: 'MM/dd/yyyy'}}-->
+      <!--                          </span>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'updateTime'">-->
+      <!--                          <span>-->
+      <!--                            {{value | date: 'MM/dd/yyyy'}}-->
+      <!--                          </span>-->
+      <!--                    </ng-container>-->
+      <!--                    <ng-container *ngSwitchCase="'action_btn'">-->
+      <!--                      <div>-->
+      <!--                        <button class="p-1" nbButton status="danger" ghost>-->
+      <!--                          <nb-icon icon="arrowhead-right-outline" pack="eva" size="tiny"></nb-icon>-->
+      <!--                        </button>-->
+      <!--                        <button class="p-1" nbButton status="success" ghost>-->
+      <!--                          <nb-icon icon="sync-outline" pack="eva" size="tiny"></nb-icon>-->
+      <!--                        </button>-->
+      <!--                      </div>-->
+      <!--                    </ng-container>-->
+      <!--                  </ng-container>-->
+      <!--                </ng-template>-->
+      <!--              </ngx-datatable-column>-->
+      <!--            </ng-container>-->
+      <!--          </ngx-datatable>-->
+      <!--        </div>-->
+      <!--      </nb-card-body>-->
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+<ng-template #addOrEdit let-data let-ref="dialogRef">
+  <nb-card style="width: 50vw;">
+    <nb-card-header>{{data?.title}}</nb-card-header>
+    <nb-card-body style="overflow: visible">
+      <div class="row" [formGroup]="chartForm">
+        <div class="col-6 form-group" *ngIf="!data.id">
+          <label class="label">Group Name <span class="text-danger">*</span></label>
+          <ng-select appendTo="" fullWidth placeholder="--Select data--" formControlName="groupName">
+            <ng-option *ngFor="let item of listGroupName" [value]="item.groupName"><span class="w-100"
+                                                                                         [title]="item.groupName">{{item.groupName}}</span>
+            </ng-option>
+          </ng-select>
+          <ng-container *ngIf="chartForm.get('groupName').invalid && chartForm.get('groupName').touched ">
+            <ngx-inline-message [formName]="chartForm.get('groupName')" [message]="'Group Name'"></ngx-inline-message>
+          </ng-container>
+        </div>
+        <div class="col-6 form-group" *ngIf="!data.id">
+          <label class="label">Chart <span class="text-danger">*</span></label>
+          <ng-select appendTo="" fullWidth placeholder="--Select data--" formControlName="chartType">
+            <ng-option *ngFor="let item of listChartForCombobox" [value]="item"><span class="w-100"
+                                                                                      [title]="item">{{item && item === 1 || item === 3 ? 'Text and Pie Chart' : 'Line Chart'}}</span>
+            </ng-option>
+          </ng-select>
+          <ng-container *ngIf="chartForm.get('chartType').invalid && chartForm.get('chartType').touched ">
+            <ngx-inline-message [formName]="chartForm.get('chartType')" [message]="'Chart Type'"></ngx-inline-message>
+          </ng-container>
+        </div>
+        <div class="col-6 form-group">
+          <label class="label">Title <span class="text-danger">*</span></label>
+          <input class="input-edit" trim="blur" type="text" nbInput fullWidth formControlName="title"/>
+          <ng-container *ngIf="chartForm.get('title').invalid && chartForm.get('title').touched ">
+            <ngx-inline-message [formName]="chartForm.get('title')" [message]="'Title'"></ngx-inline-message>
+          </ng-container>
+        </div>
+        <div class="col-6 form-group">
+          <label class="label">Refresh time (milisecond) <span class="text-danger">*</span></label>
+          <input class="input-edit" type="number" nbInput fullWidth formControlName="timeUpdate"
+                 (keydown)="validateNumber($event)" min="0"
+                 max="999999999999999"/>
+          <ng-container *ngIf="chartForm.get('timeUpdate').invalid && chartForm.get('timeUpdate').touched ">
+            <ngx-inline-message [formName]="chartForm.get('timeUpdate')"
+                                [message]="'Refresh Time'"></ngx-inline-message>
+          </ng-container>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer class="d-flex edit-button justify-content-end">
+      <button class="mr-2" (click)="save(ref, data.id)" [disabled]="chartForm.invalid">
+        <nb-icon icon="save-outline"></nb-icon>
+        Save
+      </button>
+      <button class="edit-button-cancel" (click)="ref.close()">
+        <nb-icon icon="close-outline"></nb-icon>
+        Close
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+<ng-template #listAction let-data>
+  <nb-list>
+    <nb-list-item class="d-flex justify-content-center align-items-center" style="padding: 5px 10px;">
+      <button style="color: white;width: 100%" class="p-1" nbButton ghost
+              (click)="stopApp(resultsDataDetails[data?.index])"
+              [hidden]="resultsDataDetails[data?.index].status == 1">
+        Stop
+      </button>
+      <button style="color: white;width: 100%" class="p-1" nbButton ghost
+              (click)="startApp(resultsDataDetails[data?.index])"
+              [hidden]="resultsDataDetails[data?.index].status == 0">
+        Start
+      </button>
+    </nb-list-item>
+    <nb-list-item class="d-flex justify-content-center align-items-center" style="padding: 5px 10px;">
+      <button class="copy action-and-config" style="color: white;width: 100%" nbButton ghost
+              (click)="restart(resultsDataDetails[data?.index])">
+        Restart
+      </button>
+    </nb-list-item>
+    <nb-list-item class="d-flex justify-content-center align-items-center" style="padding: 5px 10px;">
+      <button class="copy action-and-config" style="color: white;width: 100%" nbButton ghost
+              (click)="copyText(resultsDataDetails[data?.index].dirSetup)">
+        Copy path
+      </button>
+    </nb-list-item>
+    <nb-list-item class="d-flex justify-content-center align-items-center"
+                  style="padding: 5px 10px;border-bottom: none">
+      <button *hasAnyAuthority="authoritiesConstant.GROUP_CHART.GROUP_CHART_WRITE" class="p-1 action-and-config"
+              style="color: white; width: 100%" nbButton ghost
+              (click)="openAddOrEditDialog(addNew, resultsDataDetails[data?.index])">
+        Edit info
+      </button>
+    </nb-list-item>
+    <!--*hasAnyAuthority="authoritiesConstant.ROLE_ADMIN"-->
+  </nb-list>
+</ng-template>
+<ng-template #addNew let-data let-ref="dialogRef">
+  <nb-card style="width: 40vw">
+    <nb-card-header class="d-flex justify-content-between align-items-center">
+      <span>
+              {{data.appId ? 'Edit Application' : 'Create Application' }}
+      </span>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row" [formGroup]="addForm">
+        <div class="col-12 d-flex mb-2 align-items-center">
+          <label class="label w-25">App Name <span class="text-danger">*</span></label>
+          <div class="w-75">
+            <input class="input-edit" trim="blur" fullWidth type="text" nbInput placeholder="App Name"
+                   formControlName="nameApp"/>
+            <ng-container *ngIf="addForm.get('nameApp').invalid && addForm.get('nameApp').touched ">
+              <ngx-inline-message [formName]="addForm.get('nameApp')" [message]="'App Name'"></ngx-inline-message>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-12 d-flex mb-2 align-items-center">
+          <label class="label w-25">App Type <span class="text-danger">*</span></label>
+          <div class="w-75">
+            <input class="input-edit" trim="blur" fullWidth type="text" nbInput placeholder="App Type"
+                   formControlName="typeApp"/>
+            <ng-container *ngIf="addForm.get('typeApp').invalid && addForm.get('typeApp').touched ">
+              <ngx-inline-message [formName]="addForm.get('typeApp')" [message]="'App Type'"></ngx-inline-message>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-12 d-flex mb-2 align-items-center">
+          <label class="label w-25">IP Setup <span class="text-danger">*</span></label>
+          <div class="w-75">
+            <input class="input-edit" trim="blur" fullWidth type="text" nbInput placeholder="IP Setup"
+                   formControlName="ipSetup"/>
+            <ng-container *ngIf="addForm.get('ipSetup').invalid && addForm.get('ipSetup').touched ">
+              <ngx-inline-message [formName]="addForm.get('ipSetup')" [message]="'IP Setup'"></ngx-inline-message>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-12 d-flex mb-2 align-items-center">
+          <label class="label w-25">Owner <span class="text-danger">*</span></label>
+          <div class="w-75">
+            <input class="input-edit" trim="blur" fullWidth type="text" nbInput placeholder="Owner"
+                   formControlName="owner"/>
+            <ng-container *ngIf="addForm.get('owner').invalid && addForm.get('owner').touched ">
+              <ngx-inline-message [formName]="addForm.get('owner')" [message]="'Owner'"></ngx-inline-message>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-12 d-flex mb-2 align-items-center">
+          <label class="label w-25">Dir Setup <span class="text-danger">*</span></label>
+          <div class="w-75">
+            <input class="input-edit" trim="blur" fullWidth type="text" nbInput placeholder="Dir Setup"
+                   formControlName="dirSetup"/>
+            <ng-container *ngIf="addForm.get('dirSetup').invalid && addForm.get('dirSetup').touched ">
+              <ngx-inline-message [formName]="addForm.get('dirSetup')" [message]="'Dir Setup'"></ngx-inline-message>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer class="d-flex edit-button justify-content-end">
+      <button class="mr-2" [disabled]="addForm.invalid" (click)="addJobForProcess(ref, data.appId)">
+        <nb-icon icon="save-outline"></nb-icon>
+        Save
+      </button>
+      <button class="edit-button-cancel" size="small" (click)="ref.close()">
+        <nb-icon icon="close-outline"></nb-icon>
+        Close
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<!--popup delete ung dung -->
+<ng-template #confirmDialog let-data let-deleteRef="dialogRef">
+  <nb-card class="step-action-background">
+    <nb-card-header class="title-step-header">
+      <div class="d-flex justify-content-between m-0"><span class="">Xóa ứng dụng</span>
+        <!--      <button style="background: none; border: none; color: #8C95B2" size="small" (click)="ref.close()">-->
+        <!--        <nb-icon icon="close-outline"></nb-icon>-->
+        <!--      </button>-->
+      </div>
+    </nb-card-header>
+<!--    <nb-card-body>-->
+<!--      Do you want to delete it?-->
+<!--    </nb-card-body>-->
+<!--    <nb-card-footer class="d-flex edit-button justify-content-end">-->
+<!--      <button (click)="handleDeleteChart(deleteRef, data.id)" class="mr-2">-->
+<!--        <nb-icon icon="trash-2-outline" size="large"></nb-icon>-->
+<!--        Delete-->
+<!--      </button>-->
+<!--      <button class="edit-button-cancel" (click)="deleteRef.close()">-->
+<!--        <nb-icon icon="close-outline"></nb-icon>-->
+<!--        Close-->
+<!--      </button>-->
+<!--    </nb-card-footer>-->
+    <nb-card-body class="action-popup-body">
+      <div class="h-100 d-flex position-relative flex-column align-items-baseline">
+        <div><span>Bạn có chắc chắn muốn xóa ứng dụng này ? </span></div>
+        <div class="w-100 button-area edit-button d-flex justify-content-center">
+          <button
+            (click)="handleDeleteChart(deleteRef, data.id)">Xác nhận
+          </button>
+          <button class="edit-button-cancel" (click)="deleteRef.close()">Hủy</button>
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+
+
+
+<!--<ng-template #StepAction let-data let-ref="dialogRef">-->
+<!--  <nb-card class="step-action-background">-->
+<!--    <nb-card-header class="title-step-header">-->
+<!--      <div class="d-flex justify-content-between m-0"><span class="">{{data.title}}</span>-->
+<!--        <button style="background: none; border: none; color: #8C95B2" size="small" (click)="ref.close()">-->
+<!--          <nb-icon icon="close-outline"></nb-icon>-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </nb-card-header>-->
+<!--    <nb-card-body class="action-popup-body">-->
+<!--      <div class="h-100 d-flex position-relative flex-column align-items-baseline">-->
+<!--        <div><span>{{data.body}}</span></div>-->
+<!--        <div class="w-100 button-area edit-button d-flex justify-content-center">-->
+<!--          <button-->
+<!--            (click)="RunStep(ref,data.type)">Xác nhận-->
+<!--          </button>-->
+<!--          <button class="edit-button-cancel" (click)="ref.close()">Đóng</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </nb-card-body>-->
+<!--    &lt;!&ndash;    <nb-card-footer>&ndash;&gt;-->
+
+<!--    &lt;!&ndash;    </nb-card-footer>&ndash;&gt;-->
+<!--  </nb-card>-->
+<!--</ng-template>-->
+
+
+
+<!--popover area-->
+<ng-template #listAction let-data>
+  <nb-list>
+    <nb-list-item class="d-flex justify-content-center align-items-center" style="padding: 0px;">
+      <button class="p-1" nbButton ghost
+              (click)="OpenEditForm()">
+        Chỉnh sửa
+      </button>
+    </nb-list-item>
+    <nb-list-item class="d-flex justify-content-center align-items-center" style="padding: 0px;">
+      <button (click)="DeleteDashboardCard()" class="copy action-and-config"
+              nbButton ghost>
+        Xóa
+      </button>
+
+    </nb-list-item>
+  </nb-list>
+</ng-template>

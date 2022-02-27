@@ -1,0 +1,166 @@
+<!--<nav aria-label="breadcrumb">-->
+<!--  <ol class="breadcrumb" style="margin-bottom: 0 !important;background-color: #181E38;">-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+<!--      >VDP-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none"-->
+<!--      >HDFS Tools-->
+<!--      </a>-->
+<!--    </li>-->
+
+<!--    <li class="breadcrumb-item" aria-current="page">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/export-file"-->
+<!--      >Export file-->
+<!--      </a>-->
+<!--    </li>-->
+<!--  </ol>-->
+<!--</nav>-->
+<nb-layout>
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;"
+    [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant"
+    nbSpinnerMessage="Processing...">
+    <nb-card class="height-tab">
+      <nb-card-header style="text-align: start">
+        <span class="title-page">Export/Import HDFS</span>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="w-100 d-flex justify-content-center align-items-center mt-2">
+          <div class="w-50 d-flex justify-content-between align-items-center">
+            <span class="w-25 px-4 text-right">Mode: </span>
+            <nb-radio-group class="export-file-mode  d-flex w-75 mt-1 justify-content-around " [(ngModel)]="isExport"
+                            name="export">
+              <nb-radio class="radio-input" (click)="resetMode()" [value]="true" checked="true"><span>Export</span>
+              </nb-radio>
+              <nb-radio class="radio-input" (click)="resetMode()" [value]="false"><span>Import</span></nb-radio>
+              <nb-radio class="radio-input" style="opacity:0;"></nb-radio>
+            </nb-radio-group>
+          </div>
+        </div>
+        <div class="w-100 d-flex justify-content-center align-items-center mt-2">
+          <div class="w-50 d-flex justify-content-between align-items-center">
+            <span class="w-25 px-4 text-right">Cluster: </span>
+            <nb-radio-group name="clusterRadioGroup"
+                            class="export-file-mode d-flex w-75 mt-1  justify-content-around align-items-center"
+                            [(ngModel)]="option1">
+              <!--<nb-radio   [value]="vBIClusterHot" checked="true"><span>vBIClusterHot</span></nb-radio>-->
+              <!--<nb-radio   [value]="Abalytic"><span>Analytic</span></nb-radio>-->
+              <!--<nb-radio   [value]="TayLake" checked="true"><span>Taylake</span></nb-radio>-->
+              <!--first as isFirst" [value]="option.value" [checked]="isFirst"-->
+              <nb-radio class="radio-input"
+                        *ngFor="let option1 of optionsCluster; first as isFirstValue"
+                        [checked]="isFirstValue"
+                        [disabled]="option1.disabled"
+                        [value]="option1.value" (valueChange)="resetMode();">
+                <span>{{ option1.label }}</span>
+              </nb-radio>
+            </nb-radio-group>
+          </div>
+        </div>
+        <div *ngIf="isExport">
+          <div class="d-flex justify-content-center mt-3">
+            <div class="d-block w-50">
+              <div class="w-100 d-flex align-items-center justify-content-between align-items-center">
+                <span class="w-25 px-4 text-right">Path Export:</span>
+                <input nbInput type="text" class="w-75 mt-1 input-edit" fullWidth trim="blur"
+                       [(ngModel)]="exportFile.pathFolder">
+              </div>
+              <div class="w-100 d-flex align-items-center mt-2 justify-content-between">
+                <span class="w-25 px-4 text-right">File Name:</span>
+                <input nbInput type="text" class="w-75 mt-1 input-edit" fullWidth trim="blur"
+                       [(ngModel)]="exportFile.fileName">
+              </div>
+              <!--<div class="w-100 d-flex align-items-center mt-2">-->
+              <!--<span class="w-15">Zip File </span>-->
+              <!--<nb-checkbox [(ngModel)]="exportFile.zipFile" style="margin-left: -2%"-->
+              <!--(checkedChange)="isDownload = true"></nb-checkbox>-->
+              <!--</div>-->
+              <div class="w-100 d-flex align-items-center  justify-content-between">
+                <span class="w-25 px-4 text-right">Kiểu nén:</span>
+                <nb-radio-group class="d-flex w-75 mt-1 ml-1" [(ngModel)]="isFirstPath">
+                  <nb-radio [value]="true"><span>gz</span></nb-radio>
+                  <nb-radio [value]="false"><span>merge file</span></nb-radio>
+                  <!--<nb-radio class="radio-input"-->
+                  <!--*ngFor="let option2 of optionsFilePath"-->
+                  <!--[disabled]="option2.disabled"-->
+                  <!--([value])="option2.value">-->
+                  <!--<span>{{ option2.label }}</span>-->
+                  <!--</nb-radio>-->
+                </nb-radio-group>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center edit-button mt-3 mb-2">
+            <!--<button *hasAnyAuthority="authorities.EXPORT_FILE.EXPORT_FILE_WRITE" (click)="checkDownload()">-->
+            <!--<nb-icon icon="external-link-outline"></nb-icon>-->
+            <!--EXPORT-->
+            <!--</button>-->
+            <button *hasAnyAuthority="authorities.EXPORT_FILE.EXPORT_FILE_WRITE"
+                    class="border-0 ml-3 d-flex justify-content-between"
+                    [disabled]="!exportFile.pathFolder || !exportFile.fileName"
+                    (click)="ExportAndDownloadFunction(option1,exportFile.pathFolder,exportFile.fileName,isFirstPath)">
+              <nb-icon icon="cloud-download-outline"></nb-icon>
+              <span class="pl-3 font-weight-bold">EXPORT AND DOWNLOAD</span>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="!isExport">
+          <form [formGroup]="uploadForm">
+            <div class="d-flex justify-content-center mt-3">
+              <div class="d-block w-50">
+                <div class="w-100 d-flex align-items-center  justify-content-between">
+                  <span class="w-25 px-4 text-right" style="word-break: break-word">Path Import:</span>
+                  <div class="w-75 d-flex w-75 mt-1 ml-1">
+                    <input nbInput fullWidth type="text" class="mt-1 input-edit input-file-import" trim="blur"
+                           formControlName="pathServer">
+                    <ng-container
+                      *ngIf="uploadForm.get('pathServer').invalid && uploadForm.get('pathServer').touched ">
+                      <ngx-inline-message [formName]="uploadForm.get('pathServer')"
+                                          class="file-input-validate" [message]="'Path'"></ngx-inline-message>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="w-100 d-flex align-items-center  justify-content-between mt-2">
+                  <span class="w-25 px-4 text-right">File Import:</span>
+                  <div class="w-75 d-flex mt-1 ml-1">
+                    <nb-form-field class="w-100 input-file-import ">
+                      <input formControlName="fileName" class="input-edit" nbInput readonly fullWidth>
+                      <button nbSuffix nbButton ghost status="info" type="button" class="p-0" nbTooltip="Choose file">
+                        <label class="p-0 m-0" for="file">
+                          <svg width="13" height="15" viewBox="0 0 12 14" id="iport"
+                               xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M8.625 3.6875V2.9375C8.625 2.86875 8.56875 2.8125 8.5 2.8125H2.5C2.43125 2.8125 2.375 2.86875 2.375 2.9375V3.6875C2.375 3.75625 2.43125 3.8125 2.5 3.8125H8.5C8.56875 3.8125 8.625 3.75625 8.625 3.6875ZM2.5 5.0625C2.43125 5.0625 2.375 5.11875 2.375 5.1875V5.9375C2.375 6.00625 2.43125 6.0625 2.5 6.0625H5.375C5.44375 6.0625 5.5 6.00625 5.5 5.9375V5.1875C5.5 5.11875 5.44375 5.0625 5.375 5.0625H2.5ZM4.75 12.125H1.125V1.125H9.875V6.5C9.875 6.56875 9.93125 6.625 10 6.625H10.875C10.9438 6.625 11 6.56875 11 6.5V0.5C11 0.223437 10.7766 0 10.5 0H0.5C0.223437 0 0 0.223437 0 0.5V12.75C0 13.0266 0.223437 13.25 0.5 13.25H4.75C4.81875 13.25 4.875 13.1938 4.875 13.125V12.25C4.875 12.1812 4.81875 12.125 4.75 12.125ZM11.7141 12.9297L10.2563 11.4719C10.6047 11.0109 10.8125 10.4359 10.8125 9.8125C10.8125 8.29375 9.58125 7.0625 8.0625 7.0625C6.54375 7.0625 5.3125 8.29375 5.3125 9.8125C5.3125 11.3313 6.54375 12.5625 8.0625 12.5625C8.62187 12.5625 9.14062 12.3953 9.575 12.1094L11.0547 13.5891C11.0797 13.6141 11.1109 13.625 11.1422 13.625C11.1734 13.625 11.2063 13.6125 11.2297 13.5891L11.7141 13.1047C11.7256 13.0932 11.7347 13.0796 11.741 13.0646C11.7472 13.0496 11.7504 13.0334 11.7504 13.0172C11.7504 13.0009 11.7472 12.9848 11.741 12.9698C11.7347 12.9548 11.7256 12.9412 11.7141 12.9297ZM8.0625 11.5625C7.09531 11.5625 6.3125 10.7797 6.3125 9.8125C6.3125 8.84531 7.09531 8.0625 8.0625 8.0625C9.02969 8.0625 9.8125 8.84531 9.8125 9.8125C9.8125 10.7797 9.02969 11.5625 8.0625 11.5625Z"
+                            />
+                          </svg>
+                        </label>
+                      </button>
+                      <input style="display: none" class="input-file-import" id="file" nbInput type="file" name="file"
+                             (change)="onFileChange($event)" trim="blur">
+                    </nb-form-field>
+                    <ng-container
+                      *ngIf="uploadForm.get('fileName').invalid && uploadForm.get('fileName').touched ">
+                      <ngx-inline-message [formName]="uploadForm.get('fileName')"
+                                          class="file-input-validate" [message]="'File'"></ngx-inline-message>
+                    </ng-container>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-center edit-button mt-3 mb-2">
+              <button class="border-0" (click)="putFile(option1)" [disabled]="uploadForm.invalid">
+                <nb-icon icon="cloud-upload-outline"></nb-icon>
+                <strong class="pl-3 font-weight-bold">IMPORT TO HDFS</strong>
+              </button>
+            </div>
+          </form>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+

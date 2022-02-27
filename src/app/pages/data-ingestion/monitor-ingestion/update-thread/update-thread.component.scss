@@ -1,0 +1,91 @@
+.detail-thread {
+  //height: calc(97vh - -3.525rem - 52px);
+  //overflow: auto;
+  .page-wrap {
+    nb-card {
+      margin-bottom: 0 !important;
+    }
+  }
+}
+
+.detail-thread::-webkit-scrollbar {
+  width: 0.3125rem;
+  height: 0.3125rem;
+}
+.detail-thread {
+  margin-bottom: 15px;
+  .page-wrap {
+    nb-card {
+
+    }
+  }
+}
+
+.detail-thread::-webkit-scrollbar-thumb {
+  background: #101426;
+  cursor: pointer;
+  border-radius: 0.15625rem;
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+}
+
+.detail-thread::-webkit-scrollbar-thumb:hover {
+  background: #000000d1;
+  border-radius: 0.15625rem;
+}
+
+.detail-thread::-webkit-scrollbar-track {
+  background: #192038;
+}
+
+nb-card-body {
+  .justify-content-between {
+    .d-flex {
+      transition: all 0.2s ease;
+
+      button:hover {
+        transform: scale(1.07);
+        box-shadow: 0 3px 20px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+}
+
+nb-card-body {
+  .justify-content-between {
+    .d-flex {
+      button {
+        transition: all 0.3s ease;
+      }
+    }
+  }
+}
+
+.details-connection {
+  background: linear-gradient(
+      45deg, rgb(255, 152, 0), rgb(204, 187, 31));
+  width: 71px;
+  height: 24px;
+  border: 2px solid rgb(54, 62, 84);
+  border-radius: 5px;
+  text-align: center;
+  font-size: 12px;
+  color: black;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover {
+    transform: scale(1.07);
+    color: white;
+  }
+}
+
+.body-log {
+  width: calc(100vw - 500px);
+  height: calc(100vh - 300px);
+}

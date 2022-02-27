@@ -1,0 +1,203 @@
+<div class="tagger-Monitor">
+  <!--       -->
+  <nb-layout>
+    <nb-layout-column style=" padding-right: 4px !important;padding-left: 0 !important; padding-top: 0 !important;">
+      <div class="row">
+        <div class="col-3">
+          <nb-card [nbSpinner]="isLoadingRole" [nbSpinnerMessage]="'Processing...'" nbSpinnerStatus="primary"
+                   class="monitor-ingestion mt-3" style="border: none ; min-height: 82vh;"
+                   nbSpinnerStatus="primary">
+            <nb-card-header class="d-flex justify-content-between align-items-center">
+              <div>
+                <span class="title-page">{{"user.roleManager.typeAccount"| translate}}</span>
+              </div>
+            </nb-card-header>
+            <nb-card-body>
+              <div style="max-height: 520px;">
+                <div [ngClass]="{selected: item?.name === checkActive}"
+                     class="item-Role d-flex justify-content-between"
+                     *ngFor="let item of listAllRoleGroup">
+                  <div (click)="roleManager(item)" class="d-flex align-items-center"
+                       style="font-size: 14px; min-height: 60px;width: 100%; flex-shrink: 1">
+                    <nb-icon style="margin-left: 1px" [icon]="'male'" pack="fas"></nb-icon>
+                    <strong style="padding-left: 30px">{{item?.name}}</strong>
+                  </div>
+                  <button
+                    (click)="editRoleGroup(item);this.dialogService.open(addOrEditRolePopup,{context:{title:'edit',items: item},closeOnBackdropClick:false})"
+                    style="flex-shrink: 0; padding: 10px 5px !important;" nbButton ghost class="btn-edit">
+                    <nb-icon icon="edit-outline" pack="eva"></nb-icon>
+                  </button>
+                  <button (click)="pupupDeleteRoleGroup(item)" style="flex-shrink: 0; padding: 10px 5px !important;"
+                          nbButton ghost class="btn-edit">
+                    <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                  </button>
+                </div>
+              </div>
+            </nb-card-body>
+            <nb-card-footer>
+              <div class="add-role d-flex"
+                   (click)="resetAddRole();this.dialogService.open(addOrEditRolePopup,{context:{title:'add'},closeOnBackdropClick:false})">
+                <div class="d-flex">
+                  <nb-icon [icon]="'male'" pack="fas"></nb-icon>
+                  <strong>{{'user.column.addNewType' | translate}}</strong>
+                </div>
+                <nb-icon [icon]="'plus'" pack="eva"></nb-icon>
+              </div>
+            </nb-card-footer>
+          </nb-card>
+        </div>
+        <div class="col-9">
+          <nb-card [nbSpinner]="isLoading" [nbSpinnerMessage]="'Processing...'" nbSpinnerStatus="primary"
+                   class="monitor-ingestion mt-3" style="border: none; min-height: 82vh;"
+                   nbSpinnerStatus="primary">
+            <nb-card-header class="d-flex justify-content-between align-items-center">
+              <div>
+                <span>{{checkActive}}</span>
+              </div>
+              <div style="position: relative">
+                <form>
+                  <input (keydown)="searchTextModule($event)" nbInput type="text" name="search"
+                         placeholder="{{'global.labels.search' | translate}}"
+                         autocomplete="off"
+                         class="input-edit mb-0"
+                  >
+                  <nb-icon nbPrefix icon="search-outline" pack="eva"
+                           style="position: absolute;top: 8px;z-index: 3; right: 10px;"></nb-icon>
+                </form>
+              </div>
+            </nb-card-header>
+            <nb-card-body style="max-height: 720px;">
+              <div *ngIf="role === 'role'" class="list-permission d-flex">
+                <div class="row" style="width: 100%">
+                  <div style="margin-bottom: 40px" class="col-12 col-md-6 col-lg-4"
+                       *ngFor="let value of listModule" (click)="checked(value)">
+                    <div style="font-size: 14px" class="d-flex align-items-center">
+                      <nb-checkbox [disabled]="role === 'role'"
+                                   [checked]="value.isChecked"
+                                   (valueChange)="checkedAddModule($event,value)"></nb-checkbox>
+                      <span style="cursor: pointer; padding-left: 10px"
+                            (click)="this.dialogService.open(addRolePopup,{closeOnBackdropClick:false})">{{value?.moduleName ? value?.moduleName : 'N/A ...'}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nb-card-body>
+
+          </nb-card>
+        </div>
+      </div>
+    </nb-layout-column>
+  </nb-layout>
+</div>
+<ng-template #addOrEditRolePopup let-ref="dialogRef" let-data>
+  <nb-card style="width: 23vw;">
+    <nb-card-header class="d-flex justify-content-between">
+      <div *ngIf="data?.title === 'add'">
+        {{"user.column.addNewType" | translate}}
+      </div>
+      <div *ngIf="data?.title === 'edit'">
+        {{"Edit"}}
+      </div>
+      <div>
+        <button nbButton ghost (click)="ref.close()">
+          <nb-icon [icon]="'close-outline'"></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="mb-4 d-flex align-items-center">
+        <label class="m-3">{{"data-ingestion.label.name" | translate}}</label>
+        <input class="input-edit" nbInput style="width: 100%" maxlength="50"
+               (keypress)='onKeyPress($event, regexNameRole)'
+               [(ngModel)]="nameGroup"
+               name="name-group">
+      </div>
+      <div class="edit-button d-flex justify-content-center">
+        <button *ngIf="data?.title === 'add'" [disabled]="!nameGroup" style="margin-right: 10px"
+                (click)="addNewGroup(ref)">
+          <nb-icon [icon]="'checkmark-outline'" style="padding-right: 5px"></nb-icon>
+          {{"data-ingestion.label.add" | translate}}
+        </button>
+        <button *ngIf="data?.title === 'edit'" style="margin-right: 10px"
+                [disabled]="!nameGroup"
+                (click)="updateRoleGroup(ref,data?.items)">
+          <nb-icon [icon]="'checkmark-outline'" style="padding-right: 5px"></nb-icon>
+          {{"Save"}}
+        </button>
+        <button class="edit-button-cancel" (click)="ref.close()">
+          <nb-icon [icon]="'close-outline'" style="padding-right: 5px"></nb-icon>
+          {{'user.label.cancel' | translate}}
+        </button>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+<ng-template #addRolePopup let-ref="dialogRef" let-data>
+  <nb-card style="width: 38vw;">
+    <nb-card-header style="align-items: center !important;" class="d-flex justify-content-between">
+      <div>
+        {{moduleName}}
+      </div>
+      <div>
+        <button style="background: var(--bg-back);" nbButton ghost (click)="ref.close()">
+          <nb-icon [icon]="'close-outline'"></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div>
+        <div *ngIf="getAddModule?.length !== 0" style="margin: 35px 30px 70px 30px;"
+             class="row">
+          <div style="margin-bottom: 20px; word-break: break-word" class="col-12 col-md-6 col-lg-6"
+               *ngFor="let item of  getAddModule; let i=index">
+            <nb-checkbox class="check_text" [checked]="item?.value === '1'"
+                         (valueChange)="checkedAddRole($event, item, i)">{{item?.code}}</nb-checkbox>
+          </div>
+        </div>
+        <div style="margin: 35px 30px 70px 30px;" *ngIf="getAddModule?.length === 0">
+          N/A ...
+        </div>
+      </div>
+      <div class="edit-button d-flex justify-content-end">
+        <button *ngIf="resoleRole?.length !== 0" style="margin-right: 10px" (click)="updateModuleGroup(ref)">
+          <nb-icon [icon]="'checkmark-outline'" style="padding-right: 5px"></nb-icon>
+          {{"user.label.save" | translate}}
+        </button>
+        <button class="edit-button-cancel" (click)="cancel(ref)">
+          <nb-icon [icon]="'close-outline'" style="padding-right: 5px"></nb-icon>
+          {{'user.label.cancel' | translate}}
+        </button>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+<ng-template #confirmDelete let-data let-deleteRef="dialogRef">
+  <nb-card style="width: 472px;background: #181E38 !important;">
+    <nb-card-header>
+      <span>Xóa {{data?.name}}</span>
+    </nb-card-header>
+    <nb-card-body [nbSpinner]="isLoadingRoleUser" [nbSpinnerMessage]="'Processing...'" nbSpinnerStatus="primary">
+      <p style="color: var(--color-text-light)">Tất cả các User đang thuộc nhóm {{data?.name}} :</p>
+      <div class="user-role">
+        <div class="d-flex flex-wrap" *ngIf="allUserRoleGroup.length !== 0">
+          <div class="user-item"
+               *ngFor="let value of allUserRoleGroup ; trackBy: trackByFn">
+            {{value?.userName}}
+          </div>
+        </div>
+        <div class="text-center" *ngIf="allUserRoleGroup.length === 0">
+          Không có User nào.
+        </div>
+      </div>
+      <br>
+      {{'Bạn chắc chắn muốn xóa Role?'}}
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="float-right d-flex edit-button">
+        <button class="edit-button-cancel" (click)="deleteRef.close()">{{'user.label.cancel'|translate}}</button>
+        <button class="ml-2"
+                (click)="deleteRoleGroup(deleteRef)"> {{'module.label.confirm' | translate}}</button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

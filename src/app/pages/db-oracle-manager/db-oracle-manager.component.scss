@@ -1,0 +1,56 @@
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+.tab-left {
+  &__item {
+    padding: 0 20px;
+    height: 60px;
+    line-height: 54px;
+    color: var(--color-text-not-selected);
+    cursor: pointer;
+  }
+
+  &__item:hover {
+    border-bottom: 4px solid var(--color-text-light);
+    color: var(--color-text-light);
+  }
+
+  .selected {
+    border-bottom: 4px solid var(--color-text-light);
+    color: var(--color-text-light);
+  }
+}
+
+:host ::ng-deep {
+
+
+
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  nb-tabset .tab.active .tab-link {
+    background-color: transparent;
+    color: var(--color-text-light);
+  }
+
+  nb-tabset .tab.active .tab-link::before {
+    background-color: var(--color-text-light);
+  }
+
+  nb-tabset .tab:hover .tab-link {
+    color: var(--color-text-light);
+    background-color: transparent;
+  }
+
+  nb-tabset .tab:hover .tab-link::before {
+    background-color: var(--color-text-light);
+  }
+
+  nb-tabset .tabset {
+    border-bottom: 3px solid #363e54;
+  }
+}

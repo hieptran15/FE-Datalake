@@ -1,0 +1,52 @@
+// ___________________________________dark mode css variable __________________________________
+
+//font size
+$font12: 12px;
+$font14: 14px;
+$font16: 16px;
+//font weight
+$font-regular: 400;
+$font-medium: 500;
+$font-semi-bold: 600;
+$font-bold: bold;
+//color-darkmode
+$background-color: #0b0d26;
+$color-text-not-selected: #8c95b2;
+$color-text-light: white;
+$background-container: #181e38;
+$background-table: #0b0d26;
+$color-line-table: #181e38;
+
+// ___________________________________light mode css variable __________________________________
+
+//color-lightmode
+$background-color-light-mode: #f0f1f5;
+$color-text-not-selected-light-mode: #8c95b2;
+$color-text-light-light-mode: #0b0d26;
+$background-container-light-mode: #ffffff;
+$background-table-light-mode: #ffffff;
+$background-table-column-light-mode: #f0f1f5;
+$color-line-table-light-mode: #181e38;
+$color-table-column-light-mode: #f0f1f5;
+
+$color-button-light-mode: #0f70f5;
+$color-text-button-light-mode: #ffffff;
+
+$color-button-cancel-light-mode: #8c95b2;
+$color-text-button-cancel-light-mode: #0b0d26;
+
+//color-status-text-light-mode
+
+$color-expired-status-light-mode: #ff313c;
+$color-lock-status-light-mode: #ff313c;
+$color-error-status-light-mode: #ff313c;
+$color-update-status-light-mode: #ff313c;
+$color-insert-status-light-mode: #ffc300;
+
+$color-open-status-light-mode: #02bf51;
+$color-finished-status-light-mode: #02bf51;
+$color-select-status-light-mode: #02bf51;
+$color-running-status-light-mode: #02bf51;
+
+$opacity-text-status-light-mode: 1;
+$box-opacity-light-mode: 0.15;

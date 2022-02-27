@@ -1,0 +1,520 @@
+<nb-layout class="background-detail">
+  <nb-layout-column
+    [nbSpinner]="isLoading"
+    [nbSpinnerMessage]="'Processing'"
+    nbSpinnerStatus="primary"
+  >
+    <nb-card style="background: var(--background-container); padding: 10px">
+      <nb-card-header class="p-0" style="padding-bottom: 9px !important;">
+        <div class="d-flex flex-row justify-content-start align-items-center">
+          <nb-icon
+            (click)="navigateToUserList()"
+            style="margin-right: 14.5px; cursor: pointer"
+            icon="arrow-back-outline"
+            pack="eva"
+          ></nb-icon>
+          <strong style="margin-right: 10px">{{'Chi tiết người dùng :'}}</strong>
+          <span class="status-user-type1">
+            Nhân viên
+          </span>
+        </div>
+      </nb-card-header>
+      <nb-card-body style="padding-top: 24px">
+        <div class="row">
+          <div style="padding: 0 10px" class="col-6">
+            <div [formGroup]="formGroupInfoGroup" class="info-sr">
+              <div class="row mb-3">
+                <div class="col-12 align-center">
+                  <strong>Thông tin cá nhân</strong>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>User name:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    formControlName="login"
+                    trim="blur"
+
+                    class="input-edit"
+                    nbInput
+                    fullWidth
+
+                    name="ftp-server"
+                  />
+                  <ngx-inline-message [message]="'username'"
+                                      [formName]="formGroupInfoGroup.get('login')"></ngx-inline-message>
+
+                </div>
+                <div class="col-2 align-center">
+                  <label>Họ và tên:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    formControlName="userName"
+
+                    trim="blur"
+                    nbInput
+                    fullWidth
+                    class="input-edit"
+                    name="port"
+                  />
+                  <ngx-inline-message [message]="'ho va ten '"
+                                      [formName]="formGroupInfoGroup.get('userName')"></ngx-inline-message>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Chức danh:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    formControlName="staffCode"
+                    trim="blur"
+
+                    class="input-edit"
+                    nbInput
+                    fullWidth
+
+                    name="ftp-server"
+                  />
+                  <ngx-inline-message [message]="'Chức danh '"
+                                      [formName]="formGroupInfoGroup.get('staffCode')"></ngx-inline-message>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Mã NV:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    formControlName="groupId"
+
+                    trim="blur"
+                    nbInput
+                    fullWidth
+                    class="input-edit"
+                    name="port"
+                  />
+                  <ngx-inline-message [message]="'Mã nv '"
+                                      [formName]="formGroupInfoGroup.get('groupId')"></ngx-inline-message>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Trạng thái:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    formControlName="activated"
+                    trim="blur"
+
+                    class="input-edit"
+                    nbInput
+                    fullWidth
+
+                    name="ftp-server"
+                  />
+                  <ngx-inline-message [message]="'status '"
+                                      [formName]="formGroupInfoGroup.get('activated')"></ngx-inline-message>
+                </div>
+                <div class="col-2 align-center">
+                  <label>SĐT:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    formControlName="phoneNumber"
+
+                    trim="blur"
+                    nbInput
+                    fullWidth
+                    class="input-edit"
+                    name="port"
+                  />
+                  <ngx-inline-message [message]="'sdt '"
+                                      [formName]="formGroupInfoGroup.get('phoneNumber')"></ngx-inline-message>
+                </div>
+
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Đơn vị:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    formControlName="email"
+                    trim="blur"
+
+                    class="input-edit"
+                    nbInput
+                    fullWidth
+
+                    name="ftp-server"
+                  />
+                  <ngx-inline-message [message]="'đơn vị  '"
+                                      [formName]="formGroupInfoGroup.get('email')"></ngx-inline-message>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Phòng ban:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    formControlName="staffCode"
+
+                    trim="blur"
+                    nbInput
+                    fullWidth
+                    class="input-edit"
+                    name="port"
+                  />
+                  <ngx-inline-message [message]="'phòng ban  '"
+                                      [formName]="formGroupInfoGroup.get('staffCode')"></ngx-inline-message>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 0 10px" class="col-6">
+            <div [formGroup]="formGroupInfoGroup" class="info-sr">
+              <div class="row mb-3">
+                <div class="col-12 align-center">
+                  <strong>Thông tin hệ thống</strong>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>HDFS User:</label>
+                </div>
+                <div class="col-10">
+                  <div [formGroup]="formGroupInfoGroup">
+                    <ng-select [hideSelected]="true"
+                               multiple="true"
+                               bindLabel="code"
+                               bindValue="id" [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedHdfs"
+                               appendTo="">
+                      <ng-option
+                        *ngFor="let item of listBroweseUserHdfs" [value]="item?.hdfsUser?.id">
+                        <span showTooltip>{{item?.hdfsUser?.hdfsUser}}</span>
+                      </ng-option>
+                    </ng-select>
+
+                    <ngx-inline-message [message]="'Hdfs'"
+                                        [formName]="formGroupInfoGroup.get('Hdfs')"></ngx-inline-message>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Mật khẩu:</label>
+                </div>
+                <div class="col-10">
+                  <input
+                    #inputPassword
+                    formControlName="passWord"
+                    trim="blur"
+
+                    type="password"
+                    class="input-edit input-password pr-4"
+                    nbInput
+                    fullWidth
+
+                    name="ftp-server"
+                  />
+                  <ngx-inline-message [message]="'password'"
+                                      [formName]="formGroupInfoGroup.get('passWord')"></ngx-inline-message>
+
+                  <button (click)="togglePassword(inputPassword)" class="input-toggle-pass">
+                    <nb-icon [icon]="inputPassword.type ==='password' ? 'eye-outline':'eye-off-outline'"></nb-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Groups:</label>
+                </div>
+                <div class="col-10">
+                  <ng-select [hideSelected]="true"
+                             bindLabel="code"
+                             bindValue="id"
+                             appendTo=""
+                             formControlName="groupId"
+                             [clearable]="false"
+                             placeholder="Group">
+                    <ng-option
+                      *ngFor="let item of listWpGroup" [value]="item.id">
+                      <span showTooltip>{{item.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <!--                  <ngx-inline-message [message]="'Group'"-->
+                  <!--                                      [formName]="formGroupInfoGroup.get('groupId')"></ngx-inline-message>-->
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Role group:</label>
+                </div>
+                <div class="col-10">
+                  <ng-select [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedRole" appendTo="">
+                    <ng-option
+                      *ngFor="let item of listRoleGroup" [value]="item.id">
+                      <span showTooltip>{{item.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <!--                  <ngx-inline-message [message]="'RoleGroup'"-->
+                  <!--                                      [formName]="formGroupInfoGroup.get('moduleId')"></ngx-inline-message>-->
+
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Type:</label>
+                </div>
+                <div class="col-10">
+                  <div [formGroup]="formGroupInfoGroup">
+                    <nb-radio-group
+                      formControlName="typeUser"
+                      class="d-flex justify-content-between p-0 ml-0 radio"
+                    >
+                      <nb-radio class="actives" [value]="0">{{
+                        "user.label.normal" | translate
+                        }}</nb-radio>
+                      <nb-radio class="locks" [value]="1">SSO</nb-radio>
+                    </nb-radio-group>
+                  </div>
+                  <ngx-inline-message [message]="'typeUser'"
+                                      [formName]="formGroupInfoGroup.get('typeUser')"></ngx-inline-message>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row py-2">
+          <div
+            style="width: 100%; padding: 0.7rem;"
+            class="d-flex align-items-center"
+          >
+            <span style="font-weight: bold; font-size: 14px; color: var(--color-text-light);">Nhóm quyền</span>
+            <div class="col-5" style="padding-right: 500px;">
+              <input class="input-edit" style="min-width: 224px" nbInput fullWidth trim="blur"
+                     [(ngModel)]="valueSearch"
+                     placeholder="{{'Nội dung tìm kiếm' | translate}}">
+              <nb-icon nbPrefix icon="search-outline" pack="eva"
+                       style="position: absolute;top: 8px;z-index: 3; left: 210px;color: #999"></nb-icon>
+            </div>
+            <small style="color: #dc3545;font-size: 12px;margin-left: 10px;" *ngIf="isValidateListReview">Reviewer not
+              empty</small>
+          </div>
+        </div>
+        <div class="row">
+          <div style="width: 100%; padding: 0 0.6rem">
+            <ngx-datatable
+              class="dark fullscreen"
+              #table
+              [columnMode]="'force'"
+              [limit]="limit"
+              [rows]="rowData"
+              [headerHeight]="'auto'"
+              [rowHeight]="'auto'"
+              [footerHeight]="'auto'"
+              [columns]="columnsTable"
+              [messages]="{
+              totalMessage: 'data-ingestion.label.record' | translate
+            }"
+            >
+              <ng-container *ngFor="let col of columnsTable">
+                <ngx-datatable-column
+                  prop="{{ col.prop }}"
+                  name="{{ col.name | translate }}"
+                  [flexGrow]="col.flexGrow"
+                  [sortable]="false"
+                  [sortable]="
+                  col.prop === 'stt' || col.prop === 'userName' ? true : false
+                "
+                >
+                  <ng-template let-column="column" ngx-datatable-header-template>
+                    <ng-container [ngSwitch]="col.prop">
+                      <ng-container *ngSwitchDefault>
+                        {{ column.name | translate }}
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'stt'">
+                      <span class="w-100 text-cente">{{
+                        column.name | translate
+                        }}</span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'status'">
+                        <div class="text-center">
+                          <span class="w-100">{{ column.name | translate }}</span>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'action'">
+                        <div style="text-align: center">
+                          <span class="w-100">{{ column.name | translate }}</span>
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </ng-template>
+                  <ng-template
+                    let-row="row"
+                    let-value="value"
+                    let-rowIndex="rowIndex"
+                    ngx-datatable-cell-template
+                  >
+                    <ng-container [ngSwitch]="col.prop">
+                      <ng-container *ngSwitchCase="'stt'">
+                        <span class="text-center">{{ rowIndex + 1 }}</span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'userName'">
+                        <span class="text-center">{{ row?.login }}</span>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault>
+                        <span [title]="value"> {{ value ? value : "N/A" }} </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'action'">
+                        <div class="w-100 d-flex justify-content-center">
+                          <button
+                            [disabled]="
+                            (dataItems?.createOrHandler === 1 &&
+                              dataItems?.status === 'waiting') ||
+                            dataItems?.createOrHandler === 0
+                          "
+                            (click)="deleteUserSR(row?.id)"
+                            class="edit"
+                            status="warning"
+                            nbButton
+                            ghost
+                            nbTooltip="{{ 'Delete' }}"
+                          >
+                            <svg
+                              class="edit-delete-user-sr"
+                              width="13"
+                              height="12"
+                              viewBox="0 0 13 12"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M6.03272 0C2.69663 0 0 2.682 0 6C0 9.318 2.69663 12 6.03272 12C9.36882 12 12.0654 9.318 12.0654 6C12.0654 2.682 9.36882 0 6.03272 0ZM8.6268 8.58C8.57098 8.63562 8.50469 8.67975 8.43171 8.70986C8.35873 8.73997 8.2805 8.75547 8.20149 8.75547C8.12248 8.75547 8.04425 8.73997 7.97127 8.70986C7.89829 8.67975 7.83199 8.63562 7.77618 8.58L6.03272 6.846L4.28927 8.58C4.17647 8.69219 4.02348 8.75521 3.86396 8.75521C3.70444 8.75521 3.55145 8.69219 3.43865 8.58C3.32585 8.46781 3.26249 8.31566 3.26249 8.157C3.26249 8.07844 3.27804 8.00065 3.30827 7.92807C3.3385 7.8555 3.3828 7.78955 3.43865 7.734L5.18211 6L3.43865 4.266C3.32585 4.15381 3.26249 4.00166 3.26249 3.843C3.26249 3.68434 3.32585 3.53219 3.43865 3.42C3.55145 3.30781 3.70444 3.24479 3.86396 3.24479C4.02348 3.24479 4.17647 3.30781 4.28927 3.42L6.03272 5.154L7.77618 3.42C7.83203 3.36445 7.89834 3.32039 7.97131 3.29032C8.04429 3.26026 8.1225 3.24479 8.20149 3.24479C8.28048 3.24479 8.35869 3.26026 8.43166 3.29032C8.50464 3.32039 8.57094 3.36445 8.6268 3.42C8.68265 3.47555 8.72695 3.5415 8.75718 3.61407C8.78741 3.68665 8.80296 3.76444 8.80296 3.843C8.80296 3.92156 8.78741 3.99935 8.75718 4.07193C8.72695 4.1445 8.68265 4.21045 8.6268 4.266L6.88334 6L8.6268 7.734C8.85604 7.962 8.85604 8.346 8.6268 8.58Z"
+                                fill="#FF313C"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-footer>
+                  <ng-template
+                    ngx-datatable-footer-template
+                    let-rowCount="rowCount"
+                    let-pageSize="pageSize"
+                    let-selectedCount="selectedCount"
+                    let-curPage="curPage"
+                    let-offset="offset"
+                  >
+                    <div style="padding: 5px 10px; width: 200px">
+                      <div *ngIf="rowCount > 0">
+                      <span
+                      >{{ "Hiển thị" | translate }}
+                        {{ (curPage - 1) * limit + 1 }} -
+                        {{
+                        rowCount - curPage * limit >= 0
+                          ? (curPage - 1) * limit + limit
+                          : rowCount
+                        }}
+                        /{{ rowCount }} {{ "bản ghi" | translate }}</span
+                      >
+                      </div>
+                      <div *ngIf="rowCount === 0">
+                      <span
+                      >0 {{ "data-ingestion.label.record" | translate }}</span
+                      >
+                      </div>
+                    </div>
+                    <datatable-pager
+                      [pagerLeftArrowIcon]="'datatable-icon-left'"
+                      [pagerRightArrowIcon]="'datatable-icon-right'"
+                      [page]="curPage"
+                      [size]="pageSize"
+                      [count]="rowCount"
+                      [hidden]="!(rowCount / pageSize > 1)"
+                      (change)="table.onFooterPage($event)"
+                    >
+                    </datatable-pager>
+                  </ng-template>
+                </ngx-datatable-footer>
+              </ng-container>
+            </ngx-datatable>
+            <div class="d-flex edit-button justify-content-center align-items-center pt-4 pb-3"
+            >
+              <button [class.disabled]="formGroupInfoGroup.invalid" [disabled]="formGroupInfoGroup.invalid"
+                      class="mr-2 d-flex justify-content-center align-items-center" (click)="save()">
+                <span style="padding-right: 7px;">Lưu</span>
+                <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M10.6667 6.05945V10.7261H1.33333V6.05945H0V10.7261C0 11.4594 0.6 12.0594 1.33333 12.0594H10.6667C11.4 12.0594 12 11.4594 12 10.7261V6.05945H10.6667ZM6.66667 6.50612L8.39333 4.78612L9.33333 5.72612L6 9.05945L2.66667 5.72612L3.60667 4.78612L5.33333 6.50612V0.0594482H6.66667V6.50612Z"
+                    fill="white"/>
+                </svg>
+              </button>
+              <button (click)="navigateToUserList()" class="edit-button-cancel">Hủy</button>
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+<!--<ng-template #confirmSendOrSaveSR let-data let-ref="dialogRef">-->
+<!--  <nb-card style="width: 450px; height: 220px">-->
+<!--    <nb-card-header class="d-flex justify-content-md-between">-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'send'">Gửi SR</span>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'save'">Lưu SR</span>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'cancel'">Hủy</span>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'agree'">Đồng ý</span>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'rejected'">Từ chối</span>&ndash;&gt;-->
+<!--      <button-->
+<!--        style="background: none; border: none; color: #8c95b2"-->
+<!--        size="small"-->
+<!--        (click)="ref.close()"-->
+<!--      >-->
+<!--        <nb-icon icon="close-outline" style="font-size: 20px"></nb-icon>-->
+<!--      </button>-->
+<!--    </nb-card-header>-->
+<!--    <nb-card-body style="padding-top: 20px">-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'send'">Bạn có chắc chắn muốn gửi thao tác này?</span>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'save'">Bạn có chắc chắn muốn lưu thao tác này?</span>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'cancel'">Bạn có chắc chắn muốn hủy thao tác này?</span>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'agree'">Bạn có chắc chắn muốn thực hiện thao tác này?</span>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <span *ngIf="data.title === 'rejected'">Bạn có chắc chắn muốn thực hiện thao tác này?</span>&ndash;&gt;-->
+<!--    </nb-card-body>-->
+<!--    <nb-card-footer class="d-flex edit-button justify-content-center">-->
+<!--      &lt;!&ndash;      <button *ngIf="data.title === 'send'" (click)="sendSR(ref, '')" class="mr-2">&ndash;&gt;-->
+<!--      &lt;!&ndash;        Xác nhận&ndash;&gt;-->
+<!--      &lt;!&ndash;      </button>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <button *ngIf="data.title === 'save'" (click)="sendSR(ref, 'update')" class="mr-2">&ndash;&gt;-->
+<!--      &lt;!&ndash;        Xác nhận&ndash;&gt;-->
+<!--      &lt;!&ndash;      </button>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <button *ngIf="data.title === 'cancel'" (click)="cancelSR(ref)" class="mr-2">&ndash;&gt;-->
+<!--      &lt;!&ndash;        Xác nhận&ndash;&gt;-->
+<!--      &lt;!&ndash;      </button>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <button *ngIf="data.title === 'agree'" (click)="updateResult(ref, 'approved')" class="mr-2">&ndash;&gt;-->
+<!--      &lt;!&ndash;        Xác nhận&ndash;&gt;-->
+<!--      &lt;!&ndash;      </button>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <button *ngIf="data.title === 'rejected'" (click)="updateResult(ref, 'rejected')" class="mr-2">&ndash;&gt;-->
+<!--      &lt;!&ndash;        Xác nhận&ndash;&gt;-->
+<!--      &lt;!&ndash;      </button>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <button class="edit-button-cancel" (click)="ref.close()">&ndash;&gt;-->
+<!--      &lt;!&ndash;        Hủy&ndash;&gt;-->
+<!--      &lt;!&ndash;      </button>&ndash;&gt;-->
+<!--      <button>Xác nhận</button>-->
+<!--      <button>Hủy</button>-->
+<!--    </nb-card-footer>-->
+<!--  </nb-card>-->
+<!--</ng-template>-->

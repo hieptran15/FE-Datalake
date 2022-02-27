@@ -1,0 +1,656 @@
+<div class="tagger-Monitor">
+  <!--  <nav aria-label="breadcrumb">-->
+  <!--    <ol class="breadcrumb" style="margin-bottom: 0 !important; background-color: #181E38;">-->
+  <!--      <li class="breadcrumb-item">-->
+  <!--        <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+  <!--           >VDP-->
+  <!--        </a>-->
+  <!--      </li>-->
+  <!--      <li class="breadcrumb-item">-->
+  <!--        <a class="text-decoration-none"-->
+  <!--           >Cấu hình hệ thống-->
+  <!--        </a>-->
+  <!--      </li>-->
+  <!--      <li class="breadcrumb-item" aria-current="page">-->
+  <!--        <a class="text-decoration-none" routerLink="/webportal/user-management/user"-->
+  <!--           >-->
+  <!--          User Manager-->
+  <!--        </a>-->
+  <!--      </li>-->
+  <!--    </ol>-->
+  <!--  </nav>-->
+  <nb-layout>
+    <nb-layout-column
+      style="padding: 15.6px 4px 15.6px 0!important;">
+      <div class="row">
+        <div class="col-3">
+          <nb-card>
+            <nb-card-header>
+              <span>{{'userThrift.column.group' | translate}}</span>
+            </nb-card-header>
+            <nb-card-body>
+              <button class="d-flex btn-create mb-2 select-all" (click)="selectAllUser()">
+                <div class="icon">
+                  <nb-icon icon="home-outline"></nb-icon>
+                </div>
+                <span class="pl-2 custom-show-data ">{{'user.label.selectAllUser' | translate}}</span>
+              </button>
+              <div class="listGroup mb-2">
+                <div class="d-flex justify-content-between WpGroup"
+                     *ngFor="let item of listWpGroup">
+                  <button class="d-flex item-Group" (click)="getListUserByGroupId(item.id)">
+                    <div class="pr-3">
+                      <nb-icon [class.locks]="item.activated === 0" [icon]="'users'" pack="fa"></nb-icon>
+                    </div>
+                    <strong [class.locks]="item.activated === 0" class="custom-show-data">
+                      {{item?.name}}
+                    </strong>
+                  </button>
+                  <button nbButton ghost (click)="openPopupEditWpGroup(item)" class="btn-edit">
+                    <nb-icon icon="edit-outline" pack="eva"></nb-icon>
+                  </button>
+                  <button nbButton ghost (click)="openPopupDeleteWpGroup(item)" class="btn-edit">
+                    <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                  </button>
+                </div>
+              </div>
+              <button class="d-flex btn-create" (click)="openPopupCreateWpGroup()">
+                <div class="icon">
+                  <nb-icon icon="plus-outline"></nb-icon>
+                </div>
+                <span class="pl-2 custom-show-data">{{'userThrift.label.createGroup'| translate}}</span>
+              </button>
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <div class="col-9">
+          <nb-card [nbSpinner]="isLoading" [nbSpinnerMessage]="'Processing...'" style="min-height: 86vh"
+                   nbSpinnerStatus="primary">
+            <nb-card-header class="d-flex edit-button justify-content-between">
+              <div class="title">{{'user.userManagement.title'|translate}}</div>
+              <div *hasAnyAuthority="authority.USER_MANAGER.USER_MANAGER_WRITE">
+                <button (click)="openPopupAddUser()"
+                        style="color: white;" size="small" class="ml-auto">
+                  <nb-icon icon="plus" pack="eva"></nb-icon>
+                  <strong>
+                    {{'user.label.addUser'|translate}}
+                  </strong>
+                </button>
+              </div>
+            </nb-card-header>
+            <nb-card-body>
+              <div class="row d-flex justify-content-between header-body">
+                <div class="col-6 d-flex page">
+                  <span>{{'data-ingestion.label.show' | translate}}</span>
+                  <ng-select [items]="limits"
+                             class="selectPage"
+                             bindLabel="name"
+                             [(ngModel)]="limit"
+                             (change)="setPage($event)"
+                             [clearable]="false"
+                             appendTo="">
+                  </ng-select>
+                  <span>{{'data-ingestion.label.record' | translate}}</span>
+                </div>
+                <div class="col-6 search row d-flex justify-content-end" [formGroup]="userForm">
+                  <div class="col-7">
+                    <input class="input-edit" nbInput fullWidth trim="blur"
+                           formControlName="keyword"
+                           placeholder="{{'user-hdfs.label.nameUser' | translate}}"
+                           (change)="search()">
+                    <nb-icon nbPrefix icon="search-outline" pack="eva"
+                             style="position: absolute;top: 8px;z-index: 3; right: 20px;color: #999"></nb-icon>
+                  </div>
+                  <div class="col-4 " style="padding: 0">
+                    <!--                <ng-select fullWidth appendTo="body" [items]="authorities"-->
+                    <!--                           formControlName="authority" bindLabel="displayName" bindValue="name"-->
+                    <!--                           placeholder="{{'global.select.placeholder' |translate}}"-->
+                    <!--                >-->
+                    <!--                </ng-select>-->
+                    <ng-select fullWidth [items]="authorities"
+                               bindLabel="name"
+                               bindValue="name"
+                               formControlName="authority"
+                               placeholder="{{'global.select.placeholder' |translate}}"
+                               appendTo=""
+                               [closeOnSelect]="true"
+                               [clearAllText]="''"
+                               (change)="search()">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              <ngx-datatable class="fullscreen"
+                             #table
+                             [ngClass]="{'dark' : currentTheme !== 'default', 'bootstrap': currentTheme === 'default'}"
+                             [columnMode]="'force'"
+                             [rows]="users"
+                             [columns]="columns"
+                             rowHeight="auto"
+                             [externalPaging]="true"
+                             [count]="page.totalElements"
+                             [offset]="page.pageNumber"
+                             [limit]="limit"
+                             (page)="setPage($event)"
+                             [headerHeight]="'auto'"
+                             [footerHeight]="50"
+                             [messages]="{totalMessage:'user.label.record'|translate}">
+                <ng-container *ngFor="let col of columns">
+
+                  <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow"
+                                        [sortable]="col.prop === 'action_btn' ? false : true">
+
+                    <ng-template let-column="column" ngx-datatable-header-template>
+                      <ng-container [ngSwitch]="col.prop">
+                        <ng-container *ngSwitchDefault>
+                          <span class="custom-show-data">{{ column.name |translate }}</span>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'action_btn'">
+                          <div style="text-align: center"><span
+                            class="w-100 custom-show-data">{{ column.name |translate}}</span></div>
+                        </ng-container>
+                      </ng-container>
+                    </ng-template>
+
+                    <ng-template let-value="value" ngx-datatable-cell-template let-row="row" let-rowIndex='rowIndex'>
+                      <ng-container [ngSwitch]="col.prop">
+                        <ng-container *ngSwitchCase="'index'">
+                          {{rowIndex + 1 + (page.pageNumber * page.size)}}
+                        </ng-container>
+
+                        <ng-container *ngSwitchDefault>
+                    <span class="row-data-show"
+                          title="{{value}}">{{value.length > 50 ? value.substring(0, 50).concat('...') : value}}</span>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'typeUser'">
+                          <span *ngIf="value === 0 ">{{'user.label.normal'| translate}}</span>
+                          <span *ngIf="value === 1 ">SSO</span>
+                        </ng-container>
+
+                        <!--                        <ng-container *ngSwitchCase="'activated'">-->
+                        <!--                          <div-->
+                        <!--                            *ngIf="row.activated === true; else elseBlockActived"><span-->
+                        <!--                            class="actives">{{'user.label.active'|translate}}</span></div>-->
+                        <!--                          <ng-template #elseBlockActived>-->
+                        <!--                            <span class="locks">{{'user.label.inactive'|translate}}</span>-->
+                        <!--                          </ng-template>-->
+                        <!--                        </ng-container>-->
+                        <ng-container *ngSwitchCase="'authoritiesName'">
+                       <span class="row-data-show custom-show-data"
+                             title="{{value}}">{{value ? value : 'N/A'}}</span>
+                        </ng-container>
+                        <!--                    <ng-container *ngSwitchCase="'createdDate'">-->
+                        <!--                      {{row.createdDate | date:'dd/MM/yyyy HH:mm:ss'}}-->
+                        <!--                    </ng-container>-->
+
+                        <!--                    <ng-container *ngSwitchCase="'domainCode'">-->
+                        <!--                    <span class="row-data-show"-->
+                        <!--                          title="{{value}}">{{value.length > 50 ? value.substring(0, 50).concat('...') : value}}</span>-->
+                        <!--                    </ng-container>-->
+
+                        <ng-container *ngSwitchCase="'action_btn'">
+                          <div *hasAnyAuthority="authority.USER_MANAGER.USER_MANAGER_WRITE"
+                               class="d-flex justify-content-center">
+                            <button title=" {{'user.label.edit'|translate}}" class="p-1" nbButton status="warning" ghost
+                                    style="border: none"
+                                    size="large" (click)="navigateToUserDetails(row)">
+                              <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+                            </button>
+                            <button title="{{'user.label.lockUser'|translate}}" class="p-1"
+                                    *ngIf="row.activated === false"
+                                    style="border: none"
+                                    nbButton
+                                    ghost
+                                    size="large" (click)="setActive(row,2)">
+                              <nb-icon icon="checkmark-circle-2-outline" pack="eva" size="tiny"></nb-icon>
+                            </button>
+                            <div *ngIf="row.activated === true">
+                              <button title="{{'user.label.lockUser'|translate}}" class="p-1" *ngIf="row.status === 1"
+                                      style="border: none"
+                                      nbButton
+                                      status="success"
+                                      ghost
+                                      size="large" (click)="setActive(row,0)">
+                                <nb-icon icon="unlock-outline" pack="eva" size="tiny"></nb-icon>
+                              </button>
+                              <button title="{{'user.label.unLockUser'|translate}}" class="p-1" *ngIf="row.status === 0"
+                                      style="border: none"
+                                      nbButton
+                                      status="danger"
+                                      size="large"
+                                      ghost
+                                      (click)="setActive(row,1)">
+                                <nb-icon icon="lock-outline" pack="eva" size="tiny"></nb-icon>
+                              </button>
+                            </div>
+
+                            <button title="{{'user.label.resetPass'|translate}}" class="p-1" nbButton status="danger"
+                                    style="border: none"
+                                    ghost
+                                    *ngIf="!row.ssoUserId"
+                                    size="large"
+                                    (click)="resetPassword(row)">
+                              <nb-icon icon="refresh-outline" pack="eva" size="tiny"></nb-icon>
+                            </button>
+                          </div>
+                        </ng-container>
+
+                      </ng-container>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-footer>
+                    <ng-template
+                      ngx-datatable-footer-template
+                      let-rowCount="rowCount"
+                      let-pageSize="pageSize"
+                      let-selectedCount="selectedCount"
+                      let-curPage="curPage"
+                      let-offset="offset">
+                      <div style="padding: 5px 10px">
+                        <div *ngIf="rowCount > 0">
+                          <!--                            Showing {{(offset * pageSize)+1}} to {{(rowCount>-->
+                          <!--                            (curPage*pageSize))?(curPage*pageSize):(rowCount)}} of-->
+                          <!--                            {{(rowCount)}} records.-->
+                          <!--                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * 10 + 1}} - {{rowCount - curPage * 10 >= 0 ? (curPage - 1) * 10 + 10 : rowCount}}/{{rowCount}}, page: {{curPage}}/{{getTotalPage(rowCount, pageSize)}}</span>-->
+                          <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * limit + 1}}
+                            - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}
+                            /{{rowCount}} {{'data-ingestion.label.record' | translate}}</span>
+                        </div>
+                        <div *ngIf="rowCount === 0">
+                          <span>0 {{'data-ingestion.label.record' | translate}}</span>
+                        </div>
+                      </div>
+                      <datatable-pager
+                        [pagerLeftArrowIcon]="'datatable-icon-left'"
+                        [pagerRightArrowIcon]="'datatable-icon-right'"
+                        [page]="curPage"
+                        [size]="pageSize"
+                        [count]="rowCount"
+                        [hidden]="!((rowCount / pageSize) > 1)"
+                        (change)="table.onFooterPage($event)">
+                      </datatable-pager>
+                    </ng-template>
+                  </ngx-datatable-footer>
+                </ng-container>
+              </ngx-datatable>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+    </nb-layout-column>
+  </nb-layout>
+</div>
+<ng-template #addUser let-data let-addUserRef="dialogRef">
+  <nb-card style="background: #181E38 !important;max-width:80vw ">
+    <nb-card-header>
+      <div class="d-flex justify-content-between">
+        <strong style="align-self: center">{{('user.label.new'|translate)}}</strong>
+        <button nbButton ghost (click)="addUserRef.close()" style="background: none; border: none; color: #8C95B2">
+          <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px"></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body style="overflow: visible ;padding-bottom: 0">
+      <div class="row">
+        <div class="col-6 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.userName'| translate}}<span class="pl-2"
+                                                                             style="color: red">*</span></strong>
+            <div class="col-10">
+              <div [formGroup]="userForm">
+                <nb-form-field>
+                  <input nbInput fullWidth trim="blur"
+                         formControlName="selectUserName"
+                         placeholder="User name"
+                         class="input-edit">
+                  <ngx-inline-message [message]="'user.column.userName'| translate"
+                                      [formName]="userForm.get('selectUserName')"></ngx-inline-message>
+                </nb-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.fullname'| translate}}</strong>
+            <div class="col-10">
+              <div [formGroup]="userForm">
+                <input class="input-edit" nbInput fullWidth trim="blur"
+                       placeholder="Full name"
+                       formControlName="fullName">
+                <ngx-inline-message [message]="'user.column.fullname'| translate"
+                                    [formName]="userForm.get('fullName')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.password'| translate}}<span class="pl-2"
+                                                                             style="color: red">*</span></strong>
+            <div class="col-10">
+              <div [formGroup]="userForm">
+                <nb-form-field>
+                  <input fullWidth
+                         class="input-edit"
+                         [type]="getInputType()" nbInput formControlName="password">
+                  <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+                    <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                             pack="eva"
+                             [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                    </nb-icon>
+                  </button>
+                </nb-form-field>
+                <ngx-inline-message [message]="'user.column.password'| translate"
+                                    [formName]="userForm.get('password')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.confirmPassword'| translate}}<span class="pl-2"
+                                                                                    style="color: red">*</span></strong>
+            <div class="col-10">
+              <div [formGroup]="userForm">
+                <nb-form-field>
+                  <input fullWidth
+                         class="input-edit"
+                         [type]="getInputTypeCf()" nbInput formControlName="Repassword">
+                  <button nbSuffix nbButton ghost (click)="toggleShowPasswordCf()">
+                    <nb-icon [icon]="showPasswordCf ? 'eye-outline' : 'eye-off-2-outline'"
+                             pack="eva"
+                             [attr.aria-label]="showPasswordCf ? 'hide password' : 'show password'">
+                    </nb-icon>
+                  </button>
+
+                </nb-form-field>
+              </div>
+              <div *ngIf="userForm.value.Repassword !== null && userForm.value.password !== userForm.value.Repassword"
+                   style="font-size: 80%"
+                   class="text-danger">password not the same
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.group'| translate}}<span class="pl-2"
+                                                                          style="color: red">*</span></strong>
+            <div class="col-10">
+              <div [formGroup]="userForm">
+                <ng-select [hideSelected]="true"
+                           bindLabel="code"
+                           bindValue="id"
+                           appendTo=""
+                           formControlName="groupId">
+                  <ng-option
+                    *ngFor="let item of listWpGroup" [value]="item.id">
+                    <span showTooltip>{{item.name}}</span>
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-4">
+          <div class="row">
+            <strong class="col-2">Email<span class="pl-2" style="color: red">*</span></strong>
+            <div class="col-10">
+              <div [formGroup]="userForm">
+                <input class="input-edit" nbInput fullWidth trim="blur"
+                       type="email"
+                       [email]="true"
+                       placeholder="Email"
+                       formControlName="selectedEmail">
+                <ngx-inline-message [message]="'Email'"
+                                    [formName]="userForm.get('selectedEmail')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.role'| translate}}<span class="pl-2"
+                                                                         style="color: red">*</span></strong>
+            <div class="col-10">
+              <div [formGroup]="userForm">
+                <ng-select [hideSelected]="true"
+                           bindLabel="code"
+                           bindValue="id"
+                           formControlName="selectedRoleGroup"
+                           appendTo="">
+                  <ng-option
+                    *ngFor="let item of listRoleGroup" [value]="item.name">
+                    <span showTooltip>{{item.name}}</span>
+                  </ng-option>
+                </ng-select>
+                <ngx-inline-message [message]="'user.column.role'| translate"
+                                    [formName]="userForm.get('selectedRoleGroup')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-4">
+          <div class="row">
+            <strong class="col-2">{{'user.column.phoneNumber'| translate}}</strong>
+            <div class="col-10">
+              <div [formGroup]="userForm">
+                <input class="input-edit" nbInput fullWidth trim="blur" type="number"
+                       formControlName="phoneNumber">
+                <ngx-inline-message [message]="'user.column.phoneNumber'| translate"
+                                    [formName]="userForm.get('phoneNumber')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-4">
+          <div class="row">
+            <strong class="col-2">Ip</strong>
+            <div class="col-10 list-ip">
+              <div class="div-item">
+                <div class="d-flexs">
+                  <div class="ip-item" *ngFor="let item of userForm.value.ipAddress; index as i">
+                    {{item}}
+                    <div class="actions">
+                      <div>
+                        <nb-icon icon="edit-outline"
+                                 (click)="dialogService.open(this.createWpIp,{closeOnBackdropClick:false, context: {index: i}});  this.ipForm.get('ipAddress').patchValue(item)"></nb-icon>
+                      </div>
+                      <div>
+                        <nb-icon icon="close-outline" (click)="deleteIpAddress(i)"></nb-icon>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button nbButton size="small"
+                      (click)="dialogService.open(this.createWpIp,{closeOnBackdropClick:false});ipForm.reset()">
+                <nb-icon icon="plus-outline"></nb-icon>
+              </button>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mb-4">
+          <div class="row mb-4">
+            <strong class="col-2">{{'user.column.userHDFS'| translate}}</strong>
+            <div class="col-10">
+              <div [formGroup]="userForm">
+                <ng-select [hideSelected]="true"
+                           multiple="true"
+                           bindLabel="code"
+                           formControlName="selectedHdfs" appendTo="">
+                  <ng-option
+                    *ngFor="let item of listBroweseUserHdfs" [value]="item?.hdfsUser">
+                    <span showTooltip>{{item?.hdfsUser?.hdfsUser}}</span>
+                  </ng-option>
+                </ng-select>
+                <ngx-inline-message [message]="'user.column.userHDFS'| translate"
+                                    [formName]="userForm.get('selectedHdfs')"></ngx-inline-message>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <strong class="col-2">{{'user.label.type'| translate}}</strong>
+            <div class="col-8">
+              <div [formGroup]="userForm">
+                <nb-radio-group formControlName="typeUser"
+                                class="d-flex justify-content-between p-0 ml-0 radio">
+                  <nb-radio class="actives" [value]="0">{{'user.label.normal'| translate}}</nb-radio>
+                  <nb-radio class="locks" [value]="1">SSO</nb-radio>
+                </nb-radio-group>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="edit-button d-flex justify-content-end">
+        <button
+          [disabled]="userForm.value.password !== userForm.value.Repassword || userForm.invalid"
+          (click)="addNewUser(addUserRef)" style="margin-right: 10px"
+          status="basic">
+          <nb-icon style="padding-right: 5px" [icon]="'checkmark-outline'"></nb-icon>
+          {{"user.label.add" | translate}}
+        </button>
+        <button class="edit-button-cancel" (click)="resetForm();addUserRef.close()">
+          <nb-icon style="padding-right: 5px" [icon]="'close-outline'"></nb-icon>
+          {{'user.label.cancel' | translate}}
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #createWpIp let-data let-dgRef="dialogRef">
+  <nb-card style="width: 40vw;background: #181E38 !important;">
+    <nb-card-header class="d-flex justify-content-between">
+      <strong class="custom-show-data" *ngIf="data?.index || data?.index === 0"
+              style="align-self: center;">{{'label.edit'| translate}}</strong>
+      <strong class="custom-show-data" *ngIf="data?.index !== 0"
+              style="align-self: center;">{{'label.saveIp'| translate}}</strong>
+      <button nbButton ghost (click)="dgRef.close()" style="background: none; border: none; color: #8C95B2">
+        <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px"></nb-icon>
+      </button>
+    </nb-card-header>
+
+    <nb-card-body>
+      <div class="d-flex row mb-3">
+        <strong class="custom-show-data col-3">Ip Address<span class="pl-2" style="color: red">*</span></strong>
+        <div class="col-9">
+          <div [formGroup]="ipForm">
+            <input trim="blur" nbInput fullWidth class="input-edit" type="text" formControlName="ipAddress">
+            <ngx-inline-message [message]="'Ip Address'"
+                                [formName]="ipForm.get('ipAddress')"></ngx-inline-message>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end edit-button">
+        <button [class.disabled]="ipForm.value.ipAddress === null || !ipForm.valid"
+                [disabled]="ipForm.value.ipAddress === null || !ipForm.valid"
+                (click)="addIpAddress(dgRef,ipForm.value.ipAddress, data?.index);">
+          <nb-icon [icon]="'checkmark-outline'"></nb-icon>
+          <strong>{{data?.index || data?.index === 0 ? ('label.create'|translate) : ('label.save'|translate)}}</strong>
+        </button>
+        <button class="edit-button-cancel" (click)="dgRef.close()" style="margin-left: 10px">
+          <nb-icon [icon]="'close-outline'"></nb-icon>
+          <strong>{{'userThrift.label.cancel'| translate}}</strong>
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #createWpGroup let-data let-dgRef="dialogRef">
+  <nb-card style="width: 40vw;background: #181E38 !important;">
+    <nb-card-header class="d-flex justify-content-between">
+      <strong class="custom-show-data" style="align-self: center;"
+              *ngIf="data.title === 'create'">{{'userThrift.label.createGroup'| translate}}</strong>
+      <strong class="custom-show-data" style="align-self: center;"
+              *ngIf="data.title === 'edit'">{{'userThrift.label.editGroup'| translate}}</strong>
+      <button nbButton ghost (click)="dgRef.close()" style="background: none; border: none; color: #8C95B2">
+        <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px"></nb-icon>
+      </button>
+    </nb-card-header>
+
+    <nb-card-body>
+      <div [formGroup]="wpGroup">
+        <div class="d-flex row mb-3">
+          <strong class="custom-show-data col-3">{{'userThrift.group.wpGroupName'| translate}}<span class="pl-2"
+                                                                                                    style="color: red">*</span></strong>
+          <div class="col-9">
+            <input trim="blur" nbInput fullWidth class="input-edit" type="text" formControlName="name">
+            <ngx-inline-message [message]="'userThrift.group.wpGroupName'| translate"
+                                [formName]="wpGroup.get('name')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex row mb-3">
+          <strong class=" col-3">{{'userThrift.group.groupAccount'| translate}}<span class="pl-2"
+                                                                                     style="color: red">*</span></strong>
+          <div class="col-9">
+            <input trim="blur" nbInput fullWidth class="input-edit" type="text" formControlName="groupAccount">
+            <ngx-inline-message [message]="'userThrift.group.groupAccount'| translate"
+                                [formName]="wpGroup.get('groupAccount')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex row mb-3">
+          <strong class="custom-show-data col-3">{{'userThrift.group.description'| translate}}</strong>
+          <div class="col-9">
+            <input trim="blur" nbInput fullWidth class="input-edit" type="text" formControlName="description">
+            <ngx-inline-message [message]="'userThrift.group.description'| translate"
+                                [formName]="wpGroup.get('description')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex row">
+          <strong class="col-3">{{'userThrift.column.status'| translate}}</strong>
+          <nb-radio-group formControlName="activated" class="d-flex justify-content-between col-6 p-0 ml-3 radio">
+            <nb-radio class="actives" [value]="1">{{'userThrift.group.active'| translate}}</nb-radio>
+            <nb-radio class="locks" [value]="0">{{'userThrift.group.lock'| translate}}</nb-radio>
+          </nb-radio-group>
+
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end edit-button">
+        <button style="margin-right: 10px" *ngIf="data.title === 'create'" (click)="saveNewWpGroup(dgRef)"
+                [disabled]="!wpGroup.valid">
+          <nb-icon [icon]="'checkmark-outline'"></nb-icon>
+          <strong>{{'userThrift.label.save'| translate}}</strong>
+        </button>
+        <button style="margin-right: 10px" *ngIf="data.title === 'edit'"
+                [disabled]="!wpGroup.valid" (click)="saveEditWpGroup(dgRef)">
+          <nb-icon [icon]="'checkmark-outline'"></nb-icon>
+          <strong>{{'userThrift.label.update'| translate}}</strong>
+        </button>
+        <button class="edit-button-cancel" (click)="dgRef.close()">
+          <nb-icon [icon]="'close-outline'"></nb-icon>
+          <strong>{{'userThrift.label.cancel'| translate}}</strong>
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+<ng-template #confirmDelete let-data let-deleteRef="dialogRef">
+  <nb-card style="width: 400px;background: #181E38 !important;">
+    <nb-card-header>
+      <span>{{'module.label.deleteItem' | translate}}</span>
+    </nb-card-header>
+    <nb-card-body>
+      {{'module.label.confirmDelete' | translate}}
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="float-right d-flex edit-button">
+        <button class="edit-button-cancel" (click)="deleteRef.close()">{{'user.label.cancel'|translate}}</button>
+        <button class="ml-2"
+                (click)="deleteWpGroup(deleteRef)"> {{'module.label.confirm' | translate}}</button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

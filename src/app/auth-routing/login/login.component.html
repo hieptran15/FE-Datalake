@@ -1,0 +1,112 @@
+<div class="row">
+  <div class="col d-flex justify-content-center align-items-center" [nbSpinner]="isLoading" nbSpinnerStatus="primary">
+    <!--    <div>-->
+    <form [formGroup]="loginForm" aria-labelledby="title" autocomplete="off" class="login-form">
+      <h1 id="title" class="title custom-title">Viettel Data Platform Web Portal</h1>
+      <!--<nb-alert *ngIf="showMessages.error && errors?.length && !submitted" outline="danger" role="alert">-->
+      <!--  <p class="alert-title"><b>Oh snap!</b></p>-->
+      <!--  <ul class="alert-message-list">-->
+      <!--    <li *ngFor="let error of errors" class="alert-message">{{ error }}</li>-->
+      <!--  </ul>-->
+      <!--</nb-alert>-->
+
+      <!--<nb-alert *ngIf="showMessages.success && messages?.length && !submitted" outline="success" role="alert">-->
+      <!--  <p class="alert-title"><b>Hooray!</b></p>-->
+      <!--  <ul class="alert-message-list">-->
+      <!--    <li *ngFor="let message of messages" class="alert-message">{{ message }}</li>-->
+      <!--  </ul>-->
+      <!--</nb-alert>-->
+
+      <!--        <nb-alert outline="danger" *ngIf="authenticationError" closable-->
+      <!--                  (close)="onClose()">{{'login.failIn'|translate}}</nb-alert>-->
+      <div class="form-control-group position-relative">
+        <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M16.6667 17.7043V16.0812C16.6667 15.2202 16.3155 14.3944 15.6904 13.7856C15.0653 13.1768 14.2174 12.8348 13.3334 12.8348H6.66671C5.78265 12.8348 4.93481 13.1768 4.30968 13.7856C3.68456 14.3944 3.33337 15.2202 3.33337 16.0812V17.7043"
+            stroke="#0B0D26" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M9.99996 9.58841C11.8409 9.58841 13.3333 8.13496 13.3333 6.34203C13.3333 4.54911 11.8409 3.09566 9.99996 3.09566C8.15901 3.09566 6.66663 4.54911 6.66663 6.34203C6.66663 8.13496 8.15901 9.58841 9.99996 9.58841Z"
+            stroke="#0B0D26" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input nbInput
+               fullWidth
+               trim="blur"
+               autocomplete="off"
+               id="account"
+               placeholder="{{'Username'}}"
+               formControlName="account"
+               [status]="loginForm.get('account').dirty ? (loginForm.get('account').invalid  ? 'danger' : 'success') : ''">
+        <ngx-inline-message style="position: absolute;top: 83%;font-size: 13px;" [formName]="loginForm.get('account')"
+                            [message]="'Username'"></ngx-inline-message>
+      </div>
+      <div class="form-control-group position-relative">
+        <svg class="icon-login" width="20" height="20" viewBox="0 0 20 20" fill="none"
+             xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M15.8333 9.41451H4.16667C3.24619 9.41451 2.5 10.1412 2.5 11.0377V16.7189C2.5 17.6153 3.24619 18.342 4.16667 18.342H15.8333C16.7538 18.342 17.5 17.6153 17.5 16.7189V11.0377C17.5 10.1412 16.7538 9.41451 15.8333 9.41451Z"
+            stroke="#0B0D26" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M5.83337 9.4145V6.16812C5.83337 5.09188 6.27236 4.05972 7.05376 3.29871C7.83516 2.53769 8.89497 2.11015 10 2.11015C11.1051 2.11015 12.1649 2.53769 12.9463 3.29871C13.7277 4.05972 14.1667 5.09188 14.1667 6.16812V9.4145"
+            stroke="#0B0D26" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input nbInput
+               fullWidth
+               name="password"
+               type="password"
+               id="password"
+               trim="blur"
+               autocomplete="off"
+               formControlName="password"
+               placeholder="{{'login.password'|translate}}"
+               [status]="loginForm.get('password').dirty ?
+           (loginForm.get('password').invalid  ? 'danger' : 'success') : ''">
+        <ngx-inline-message style="position: absolute;top: 83%;font-size: 13px;" [formName]="loginForm.get('password')"
+                            [message]="'login.password'"></ngx-inline-message>
+      </div>
+
+      <!--  <div class="form-control-group accept-group">-->
+      <!--    <nb-checkbox name="rememberMe" [(ngModel)]="user.rememberMe" *ngIf="rememberMe">Remember me</nb-checkbox>-->
+      <!--    <a class="forgot-password" routerLink="../request-password">Forgot Password?</a>-->
+      <!--  </div>-->
+
+      <button nbButton
+              [disabled]="loginForm.invalid"
+              fullWidth status="primary"
+              (click)="signIn(false)">
+        {{'login.in'|translate}}
+      </button>
+      <!--      <button class="forgot-password-btn" (click)="forgotPassword()" >{{'login.forgotPassword'|translate}}-->
+      <!--      </button>-->
+      <div class="check-rem">
+        <div class="boxCheck">
+          <nb-checkbox formControlName="rememberMe" (checkedChange)="toggle($event)">Remember me</nb-checkbox>
+        </div>
+        <a href="#" style="margin-left: auto;">Forgot password ?</a>
+      </div>
+      <div class="signup-or"><span>OR</span></div>
+      <button (click)="signInSSO()" class="signup-social">
+        <img src="assets/images/logo_SSO.png">
+        <span class="signup-social-text"> Login with SSO account</span>
+      </button>
+    </form>
+    <!--    </div>-->
+
+  </div>
+</div>
+<div class="logo-vt">
+  <img src="assets/images/Logo.png">
+</div>
+<ng-template #pupupNote let-data let-ref="dialogRef">
+  <div class="pupup-status">
+    <div class="pupup-header-status d-flex justify-content-md-between">
+      <span>Yêu cầu quyền truy cập</span>
+      <button style="background: none; border: none; color: #8C95B2" size="small" (click)="ref.close()">
+        <nb-icon icon="close-outline" style="font-size: 20px; color: white"></nb-icon>
+      </button>
+    </div>
+    <div class="pupup-body-status">
+      <b>Liên hệ với ban quản trị để được cấp quyền sử dụng hệ thống</b> <br>
+      <b>Đầu mối: Hungdd18 - 0966871864</b>
+    </div>
+  </div>
+</ng-template>

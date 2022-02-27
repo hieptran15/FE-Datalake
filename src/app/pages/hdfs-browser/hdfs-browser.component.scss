@@ -1,0 +1,255 @@
+//::ng-deep .ngx-datatable .datatable-body-cell-label {
+//  text-align: center;
+//}
+//
+//::ng-deep .ngx-datatable .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap {
+//  text-align: center;
+//}
+
+.page-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+:host ::ng-deep {
+  //.nb-theme-dark [nbButton].appearance-filled.status-primary {
+  //  background-color: var(--background-table);
+  //  border: none !important;
+  //  color: white;
+  //
+  //}
+
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  .nb-theme-dark .nb-form-field-control-with-prefix .size-medium {
+    padding-left: 0rem;
+  }
+
+  .checkUserHdfs {
+    nb-spinner .message {
+      background: #8a8d9a;
+      padding: 40px 30px;
+      border-radius: 5px;
+    }
+
+    nb-spinner.status-basic .spin-circle {
+      display: none;
+    }
+  }
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+.cluster {
+  margin-bottom: 10px;
+
+  .flex-nowrap {
+    button {
+      background: var(--color-text-dropdown);
+
+      border-color: #363e54;
+
+      nb-icon ::ng-deep {
+        color: var(--color-text-light);
+      }
+    }
+
+    button:hover {
+      background: #363e54;
+
+      nb-icon ::ng-deep {
+        color: var(--color-text-card-item-active-user);
+      }
+    }
+  }
+}
+
+.breadcrumb-path {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .lu-breadcrumb {
+    .breadcrumb-item {
+      //color: white;
+
+      &.has-url {
+        color: #9cbefd;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .path {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+
+    input {
+      width: 320px;
+    }
+
+    button {
+      margin-left: 5px;
+    }
+  }
+}
+
+nb-list {
+  background-color: var(--background-container);
+}
+
+.table-wrap {
+  nb-form-field {
+    ::ng-deep .nb-form-field-addon {
+      margin-top: -13px;
+    }
+
+    input {
+      width: 100%;
+      max-width: initial;
+      background: #2e3648;
+      border: 2px solid #363e54;
+    }
+  }
+}
+
+::ng-deep {
+
+  nb-spinner {
+    background-color: transparent !important;
+  }
+
+  .move-form {
+    min-width: 100%;
+    max-width: 100%;
+    nb-card-body, nb-card-header, nb-card-footer {
+      min-width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  .delete-form, .move-form {
+
+    .confirmation-text {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      margin-bottom: 15px;
+
+      em {
+        font-weight: bold;
+      }
+    }
+
+    .confirmation-input {
+      input {
+        width: 500px;
+      }
+    }
+
+    nb-card-footer {
+      button {
+        margin-right: 15px;
+      }
+    }
+
+    .permission {
+      tr {
+        td {
+          span {
+            display: block;
+            padding: 10px 15px;
+            color: white;
+            cursor: pointer;
+
+            &.checked {
+              background-color: #9cbefd;
+            }
+          }
+
+          &:first-of-type {
+            padding-right: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  .item-path {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #9cbefd;
+  }
+
+  .actions {
+    cursor: pointer;
+    position: relative;
+  }
+
+  .folder-wrap {
+    margin-top: 15px;
+    max-height: 60vh;
+    overflow: auto;
+  }
+
+  .font-text-path {
+    font-weight: normal !important;
+    font-style: oblique !important;
+    color: #007bff !important;
+  }
+}
+
+
+//@media only screen and (max-width: 1600px) {
+//  ::ng-deep .ngx-datatable .datatable-body {
+//    max-height: 400px !important;
+//    overflow: hidden auto;
+//
+//    &::-webkit-scrollbar {
+//      width: 2px;
+//    }
+//
+//    &::-webkit-scrollbar-track {
+//      background: #f1f1f1;
+//    }
+//
+//    &::-webkit-scrollbar-thumb {
+//      background: #888;
+//    }
+//
+//    &::-webkit-scrollbar-thumb:hover {
+//      background: #555;
+//    }
+//  }
+//}
+
+
+::ng-deep .ngx-datatable .datatable-body {
+
+
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}

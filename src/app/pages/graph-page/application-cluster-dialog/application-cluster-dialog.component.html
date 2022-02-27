@@ -1,0 +1,29 @@
+<nb-card style="width: 40vw !important; height: auto !important;" >
+  <nb-card-header>Thông tin cụm ứng dụng {{data?.clusterName}}</nb-card-header>
+  <nb-card-body [formGroup]="applicationCluster">
+    <div class="row form-group" *ngIf="data?.clusterCode">
+      <label class="col-lg-5 label">Tên cụm: </label>
+      <label class="col-lg-7 ">{{data?.clusterName}}</label>
+    </div>
+    <div class="row form-group" *ngIf="data?.clusterParent">
+      <label class="col-lg-5 label">Thuộc cụm server: </label>
+
+    </div>
+   <div class="form-group" *ngIf="data?.description">
+      <label class="label">Mô tả</label>
+     <div class="scrollable" [innerHTML]="data?.description"></div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer class="d-flex justify-content-between">
+    <div>
+      <button class="mr-2" nbButton status="info" (click)="edit(data)">
+        <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon> Sửa
+      </button>
+      <button class="" nbButton status="danger" (click)="delete(data)">
+        <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon> Xóa
+      </button>
+    </div>
+    <button nbButton status="warning" type="button" (click)="ref.close()">Đóng</button>
+  </nb-card-footer>
+
+</nb-card>

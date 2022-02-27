@@ -1,0 +1,131 @@
+  <nb-layout>
+  <nb-layout-column
+    style="padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;">
+    <nb-card>
+      <nb-card-header>
+        <div>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="title-page d-flex align-items-center">
+              <nb-icon
+                (click)="navigateToRequest()"
+                style="margin-right: 14.5px; cursor: pointer"
+                icon="arrow-back-outline"
+                pack="eva"
+              ></nb-icon>
+              <strong style="margin-right: 10px">{{
+                paramId ? "Chi tiết yêu cầu:" : "Tạo yêu cầu:"
+                }}</strong>
+              <div *ngIf="typeRequest">
+                <span
+                  *ngIf="typeRequest === 'thrift_connection'"
+                  class="edit-thritf-request"
+                >Thrift connection</span
+                >
+                <span
+                  *ngIf="typeRequest === 'iptables'"
+                  class="edit-IPtable-request"
+                >Iptables</span
+                >
+                <span
+                  *ngIf="typeRequest === 'lb_connection'"
+                  class="edit-LB-request"
+                >LB connection</span
+                >
+              </div>
+              <div *ngIf="paramId">
+                <span
+                  *ngIf="dataItems?.type === 'thrift_connection'"
+                  class="edit-thritf-request"
+                >Thrift connection</span
+                >
+                <span
+                  *ngIf="dataItems?.type === 'iptables'"
+                  class="edit-IPtable-request"
+                >Iptables</span
+                >
+                <span
+                  *ngIf="dataItems?.type === 'lb_connection'"
+                  class="edit-LB-request"
+                >LB connection</span
+                >
+              </div>
+            </div>
+            <div class="d-flex align-items-center" style="font-size: 12px ; font-weight:400">
+            </div>
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card>
+        <nb-card-header style="padding: 0 0;">
+          <div class="header-request d-flex">
+            <div [ngClass]="{activeRequest: isRequestSelected === 'CONTENT'}" (click)="checkRequestKey('CONTENT')"
+                 class="header-request__items">Nội dung
+            </div>
+            <div [ngClass]="{activeRequest: isRequestSelected === 'SR'}" (click)="checkRequestKey('SR')"
+                 class="header-request__items">Thực hiện SR
+            </div>
+            <div [ngClass]="{activeRequest: isRequestSelected === 'LOG'}" (click)="checkRequestKey('LOG')"
+                 class="header-request__items">Log thực hiện
+            </div>
+          </div>
+        </nb-card-header>
+        <nb-card-body style="overflow: visible; min-height: 71vh">
+          <div *ngIf="isRequestSelected === 'CONTENT'">
+            <ngx-content-request [paramId]="paramId" *ngIf="dataItems" [dataItems]="dataItems"
+                                 [typeRequest]="typeRequest"></ngx-content-request>
+          </div>
+          <div *ngIf="isRequestSelected === 'SR'">
+            <ngx-perform-sr [typeRequestSR]="typeRequest"
+                            [paramId]="paramId" *ngIf="dataItems" [dataItems]="dataItems"
+            ></ngx-perform-sr>
+          </div>
+          <div *ngIf="isRequestSelected === 'LOG'">
+            <ngx-perform-log></ngx-perform-log>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div style="margin-top: 8px">
+            <div *ngIf="isRequestSelected === 'CONTENT'" class="edit-button d-flex justify-content-center">
+              <div *ngIf="paramId">
+                <div class="d-flex justify-content-center" *ngIf="dataItems?.createOrHandler === 1">
+                  <button (click)="actionContentSR('sendSR')" style="margin-right: 12px">Gửi SR</button>
+                  <button [disabled]="dataItems?.status === 'waiting'" (click)="actionContentSR('saveSR')"
+                          style="margin-right: 12px">Lưu
+                  </button>
+                </div>
+                <div class="d-flex justify-content-center" *ngIf="dataItems?.createOrHandler === 0">
+                  <button (click)="actionContentSR('agree')" style="margin-right: 12px">Đồng ý</button>
+                  <button (click)="actionContentSR('rejected')" style="margin-right: 12px">Từ chối</button>
+                </div>
+              </div>
+              <button *ngIf="typeRequest" (click)="actionContentSR('sendSR')" style="margin-right: 12px">Gửi SR</button>
+              <button *ngIf="typeRequest"
+                      (click)="actionContentSR('saveSR')" style="margin-right: 12px">Lưu
+              </button>
+              <button (click)="actionContentSR('cancelSR')"
+                      class="edit-button-cancel">Hủy
+              </button>
+            </div>
+            <div
+              *ngIf="isRequestSelected === 'SR'"
+              class="edit-button d-flex justify-content-center"
+            >
+              <!--              <button style="margin-right: 12px" [class.edit-button-cancel-rq]="this.shareData.ShareStatusSR | async"-->
+              <!--                      [disabled]="this.shareData.ShareStatusSR | async " (click)="ActionStep('action')">-->
+              <!--                Thực hiện SR-->
+              <!--              </button>-->
+
+              <button style="margin-right: 12px"
+                      (click)="ActionStep('action')">
+                Thực hiện SR
+              </button>
+              <button class="edit-button-cancel" (click)="ActionStep('cancel')">
+                Hủy
+              </button>
+            </div>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

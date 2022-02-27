@@ -1,0 +1,11 @@
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+}

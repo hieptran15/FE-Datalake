@@ -1,0 +1,998 @@
+<!--    phan progress bar -->
+<nb-card>
+  <nb-card-body class="card-body-4-dashboard">
+<!--    <div class="row d-flex flex-row justify-content-between column-4-dashboard" style="margin-bottom:14px">-->
+<!--      <div class="d-flex align-items-center">-->
+<!--        <span>Tổng quan hệ thống </span>-->
+<!--      </div>-->
+<!--      <div id="opposite">-->
+<!--        <ng-select-->
+<!--          class="selectDashBoard"-->
+<!--          (change)="(checkDashboard)"-->
+<!--          [(ngModel)]="Dashboard"-->
+<!--          [clearable]="false"-->
+<!--          appendTo=""-->
+<!--        >-->
+<!--          <ng-option-->
+<!--            *ngFor="let item of listCmCluster"-->
+<!--            [value]="item?.clusterName"-->
+<!--          >-->
+<!--            {{ item?.clusterName }}-->
+<!--          </ng-option>-->
+<!--        </ng-select>-->
+<!--      </div>-->
+<!--    </div>-->
+    <div class="row column-4-dashboard">
+      <div
+        class="col-12 col-md-6 col-xl-3 column-4-dashboard-background d-flex justify-content-between"
+      >
+        <div class="column-4-dashboard-background">
+          <h3>Datanode</h3>
+          <div class="dashboard-card-item">
+            <h2
+              *ngIf="checkLengthNumber(defaultUse, defaultNumber)"
+              nbTooltip="{{ defaultUse }}/{{ defaultNumber }}"
+              [nbTooltipTrigger]="'hover'"
+              [nbTooltipAdjustment]="'vertical'"
+              nbTooltipStatus="control"
+            >
+              {{ defaultUse | resizeNumber }}/{{ defaultNumber | resizeNumber }}
+            </h2>
+            <h2 *ngIf="!checkLengthNumber(defaultUse, defaultNumber)">
+              {{ defaultUse | resizeNumber }} /{{
+              defaultNumber | resizeNumber
+              }}
+            </h2>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.66671 4.99992H6.33337V3.66659H7.66671V4.99992ZM7.66671 10.3333H6.33337V6.33325H7.66671V10.3333ZM7.00004 0.333252C6.12456 0.333252 5.25766 0.50569 4.44882 0.840722C3.63998 1.17575 2.90505 1.66682 2.286 2.28587C1.03575 3.53612 0.333374 5.23181 0.333374 6.99992C0.333374 8.76803 1.03575 10.4637 2.286 11.714C2.90505 12.333 3.63998 12.8241 4.44882 13.1591C5.25766 13.4941 6.12456 13.6666 7.00004 13.6666C8.76815 13.6666 10.4638 12.9642 11.7141 11.714C12.9643 10.4637 13.6667 8.76803 13.6667 6.99992C13.6667 6.12444 13.4943 5.25753 13.1592 4.4487C12.8242 3.63986 12.3331 2.90493 11.7141 2.28587C11.095 1.66682 10.3601 1.17575 9.55126 0.840722C8.74243 0.50569 7.87552 0.333252 7.00004 0.333252Z"
+                fill="#FF313C"
+              />
+            </svg>
+          </div>
+          <div class="d-flex title-span-green">
+            <div class="d-flex">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                viewBox="0 0 24 24"
+                width="18px"
+                fill="#02BF51"
+              >
+                <path d="M0 0h24v24H0V0z" fill="none"/>
+                <path
+                  d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"
+                />
+              </svg>
+              &nbsp;5 minute
+            </div>
+            <div class="text-nowrap">Last update</div>
+          </div>
+        </div>
+        <div class="position-relative">
+          <div class="progress-dashboard">
+            <circle-progress
+              [percent]="checkDataNodeNumber | async"
+              [backgroundStrokeWidth]="0"
+              [radius]="35"
+              [space]="-9"
+              [unitsFontSize]="12"
+              [outerStrokeWidth]="8"
+              [outerStrokeColor]="'#0F70F5'"
+              [innerStrokeColor]="'rgba(140, 149, 178, 0.15)'"
+              [innerStrokeWidth]="8"
+              [subtitleFontSize]="12"
+              [titleFontSize]="12"
+              [showSubtitle]="false"
+              [titleColor]="'var(--color-text-light)'"
+              [unitsColor]="'var(--color-text-light)'"
+              [showBackground]="false"
+              [startFromZero]="false"
+            ></circle-progress>
+          </div>
+        </div>
+      </div>
+      <div
+        class="col-xl-3 col-md-6 col-12 column-4-dashboard-background d-flex justify-content-between"
+      >
+        <div class="align-items-start column-4-dashboard-background">
+          <h3>Namenode</h3>
+          <div class="dashboard-card-item">
+            <h2
+              *ngIf="checkLengthNumber(defaultNameUse, defaultNameTotal)"
+              nbTooltip="{{ defaultNameUse }}/{{ defaultNameTotal }}"
+              [nbTooltipTrigger]="'hover'"
+              [nbTooltipAdjustment]="'vertical'"
+              nbTooltipStatus="control"
+            >
+              {{ defaultNameUse | resizeNumber }} /{{
+              defaultNameTotal | resizeNumber
+              }}
+            </h2>
+            <h2 *ngIf="!checkLengthNumber(defaultNameUse, defaultNameTotal)">
+              {{ defaultNameUse | resizeNumber }} /{{
+              defaultNameTotal | resizeNumber
+              }}
+            </h2>
+          </div>
+
+          <div class="d-flex title-span-green">
+            <div class="d-flex">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                viewBox="0 0 24 24"
+                width="18px"
+                fill="#02BF51"
+              >
+                <path d="M0 0h24v24H0V0z" fill="none"/>
+                <path
+                  d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"
+                />
+              </svg>
+              &nbsp;5 minute
+            </div>
+            <div class="text-nowrap">Last update</div>
+          </div>
+        </div>
+        <div class="progress-dashboard">
+          <circle-progress
+            [percent]="checkNameNodeNumber | async"
+            [backgroundStrokeWidth]="0"
+            [radius]="35"
+            [space]="-9"
+            [unitsFontSize]="12"
+            [outerStrokeWidth]="8"
+            [outerStrokeColor]="'#0F70F5'"
+            [innerStrokeColor]="'rgba(140, 149, 178, 0.15)'"
+            [innerStrokeWidth]="8"
+            [subtitleFontSize]="12"
+            [titleFontSize]="12"
+            [showSubtitle]="false"
+            [titleColor]="'var(--color-text-light)'"
+            [unitsColor]="'var(--color-text-light)'"
+            [showBackground]="false"
+            [startFromZero]="false"
+          ></circle-progress>
+        </div>
+      </div>
+      <div
+        class="col-xl-3 col-md-6 col-12 column-4-dashboard-background d-flex justify-content-between"
+      >
+        <div class="align-items-start column-4-dashboard-background">
+          <h3>Block</h3>
+          <!--              <h2 nbTooltip="test" nbTooltipStatus="primary"><h2>{{defaultUseBlock}}/{{defaultTotalBlock}}</h2></h2>-->
+
+          <div class="dashboard-card-item">
+            <h2
+              style="color: #02bf51"
+              *ngIf="checkLengthNumber(defaultUseBlock, defaultTotalBlock)"
+              nbTooltip="{{ defaultUseBlock }}/{{ defaultTotalBlock }}"
+              [nbTooltipTrigger]="'hover'"
+              [nbTooltipAdjustment]="'vertical'"
+              nbTooltipStatus="control"
+            >
+              {{ defaultUseBlock | resizeNumber }} /{{
+              defaultTotalBlock | resizeNumber
+              }}
+            </h2>
+            <h2
+              *ngIf="!checkLengthNumber(defaultUseBlock, defaultTotalBlock)"
+              style="color: #02bf51"
+            >
+              {{ defaultUseBlock | resizeNumber }} /{{
+              defaultTotalBlock | resizeNumber
+              }}
+            </h2>
+          </div>
+
+          <div class="d-flex title-span-green">
+            <div class="d-flex">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                viewBox="0 0 24 24"
+                width="18px"
+                fill="#02BF51"
+              >
+                <path d="M0 0h24v24H0V0z" fill="none"/>
+                <path
+                  d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"
+                />
+              </svg>
+              &nbsp;5 minute
+            </div>
+            <div class="text-nowrap">Last update</div>
+          </div>
+        </div>
+        <div class="progress-dashboard">
+          <circle-progress
+            [percent]="checkdataBlockNumber | async"
+            [backgroundStrokeWidth]="0"
+            [radius]="35"
+            [space]="-9"
+            [unitsFontSize]="12"
+            [outerStrokeWidth]="8"
+            [outerStrokeColor]="'#0F70F5'"
+            [innerStrokeColor]="'rgba(140, 149, 178, 0.15)'"
+            [innerStrokeWidth]="8"
+            [subtitleFontSize]="12"
+            [titleFontSize]="12"
+            [showSubtitle]="false"
+            [titleColor]="'var(--color-text-light)'"
+            [unitsColor]="'var(--color-text-light)'"
+            [showBackground]="false"
+            [startFromZero]="false"
+          ></circle-progress>
+        </div>
+      </div>
+      <div
+        class="col-xl-3 col-md-6 col-12 column-4-dashboard-background d-flex justify-content-between"
+      >
+        <div class="align-items-start column-4-dashboard-background">
+          <h3>Data volume</h3>
+          <!--              <h2>{{defaultVolumeUse}}/{{defaultVolumeTotal}}</h2>-->
+
+          <div class="dashboard-card-item">
+            <h2
+              *ngIf="checkLengthNumber(defaultVolumeUse, defaultVolumeTotal)"
+              nbTooltip="{{ defaultVolumeUse }}/{{ defaultVolumeTotal }}"
+              [nbTooltipTrigger]="'click'"
+              [nbTooltipAdjustment]="'vertical'"
+              nbTooltipStatus="control"
+            >
+              {{ defaultVolumeUse | resizeNumber }} /{{
+              defaultVolumeTotal | resizeNumber
+              }}
+            </h2>
+            <h2
+              *ngIf="!checkLengthNumber(defaultVolumeUse, defaultVolumeTotal)"
+            >
+              {{ defaultVolumeUse | resizeNumber }} /{{
+              defaultVolumeTotal | resizeNumber
+              }}
+            </h2>
+            <span> gb </span>
+          </div>
+
+          <div class="d-flex title-span-green">
+            <div class="d-flex">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                viewBox="0 0 24 24"
+                width="18px"
+                fill="#02BF51"
+              >
+                <path d="M0 0h24v24H0V0z" fill="none"/>
+                <path
+                  d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"
+                />
+              </svg>
+              &nbsp;5 minute
+            </div>
+            <div class="text-nowrap">Last update</div>
+          </div>
+        </div>
+        <div class="progress-dashboard">
+          <circle-progress
+            [percent]="checkDataVolumeNumber | async"
+            [backgroundStrokeWidth]="0"
+            [radius]="35"
+            [space]="-9"
+            [unitsFontSize]="12"
+            [outerStrokeWidth]="8"
+            [outerStrokeColor]="'#0F70F5'"
+            [innerStrokeColor]="'rgba(140, 149, 178, 0.15)'"
+            [innerStrokeWidth]="8"
+            [subtitleFontSize]="12"
+            [titleFontSize]="12"
+            [showSubtitle]="false"
+            [titleColor]="'var(--color-text-light)'"
+            [unitsColor]="'var(--color-text-light)'"
+            [showBackground]="false"
+            [startFromZero]="false"
+          ></circle-progress>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<!--    phan highcharts -->
+<nb-card>
+  <nb-card-body class="card-body-4-dashboard">
+    <div class="row chart-dashboard">
+      <div class="col-xl-7 col-12 chart-background chart-left">
+
+        <div class="chart-demo" #chartLeft>
+          <highcharts-chart
+            [Highcharts]="Highcharts"
+            [runOutsideAngular]="true"
+            [options]="chartOptions"
+            style="width: 100%; display: block"
+            class="h-chart"
+          ></highcharts-chart>
+        </div>
+      </div>
+      <div
+        class="col-xl-5 col-12 mt-md-3 mt-3 mt-xl-0 chart-background chart-right d-flex flex-column"
+      >
+        <div class="chart-background-title d-flex flex-column m-0">
+          <span>Kafka log size</span>
+          <span>2.568</span>
+          <span><span style="color: red">2.1%</span> vs last week</span>
+        </div>
+        <div class="chart-demo d-flex flex-column" #chartRight>
+          <span class="title-of-chart-right">Sales from 1-6</span>
+          <highcharts-chart
+            [Highcharts]="Highcharts"
+            [options]="chartOptions2"
+            [(update)]="chartUpdate"
+            [runOutsideAngular]="true"
+            style="width: 100%; display: block"
+            class="h-chart"
+          ></highcharts-chart>
+          <!-- <div class="chart-right-title d-flex flex-row">
+            <div>
+              <span
+                ><svg
+                  width="9"
+                  height="9"
+                  viewBox="0 0 9 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="4.5" cy="4.5" r="4.5" fill="#5A6ACF" /></svg
+              ></span>
+              <span>&nbsp;Last 6 days</span>
+            </div>
+            <div>
+              <span
+                ><svg
+                  width="9"
+                  height="9"
+                  viewBox="0 0 9 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="4.5" cy="4.5" r="4.5" fill="#D8D9DB" /></svg
+              ></span>
+              <span>&nbsp;Last Week</span>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<!--    phan table -->
+<nb-card>
+  <nb-card-body class="card-body-4-dashboard">
+    <div class="row m-0 p-0">
+      <div class="col-12 col-xl-6 table-dashboard-background">
+        <div class="table-dashboard-background-title">
+          <span>Danh sách cảnh báo gần nhất : </span
+          ><span>{{ LengthAlert | async }}</span>
+        </div>
+        <ngx-datatable
+          class="dark fullscreen table-dashboard"
+          #table
+          [columnMode]="'force'"
+          [rows]="this.rowData"
+          [headerHeight]="48"
+          [rowHeight]="48"
+          [scrollbarV]="true"
+          [columns]="columnsTable"
+          [messages]="{
+            totalMessage: 'data-ingestion.label.record' | translate
+          }"
+        >
+          <ng-container *ngFor="let col of columnsTable">
+            <ngx-datatable-column
+              prop="{{ col.prop }}"
+              name="{{ col.name }}"
+              [flexGrow]="col.flexGrow"
+              [sortable]="false"
+            >
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <ng-container [ngSwitch]="col.prop">
+                  <ng-container *ngSwitchDefault>
+                    <span class="w-100">{{ column.name }}</span>
+                  </ng-container>
+                  <!--                      <ng-container *ngSwitchCase="'action'">-->
+                  <!--                        <div style="text-align: center">-->
+                  <!--                          <span class="w-100">{{ column.name | translate }}</span>-->
+                  <!--                        </div>-->
+                  <!--                      </ng-container>-->
+                </ng-container>
+              </ng-template>
+
+              <ng-template
+                let-row="row"
+                let-value="value"
+                let-rowIndex="rowIndex"
+                ngx-datatable-cell-template
+              >
+                <ng-container [ngSwitch]="col.prop">
+                  <!--                    <ng-container *ngSwitchCase="'id'">-->
+                  <!--                      <div class="text-center">{{rowIndex + 1}}</div>-->
+                  <!--                    </ng-container>-->
+                  <ng-container *ngSwitchDefault>
+                    <span [title]="value"> {{ value ? value : "N/A" }} </span>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'action'">
+                    <div class="w-100 d-flex justify-content-center">
+                      <button
+                        class="edit"
+                        status="warning"
+                        nbButton
+                        ghost
+                        nbTooltip="{{
+                          'data-ingestion.label.edit' | translate
+                        }}"
+                        (click)="
+                          this.dataCache = row;
+                          this.getRowDataTable(row);
+                          this.OpenPopup(addOrEdit, row)
+                        "
+                      >
+                        <nb-icon
+                          icon="eye-outline"
+                          pack="eva"
+                          size="tiny"
+                        ></nb-icon>
+                      </button>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+          </ng-container>
+        </ngx-datatable>
+      </div>
+      <div class="col-12 col-xl-6 table-dashboard-background">
+        <div class="table-dashboard-background-title">
+          <span>Danh sách SR chưa xử lý:</span
+          ><span>{{ LengthSR | async }}</span>
+        </div>
+        <ngx-datatable
+          class="dark fullscreen table-dashboard"
+          #tableSR
+          [columnMode]="'force'"
+          [rows]="this.listSR"
+          [headerHeight]="48"
+          [rowHeight]="48"
+          [scrollbarV]="true"
+          [columns]="columnsTable2"
+          [messages]="{
+            totalMessage: 'data-ingestion.label.record' | translate
+          }"
+        >
+          <ng-container *ngFor="let col of columnsTable2">
+            <ngx-datatable-column
+              prop="{{ col.prop }}"
+              name="{{ col.name | translate }}"
+              [flexGrow]="col.flexGrow"
+              [sortable]="false"
+            >
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <ng-container [ngSwitch]="col.prop">
+                  <ng-container *ngSwitchDefault>
+                    <span class="d-flex align-items-center">{{
+                      column.name
+                      }}</span>
+                  </ng-container>
+                  <!--                    <ng-container *ngSwitchCase="'wpThriftId'">-->
+                  <!--                      <div class="text-center">-->
+                  <!--                        <span class="w-100">{{ this.getDataThriftRow(v) }}</span>-->
+                  <!--                      </div>-->
+                  <!--                    </ng-container>-->
+                  <!--                      <ng-container *ngSwitchCase="'action'">-->
+                  <!--                        <div style="text-align: center">-->
+                  <!--                          <span class="w-100">{{ column.name | translate }}</span>-->
+                  <!--                        </div>-->
+                  <!--                      </ng-container>-->
+                </ng-container>
+              </ng-template>
+
+              <ng-template
+                let-row="row"
+                let-value="value"
+                let-rowIndex="rowIndex"
+                ngx-datatable-cell-template
+              >
+                <ng-container [ngSwitch]="col.prop">
+                  <!--                    <ng-container *ngSwitchCase="'id'">-->
+                  <!--                      <div class="text-center">{{rowIndex + 1}}</div>-->
+                  <!--                    </ng-container>-->
+                  <ng-container *ngSwitchDefault>
+                    <span [title]="value"> {{ value ? value : "N/A" }} </span>
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'stt'">
+                    <span class="text-center">{{ rowIndex + 1 }}</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'type'">
+                    <span
+                      style="color: #02bf51"
+                      *ngIf="value === 'lb_connection'"
+                      [title]="value"
+                    >
+                      {{ value ? "LB connection" : "N/A" }}
+                    </span>
+                    <span
+                      style="color: #38a4f8"
+                      *ngIf="value === 'iptables'"
+                      [title]="value"
+                    >
+                      {{ value ? "Iptables" : "N/A" }}
+                    </span>
+                    <span
+                      style="color: #ffc300"
+                      *ngIf="value === 'thrift_connection'"
+                      [title]="value"
+                    >
+                      {{ value ? "Thrift connection" : "N/A" }}
+                    </span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'action'">
+                    <div class="w-100 d-flex justify-content-center">
+                      <span
+                        class="actions"
+                        [nbPopover]="listAction"
+                        nbPopoverTrigger="click"
+                        nbPopoverPlacement="top"
+                        [nbPopoverContext]="{ data: row }"
+                      >
+                        <!--                            <span class="actions"-->
+                        <!--                                  data-toggle="popover"-->
+                        <!--                                  data-placement="right"-->
+                        <!--                                  data-content="{data:row}">-->
+                        <nb-icon icon="more-horizontal-outline"></nb-icon>
+                      </span>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+          </ng-container>
+        </ngx-datatable>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+<ng-template #addOrEdit let-data let-ref="dialogRef">
+  <nb-card style="min-width: 735px">
+    <nb-card-header class="d-flex justify-content-between">
+      <div class="header-item">
+        <div class="d-flex">
+          <span>Chi tiết cảnh báo</span>
+        </div>
+      </div>
+      <button
+        style="background: none; border: none; color: var(--color-text-light)"
+        size="small"
+        (click)="ref.close()"
+      >
+        <nb-icon icon="close-outline"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="formGroupDashboard" style="overflow: visible">
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Service:<span>*</span></span>
+        <div class="col-4">
+          <input
+            class="input-edit"
+            trim="blur"
+            nbInput
+            fullWidth
+            formControlName="Service"
+          />
+          <ngx-inline-message
+            [message]="'Service'"
+            [formName]="formGroupDashboard.get('Service')"
+          ></ngx-inline-message>
+        </div>
+        <span class="col-2">Tình trạng:<span>*</span></span>
+        <div class="col-4">
+          <ng-select appendTo="" formControlName="Status">
+            <ng-option
+              *ngFor="let item of ListStatusDashboard"
+              [value]="item?.id"
+            >
+              <span showTooltip>{{ item?.name }}</span>
+            </ng-option>
+          </ng-select>
+          <ngx-inline-message
+            [message]="'Status' | translate"
+            [formName]="formGroupDashboard.get('Status')"
+          ></ngx-inline-message>
+        </div>
+      </div>
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Đầu mối:<span>*</span></span>
+        <div class="col-4">
+          <input
+            class="input-edit"
+            trim="blur"
+            nbInput
+            fullWidth
+            formControlName="Source"
+          />
+          <ngx-inline-message
+            [message]="'Source'"
+            [formName]="formGroupDashboard.get('Source')"
+          ></ngx-inline-message>
+        </div>
+        <span class="col-2">SDT:<span>*</span></span>
+        <div class="col-4">
+          <input
+            class="input-edit"
+            trim="blur"
+            nbInput
+            fullWidth
+            formControlName="SDT"
+          />
+          <ngx-inline-message
+            [message]="'SDT'"
+            [formName]="formGroupDashboard.get('SDT')"
+          ></ngx-inline-message>
+        </div>
+      </div>
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Nguyên nhân:<span>*</span></span>
+        <div class="col-10">
+          <textarea class="edit-text-area" formControlName="Causal"></textarea>
+        </div>
+      </div>
+
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Descriptions:<span>*</span></span>
+        <div class="col-10">
+          <textarea class="edit-text-area" formControlName="Causal"></textarea>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer
+      class="d-flex edit-button justify-content-center align-items-center pb-3"
+    >
+      <button
+        [class.disabled]="!formGroupDashboard.valid"
+        [disabled]="!formGroupDashboard.valid"
+        (click)="ActionFormGroupDashboard(ref)"
+        class="mr-2"
+      >
+        Hoàn thành
+      </button>
+      <button
+        class="edit-button-cancel"
+        (click)="ref.close(); this.formGroupDashboard.reset()"
+      >
+        Hủy
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #EditSRForm let-data let-ref="dialogRef">
+  <nb-card style="min-width: 735px">
+    <nb-card-header class="d-flex justify-content-between">
+      <div class="header-item">
+        <div class="d-flex">
+          <span>Chi tiết SR</span>
+        </div>
+      </div>
+      <button
+        style="background: none; border: none; color: var(--color-text-light)"
+        size="small"
+        (click)="ref.close()"
+      >
+        <nb-icon icon="close-outline"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body [formGroup]="formGroupSR" style="overflow: visible">
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Mã SR:<span>*</span></span>
+        <div class="col-4">
+          <input
+            class="input-edit"
+            trim="blur"
+            nbInput
+            fullWidth
+            formControlName="code_SR"
+            readonly="true"
+          />
+          <ngx-inline-message
+            [message]="'code_SR'"
+            [formName]="formGroupSR.get('code_SR')"
+          ></ngx-inline-message>
+        </div>
+        <span class="col-2">Người tạo:<span>*</span></span>
+        <div class="col-4">
+          <input
+            class="input-edit"
+            trim="blur"
+            nbInput
+            fullWidth
+            formControlName="createBy"
+            readonly="true"
+          />
+          <ngx-inline-message
+            [message]="'createBy'"
+            [formName]="formGroupSR.get('createBy')"
+          ></ngx-inline-message>
+        </div>
+      </div>
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Tiêu đề:<span>*</span></span>
+        <div class="col-10">
+          <input
+            class="input-edit"
+            trim="blur"
+            nbInput
+            fullWidth
+            formControlName="title"
+            readonly="true"
+          />
+          <ngx-inline-message
+            [message]="'title'"
+            [formName]="formGroupSR.get('title')"
+          ></ngx-inline-message>
+        </div>
+      </div>
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Mô tả:<span>*</span></span>
+        <div class="col-10">
+          <textarea
+            class="edit-text-area"
+            readonly="true"
+            formControlName="descriptions"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Loại SR:<span>*</span></span>
+        <div class="col-4">
+          <ng-select
+            [clearable]="true"
+            formControlName="typeSr"
+            readonly="true"
+            disabled="true"
+            class="edit-button-hive"
+            fullWidth
+            appendTo=""
+          >
+            <ng-option *ngFor="let item of listTypeSr" [value]="item?.key">
+              <span>{{ item?.name }}</span>
+            </ng-option>
+          </ng-select>
+
+          <ngx-inline-message
+            [message]="'typeSr'"
+            [formName]="formGroupSR.get('typeSr')"
+          ></ngx-inline-message>
+        </div>
+        <span class="col-2">Trạng thái:<span>*</span></span>
+        <div class="col-4 custom-popup-with-dropdown">
+          <ng-select
+            [disabled]="true"
+            [readonly]="true"
+            appendTo="body"
+            formControlName="status"
+          >
+            <ng-option *ngFor="let item of listStatusSr" [value]="item?.id">
+              <span showTooltip>{{ item?.name }}</span>
+            </ng-option>
+          </ng-select>
+
+          <ngx-inline-message
+            [message]="'status'"
+            [formName]="formGroupSR.get('status')"
+          ></ngx-inline-message>
+        </div>
+      </div>
+
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Ngày khởi tạo:<span>*</span></span>
+        <div class="col-4">
+          <p-calendar
+            formControlName="dateCreate"
+            [style]="{ width: '100%' }"
+            [disabled]="true"
+            [showIcon]="true"
+            dateFormat="yy-mm-dd"
+          ></p-calendar>
+        </div>
+
+        <div class="col-6">
+          <div class="row">
+            <div class="col-2">
+              <div
+                style="height: 100%; white-space: nowrap"
+                class="d-flex align-items-center"
+              >
+                File:<span>*</span>
+              </div>
+            </div>
+            <div class="col-9 position-relative" style="margin-left: 29px">
+              <div class="d-flex align-items-center" style="margin-left: 31px">
+                <input
+                  class="input-edit input-filename-dashboard"
+                  required
+                  #inputFile
+                  formControlName="fileName"
+                  nbInput
+                  readonly
+                  fullWidth
+                  trim="blur"
+                />
+                <!--                <button *ngIf="formGroupSR.value.fileName !== '' && formGroupSR.value.fileName"-->
+                <!--                        (click)="clearFileName()"-->
+                <!--                        style="background: var(&#45;&#45;bg-back); border: 1px solid var(&#45;&#45;border-select-dropdown) !important; color: #8C95B2; height: 35px;border-radius: 0px 5px 5px 0px;"-->
+                <!--                        size="small">-->
+                <!--                  <nb-icon [icon]="'close-circle-outline'"></nb-icon>-->
+                <!--                </button>-->
+              </div>
+              <div
+                class="row-file-downloadfile"
+                *ngIf="inputFile.value"
+                (click)="downloadFile()"
+              >
+                <!--                <label style="color: #0F70F5;font-weight: 600;font-size: 12px; margin-top: 2px; cursor: pointer"-->
+                <!--                       for="attach-file"-->
+                <!--                       class="attach mr-2 d-flex align-items-center">-->
+                <!--                  {{ inputFileUser.value}}-->
+                <!--                  <nb-icon style="margin-left: 4px;font-size: 15px"-->
+                <!--                           [icon]="'download-outline'"></nb-icon>-->
+                <!--                </label>-->
+                <!--                <input style="display: none" id="attach-file" nbInput type="file" name="attach-file"-->
+                <!--                       accept="*"-->
+                <!--                       (change)="onFileChange($event)"-->
+                <!--                       required/>-->
+
+                <!--                  <div class="row-file-downloadfile"-->
+                <!--                       style="margin-left: 4px;font-size: 15px"-->
+                <!--                       (click)="downloadFile()">-->
+                <span> {{ inputFile.value }}</span>
+                <nb-icon icon="download-outline"></nb-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex row mb-3 align-items-center row-form">
+        <span class="col-2">Thrift:<span>*</span></span>
+        <div class="col-4 input_thrift custom-popup-with-dropdown">
+          <ng-select
+            [disabled]="true"
+            [readonly]="true"
+            appendTo="body"
+            formControlName="thrift"
+          >
+            <ng-option
+              *ngFor="let item of listThrift"
+              [value]="item?.id"
+              style="margin-top: -3px"
+            >
+              <span showTooltip>{{ item?.name }}</span></ng-option
+            >
+          </ng-select>
+
+          <ngx-inline-message
+            [message]="'thrift'"
+            [formName]="formGroupSR.get('thrift')"
+          ></ngx-inline-message>
+        </div>
+        <div class="col-6">
+          <div class="row">
+            <div class="col-2">
+              <div
+                style="height: 100%; white-space: nowrap"
+                class="d-flex align-items-center"
+              >
+                User list:<span>*</span>
+              </div>
+            </div>
+            <div class="col-9 position-relative" style="margin-left: 29px">
+              <div class="d-flex align-items-center" style="margin-left: 31px">
+                <input
+                  style="
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    font-size: 12px;
+                    color: transparent !important;
+                  "
+                  required
+                  class="input-edit"
+                  #inputFileUser
+                  formControlName="fileListUser"
+                  nbInput
+                  readonly
+                  fullWidth
+                  trim="blur"
+                />
+              </div>
+              <div
+                class="row-file-downloadfile"
+                *ngIf="inputFileUser.value && inputFileUser.value !== 'null'"
+                (click)="downloadFileUser()"
+              >
+                <!--                <label style="color: #0F70F5;font-weight: 600;font-size: 12px; margin-top: 2px; cursor: pointer"-->
+                <!--                       for="attach-file"-->
+                <!--                       class="attach mr-2 d-flex align-items-center">-->
+                <!--                  {{ inputFileUser.value}}-->
+                <!--                  <nb-icon style="margin-left: 4px;font-size: 15px"-->
+                <!--                           [icon]="'download-outline'"></nb-icon>-->
+                <!--                </label>-->
+                <!--                <input style="display: none" id="attach-file" nbInput type="file" name="attach-file"-->
+                <!--                       accept="*"-->
+                <!--                       (change)="onFileChange($event)"-->
+                <!--                       required/>-->
+
+                <!--                  <div class="row-file-downloadfile"-->
+                <!--                       style="margin-left: 4px;font-size: 15px"-->
+                <!--                       (click)="downloadFile()">-->
+                <span> {{ inputFileUser.value }}</span>
+                <nb-icon icon="download-outline"></nb-icon>
+              </div>
+              <!--              </div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer
+      style="border-top: 1px solid transparent"
+      class="d-flex edit-button justify-content-center align-items-center pb-3"
+    >
+      <!--      <button [class.disabled]="!formGroupDashboard.valid" [disabled]="!formGroupDashboard.valid"-->
+      <!--              (click)="ActionFormGroupDashboard(ref)" class="mr-2">-->
+      <!--        Hoàn thành-->
+      <!--      </button>-->
+      <!--      <button class="edit-button-cancel" (click)="ref.close();this.formGroupDashboard.reset()">Hủy</button>-->
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<!--popover area-->
+<ng-template #listAction let-data>
+  <nb-list>
+    <nb-list-item
+      class="d-flex justify-content-center align-items-center"
+      style="padding: 0px"
+    >
+      <button
+        class="p-1"
+        nbButton
+        ghost
+        (click)="openDetailSR(EditSRForm, data)"
+      >
+        Xem chi tiết
+      </button>
+    </nb-list-item>
+    <nb-list-item
+      class="d-flex justify-content-center align-items-center"
+      style="padding: 0px"
+    >
+      <button
+        (click)="redirectToSR(data)"
+        class="copy action-and-config"
+        nbButton
+        ghost
+      >
+        Redirect SR
+      </button>
+    </nb-list-item>
+  </nb-list>
+</ng-template>

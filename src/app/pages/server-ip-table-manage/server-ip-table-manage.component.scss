@@ -1,0 +1,146 @@
+
+.fix-font {
+  font-size: 12px;
+  font-weight: 400;
+
+  > span:only-child {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  * {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  ng-select * {
+    font-size: 12px;
+    font-weight: 400;
+  }
+}
+
+nb-card-header {
+  .justify-content-between {
+    line-height: 40px;
+
+    .page {
+      span {
+        margin-right: 5px;
+      }
+
+      ng-select {
+        margin-right: 5px;
+      }
+    }
+
+    .justify-content-end {
+      .w-50 {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+nb-layout-column {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+button.disabled {
+  opacity: 0.5;
+  background-color: #2e3648 !important;
+}
+
+
+::ng-deep .active span.text {
+  color: #1FFD35 !important;
+}
+
+::ng-deep .lock span.text {
+  color: #FB4F4F !important;
+}
+
+
+::ng-deep nb-card-header {
+  span {
+    line-height: 40px;
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  .layout nb-card nb-card-header span, .layout nb-card nb-card-header div {
+    font-size: unset;
+    font-weight: unset;
+  }
+
+  ngx-datatable button {
+    nb-icon {
+      color: unset;
+
+      * {
+        color: unset;
+      }
+    }
+  }
+
+}
+
+.edit-status-active {
+  width: 57px;
+  height: 27px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 57px;
+    height: 27px;
+    border-radius: 5px;
+    background: #02bf51;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-greend {
+    color: var(--color-text-status-active);
+    text-align: center;
+    line-height: 27px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0px auto;
+    width: 100%;
+  }
+}
+
+.edit-status-lock {
+  width: 57px;
+  height: 27px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 57px;
+    height: 27px;
+    border-radius: 5px;
+    background: #ff313c;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-red {
+    color: var(--color-text-status-lock);
+    text-align: center;
+    line-height: 27px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0px auto;
+    width: 100%;
+  }
+}
+

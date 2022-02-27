@@ -1,0 +1,184 @@
+:host ::ng-deep{
+  * {
+    background-color: #181e38;
+    background: #181e38;
+    //color: #8c95b2;
+  }
+}
+
+.tagger-sideBar {
+
+
+  .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0;
+
+    a {
+      img {
+        transform: scale(2.5);
+      }
+    }
+  }
+
+  .menu-sideBar {
+    &__item {
+      h4 {
+        font-size: 13px;
+        color: #9e9e9e;
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+nb-card.edit-carb-sideBar {
+  background-color: #181E38;
+  border: none;
+}
+
+.sidebar-footer {
+  nb-toggle {
+    margin-top: 8px;
+  }
+
+  span.compacted {
+    margin: 0 3px
+  }
+}
+
+:host ::ng-deep {
+  nb-toggle .toggle-switcher {
+    width: 25px;
+    height: 24px;
+  }
+
+  nb-toggle .toggle {
+    height: 25px;
+    width: 46px;
+  }
+
+  nb-menu .menu-item .menu-item:first-child {
+    border-top: none;
+  }
+
+  nb-menu ul li {
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 600;
+
+    li:active {
+      color: white;
+    }
+
+    ul li {
+      padding-left: 10px;
+    }
+
+    .menu-title {
+      font-size: 16px;
+      text-transform: initial;
+      font-weight: bold;
+    }
+
+    .menu-title:only-child {
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+
+  }
+
+
+  nb-menu .menu-item {
+    border-bottom: none;
+    font-size: 14px;
+
+  }
+
+  nb-menu .menu-item a {
+    color: #8c95b2;
+    //font-size: 14px;
+    //font-weight: bold;
+
+    position: relative;
+  }
+
+  nb-menu .menu-item a:hover {
+    color: white;
+  }
+
+  nb-menu .menu-item .expanded .menu-item::before {
+    content: '';
+    position: absolute;
+    height: 48px;
+    width: 2px;
+    background-color: #181E38;
+  }
+
+  nb-menu .menu-item .expanded .menu-item:last-child::before {
+    height: 26px;
+  }
+
+  nb-menu .expanded .menu-item a::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    width: 17px;
+    height: 2px;
+    background-color: #181E38;
+  }
+
+  nb-menu .menu-item a:hover span {
+    color: white;
+  }
+
+  nb-menu .menu-item a:hover .menu-icon {
+    fill: white;
+    color: white;
+  }
+
+  nb-menu .menu-item a.active {
+    background-color: transparent;
+    color: white;
+  }
+
+  nb-menu .menu-item a.active .menu-icon {
+    fill: white;
+    color: white;
+  }
+  nb-menu .menu-item a .menu-icon {
+    fill: #8c95b2;
+    margin-top: 4px;
+  }
+
+  nb-menu .menu-item > .menu-items {
+    position: relative;
+  }
+
+  nb-menu .menu-item > .menu-items > .menu-item a.active {
+    background-color: transparent;
+    color: white;
+  }
+
+  nb-menu .menu-item > .menu-items > .menu-item a.active .menu-icon {
+    color: white;
+  }
+
+  nb-menu .menu-item > .menu-items > .menu-item a.active:hover .menu-icon {
+    color: white;
+    fill: white;
+  }
+
+  nb-menu .menu-item > .menu-items > .menu-item a:hover .menu-icon {
+    color: white;
+    fill: white;
+  }
+
+  nb-menu .menu-item .menu-items .menu-item a {
+    padding-left: 23px;
+    padding-right: 0;
+  }
+}

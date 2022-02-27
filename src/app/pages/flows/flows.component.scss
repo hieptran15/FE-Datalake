@@ -1,0 +1,83 @@
+//::ng-deep .ngx-datatable .datatable-body-cell-label {
+//  text-align: center;
+//}
+//
+//::ng-deep .ngx-datatable .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap {
+//  text-align: center;
+//}
+
+.dark::-webkit-scrollbar {
+  width: 6px;
+  background-color: #2e3648;
+}
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+}
+.table-wrap {
+  .justify-content-between {
+    .justify-content-end {
+      .btn-customs {
+        text-transform: none;
+        font-weight: bold;
+        background: #2e3648;
+        border: 1px solid #363e54;
+        color: white;
+        border-radius: 10px;
+      }
+
+      .btn-customs:hover {
+        background: #363e54;
+        border: 1px solid #363e54;
+      }
+    }
+  }
+}
+
+nb-card-header {
+  border-bottom-color: #363e54;
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom:  0 !important;
+  }
+}
+.w-h-body {
+  background: #2a3142;
+}
+
+//.ng-select.ng-select-single .ng-select-container {
+//  height: 40px;
+//  background: #2a3142;
+//  border-color: #363e54;
+//}
+//
+//.nb-theme-dark .ng-select.ng-select-opened > .ng-select-container {
+//  background: #2a3142;
+//  border-color: #363e54;
+//}
+
+.show-log {
+  overflow-y: auto;
+}
+
+.show-log::-webkit-scrollbar {
+  width: 6px;
+  background-color: #363e54;
+}
+
+nb-card-body {
+  .justify-content-between {
+    div {
+      ::placeholder {
+        color: #999;
+        opacity: 1; /* Firefox */
+      }
+    }
+  }
+}
+
+
+

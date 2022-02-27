@@ -1,0 +1,75 @@
+<nb-card>
+  <nb-card-header>Quản lý input theo loại ứng dụng</nb-card-header>
+  <nb-card-body [formGroup]="searchForm">
+    <div class="row">
+      <div class="col-lg-6 form-group">
+        <label class="label">Loại ứng dụng</label>
+        <ng-select fullWidth formControlName="nodeType"
+                   [items]="nodeTypes" bindValue="itemValue" bindLabel="itemName">
+        </ng-select>
+      </div>
+      <div class="col-lg-6 form-group">
+        <label class="label">Từ khóa</label>
+        <input type="text" nbInput fullWidth placeholder="Từ khóa" formControlName="keyword" class="size-medium">
+      </div>
+    </div>
+    <div class="text-center">
+      <button nbButton (click)="setPage({offset:0})" status="primary" class="mr-2">
+        <nb-icon icon="search-outline"></nb-icon>
+        Tìm kiếm
+      </button>
+      <button nbButton status="success" (click)="addNew()">
+        <nb-icon icon="plus-outline"></nb-icon>
+        Thêm mới
+      </button>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+<nb-card>
+  <nb-card-header>
+    Danh sách input
+  </nb-card-header>
+  <nb-card-body>
+    <div>
+      <ngx-datatable class="dark fullscreen"
+                     [columnMode]="'flex'"
+                     [rows]="inputs"
+                     [columns]="columns"
+                     [headerHeight]="'auto'"
+                     [rowHeight]="'auto'"
+                     [footerHeight]="'auto'"
+                     [messages]="{totalMessage:'bản ghi'}"
+                     (page)="setPage($event)"
+      >
+        <ng-container *ngFor="let col of columns">
+          <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">
+            <ng-template let-column="column" ngx-datatable-header-template>
+              {{ column.name}}
+            </ng-template>
+            <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+              <ng-container [ngSwitch]="col.prop">
+                <ng-container *ngSwitchCase="'id'">
+                  {{rowIndex + 1 + (page.pageNumber * page.size)}}
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  {{ value }}
+                </ng-container>
+                <ng-container *ngSwitchCase="'action_btn'" class="text-right">
+                  <div>
+                    <button class="p-1" nbButton status="warning" ghost (click)="edit(row)">
+                      <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+                    </button>
+                    <button class="p-1" nbButton status="danger" ghost (click)="delete(row)">
+                      <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>
+                    </button>
+                  </div>
+                </ng-container>
+              </ng-container>
+            </ng-template>
+          </ngx-datatable-column>
+        </ng-container>
+      </ngx-datatable>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,232 @@
+.edit-status-waiting {
+  width: 100%;
+  height: 24px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 100%;
+    height: 24px;
+    border-radius: 5px;
+    background: #ffc300;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-greend {
+    color: var(--color-text-status-waiting);
+    text-align: center;
+    line-height: 24px;
+    font-weight: normal;
+    font-size: 12px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.edit-status-completed {
+  width: 100%;
+  height: 24px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 100%;
+    height: 24px;
+    border-radius: 5px;
+    background: #02BF51;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-greend {
+    color: var(--color-text-status-completed);
+    text-align: center;
+    line-height: 24px;
+    font-weight: normal;
+    font-size: 12px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.edit-status-rejected {
+  width: 100%;
+  height: 24px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 100%;
+    height: 24px;
+    border-radius: 5px;
+    background: #FF313C;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-greend {
+    color: var(--color-text-status-rejected);
+    text-align: center;
+    line-height: 24px;
+    font-weight: normal;
+    font-size: 12px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+
+.edit-nblist-support {
+  width: 195px;
+  border-radius: 5px;
+  border: none;
+  //background: var(--bg-back);
+
+  &__item {
+    height: 27px !important;
+    border: none;
+    cursor: pointer;
+    font-weight: 400;
+    color: var(--color-text-page-table);
+
+    &:first-child {
+      border: none !important;
+    }
+
+    &:hover {
+      background: rgba(140, 149, 178, 0.15);
+      color: #0f70f5;
+    }
+  }
+}
+
+.support-filter {
+  background: var(--bg-popover);
+  width: 488px;
+  min-height: 140px;
+  border-radius: 5px;
+  z-index: 1000;
+  left: -500px;
+  top: -32px;
+
+  .edit-select {
+    //width: 100%;
+
+    .ng-select.ng-select-single .ng-select-container {
+      height: 32px !important;
+    }
+  }
+
+  &::after {
+    content: '';
+    width: 15px;
+    height: 15px;
+    background: var(--bg-popover);
+    position: absolute;
+    top: 0;
+    right: -11px;
+    margin-top: 40px;
+    clip-path: polygon(0 0, 0 100%, 100% 51%);
+  }
+}
+
+.filter-item {
+  width: 224px;
+  height: 255px;
+  border-radius: 5px;
+  top: 102%;
+  left: 3%;
+  padding: 15px;
+  background: var(--bg-popover);
+
+  &__by {
+    strong {
+      font-size: 12px;
+      font-weight: normal;
+      color: #0f70f5;
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: normal;
+      font-size: 12px;
+      color: var(--color-text-breadcrumb);
+    }
+  }
+}
+
+.table-row-listUser-header {
+  font-weight: normal;
+  font-size: 12px;
+  color: var(--color-text-light);
+
+  th:last-child {
+    width: 25px;
+  }
+}
+
+.table-row-listUser {
+  td {
+    padding: 5px 0;
+  }
+
+  ng-select {
+    margin-right: 10px;
+  }
+
+  input {
+    margin-right: 5px;
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  nb-popover {
+    border: none;
+    box-shadow: none;
+    background: var(--bg-popover);
+
+    .arrow::after {
+      top: 2px;
+      border-bottom: 0.6875rem solid var(--bg-popover);
+    }
+  }
+
+  nb-list-item {
+    font-size: 12px;
+  }
+
+  .p-radiobutton .p-radiobutton-box {
+    border: 2px solid #8C95B2;
+    background: var(--bg-popover);
+    width: 15px;
+    height: 15px;
+    color: #495057;
+
+    .p-radiobutton-icon {
+      width: 12px;
+      height: 12px;
+      transition-duration: 0.2s;
+      background-color: #0f70f5;
+      border: 1px solid #0f70f5;
+      padding: 7px;
+    }
+  }
+
+  .p-radiobutton-box.p-highlight .p-focus {
+    box-shadow: none;
+  }
+}

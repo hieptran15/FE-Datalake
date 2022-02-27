@@ -1,0 +1,583 @@
+{
+  "validation": {
+    "required": "{{field}} không được để trống.",
+    "maxLength": "{{field}} dài tối đa  {{value}} ký tự",
+    "minLength": "{{field}} phải dài tối thiểu {{value}} ký tự",
+    "pattern": "{{field}} sai định dạng",
+    "onlyNaturalNumber": "{{field}} phải là số nguyên dương",
+    "onlyNumber": "{{field}} phải là số dương",
+    "onlyDoubleNumber": "{{field}} phải là kiểu số",
+    "onlyCharacter": "{{field}} chỉ được nhập ký tự chữ cái, chữ số và dấu _",
+    "mustMatch": "{{field}} không khớp",
+    "existCheck": "{{field}} đã tồn tại",
+    "email": "Không đúng định dạng email",
+    "mustSameUnit": "{{field}} phải cùng đơn vị",
+    "invalidColor": "Mã màu không hợp lệ",
+    "noData": "Không có dữ liệu",
+    "max": "{{dield}} vượt quá giá trị cho phép"
+  },
+  "login": {
+    "in": "Đăng nhập",
+    "out": "Đăng xuất",
+    "account": "Tài khoản",
+    "password": "Mật khẩu",
+    "failIn": "Đăng nhập không thành công",
+    "forgotPassword": "Quên mật khẩu"
+  },
+  "changePass": {
+    "currentPassword": "Mật khẩu hiện tại",
+    "password": "Mật khẩu mới",
+    "confirmPassword": "Nhập lại mật khẩu mới",
+    "btnChange": "Đổi mật khẩu",
+    "changePassTitle": "Đổi mật khẩu người dùng",
+    "changePassSuccess": "Đổi mật khẩu thành công"
+  },
+  "global": {
+    "label": {
+      "select": "Lựa chọn"
+    },
+    "select": {
+      "placeholder": "Lựa chọn",
+      "clearAllText": "Xoá",
+      "notFoundText": "Không tìm thấy kết quả"
+    },
+    "gridTitle": "Kết quả tìm kiếm",
+    "labels": {
+      "fromTime": "Từ thời gian",
+      "toTime": "Từ thời gian",
+      "search": "Tìm kiếm",
+      "chartSearch": "Tìm kiếm biểu đồ",
+      "groupChart": "Nhóm biểu đồ",
+      "openChartMap": "Địa phương",
+      "requireToDate": "Yêu cầu nhập thời gian"
+    }
+  },
+  "user": {
+    "column": {
+      "index": "STT",
+      "account": "Tên đăng nhập",
+      "email": "Email",
+      "status": "Trạng thái",
+      "phoneNumber": "Điện thoại",
+      "createDate": "Ngày tạo",
+      "active": "Hành động",
+      "password": "Mật khẩu",
+      "activated": "Trạng Thái",
+      "confirmPassword": "Xác nhận",
+      "fullname": "Họ và tên",
+      "getAlerted": "Nhận cảnh bảo người đứng đầu",
+      "language": "Ngôn ngữ",
+      "role": "Nhóm quyền",
+      "group": "Nhóm",
+      "type": "Loại",
+      "domain": "Lĩnh vực",
+      "authoritiesName": "Nhóm quyền",
+      "domainCode": "Lĩnh vực",
+      "module": "Modules",
+      "role2": "Quyền",
+      "actions": "Actions",
+      "addNewType": "Thêm nhóm mới",
+      "userName": "Tên đăng nhập",
+      "userHDFS": "Tài khoản HDFS"
+    },
+    "label": {
+      "type": "Loại tài khoản",
+      "record": "bản ghi",
+      "title": "Quản lý User",
+      "add": "Thêm mới",
+      "addUser": "Thêm mới nguời dùng",
+      "addRole": "Thêm quyền",
+      "editRole": "Chỉnh sửa quyền",
+      "edit": "Cập nhật quyền của người dùng",
+      "new": "Thêm mới người dùng",
+      "search": "Tìm kiếm",
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "close": "Đóng",
+      "moduleAuthority": "Phân quyền modules:",
+      "for": "cho",
+      "hdfsUser": "HDFS User",
+      "status": "Status",
+      "changePass": "Bạn có chắc chắn reset mật khẩu người dùng này không?",
+      "changeStatus": "Bạn có chắc chắn muốn chuyển trạng thái của người dùng không?",
+      "edit": "Cập nhật",
+      "lockUser": "Khoá người dùng",
+      "unLockUser": "Mở khoá người dùng",
+      "resetPass": "Reset mật khẩu",
+      "addRoleGroup": "Thêm quyền cho nhóm",
+      "normal": "Thường",
+      "selectAllUser": "Tất cả người dùng"
+    },
+    "changeStatusSuccess": "Chuyển trạng thái người dùng thành công",
+    "userManagement": {
+      "title": "Danh sách người dùng"
+    },
+    "roleManager": {
+      "title": "Role manager",
+      "typeAccount": "Loại tài khoản",
+      "listPermission": "Danh sách module"
+    }
+  },
+  "accessManager": {
+    "label": {
+      "startTime": "Bắt đầu",
+      "endTime": "Kết thúc",
+      "reason": "Lý do"
+    }
+  },
+  "user-hdfs": {
+    "column": {
+      "name": "Tên người dùng",
+      "description": "Mô tả",
+      "permission": "Danh sách quyền",
+      "action": "Tuỳ chỉnh"
+    },
+    "label": {
+      "nameUser": "Tên người dùng",
+      "addNewUser": "Thêm mới người dùng",
+      "listUserHdfs": "Danh sách người dùng",
+      "description": "Mô tả",
+      "cancel": "Huỷ",
+      "save": "Lưu"
+    }
+  },
+  "HDFSBrowser": {
+    "column": {
+      "permission": "Quyền",
+      "owner": "Người sở hữu",
+      "group": "Nhóm",
+      "size": "Kích thước",
+      "quota": "Định mức",
+      "replication": "Số lần lặp",
+      "blockSize": "Kích thước khối",
+      "name": "Tên",
+      "option": "Tuỳ chỉnh"
+    },
+    "label": {
+      "copyPath": "Sao chép đường dẫn",
+      "reload": "Tải lại",
+      "newFile": "File mới",
+      "newFolder": "Thư mục mới",
+      "fileName": "Tên file",
+      "fileContent": "Nội dung file",
+      "folderName": "Tên thư mục",
+      "getSize": "Lấy kích thước",
+      "delete": "Xoá",
+      "move": "Di Chuyển",
+      "moveTo": "Di chuyển tới",
+      "download": "Tải xuống",
+      "copyTo": "Sao chép tới",
+      "copy": "Sao chép",
+      "permission": "Quyền",
+      "close": "Đóng",
+      "error": "Lỗi",
+      "save": "Lưu",
+      "ConfirmationText": "Văn bản xác nhận:",
+      "fillText": "Điền vào văn bản xác nhận",
+      "permissionChange": "Thay đổi quyền",
+      "errorConnection": "Lỗi kết nối"
+    }
+  },
+  "module": {
+    "column": {
+      "moduleName": "Tên module",
+      "description": "Mô tả",
+      "permission": "Danh sách quyền",
+      "action": "Tuỳ chỉnh"
+    },
+    "label": {
+      "roles": "Danh sách quyền",
+      "create": "Thêm module mới",
+      "edit": "Chỉnh sửa module",
+      "listModule": "Danh sách module",
+      "cancel": "Huỷ",
+      "save": "Lưu",
+      "deleteItem": "Xoá bản ghi",
+      "confirmDelete": "Bạn chắc chắn muốn xóa bản ghi?",
+      "confirm": "Xác nhận"
+    }
+  },
+  "flow-customized": {
+    "column": {
+      "nameThread": "Tên luồng",
+      "ProcessorRunning": "Bộ xử lý đang chạy  ",
+      "ProcessorStop": "Bộ xử lý dừng",
+      "ProcessorInvalid": "Bộ xử lý không hợp lệ"
+    },
+    "label": {
+      "viewLog": "Xem log của luồng",
+      "title": "Danh sách các luồng",
+      "nameConnection": "Tên kết nối",
+      "refresh": "Làm mới",
+      "nextPage": "Chuyển Trang",
+      "messConfirm": "Bạn có chắc chắn muốn chuyển trang!",
+      "yes": "Đồng ý",
+      "no": "Huỷ",
+      "cancel": "Huỷ",
+      "deleteThread": "Xóa luồng",
+      "confirmDeleteThread?": "Bạn có chắc chắn muốn xóa luồng này không?",
+      "updateTheStatus": "Cập nhật trạng thái của luồng",
+      "confirmUpdateThread": "Bạn có chắc chắn muốn cập nhật trạng thái của luồng không?"
+    }
+  },
+  "connection-manager": {
+    "column": {
+      "nameConnection": "Tên kết nối",
+      "typeConnection": "Loại kết nối",
+      "numberOfThreadsUsed": "Số luồng sử dụng",
+      "createAt": "Ngày tạo",
+      "action": "Tuỳ chỉnh"
+    },
+    "label": {
+      "connectionManager": "Quản lý kết nối",
+      "addNewConnection": "Thêm mới kết nối",
+      "nameConnection": "Tên kết nối",
+      "listConnection": "Danh sách các kết nối",
+      "typeConnection": "Loại kết nối",
+      "emptyName": "Tên kết nối không được để trống",
+      "userName": "Tài khoản",
+      "password": "Mật khẩu",
+      "connectionMode": "Chế độ kết nối",
+      "connectionTimeout": "Thời gian chờ kết nối",
+      "dataTimeOut": "Thời gian chờ dữ liệu",
+      "testConnection": "Kiểm tra kết nối",
+      "create": "Tạo mới",
+      "save": "Lưu",
+      "cancel": "Huỷ",
+      "advancedSetting": "Thiết lập nâng cao",
+      "resourcePath": "đường dẫn tới nguồn HDFS"
+    }
+  },
+  "data-ingestion": {
+    "column": {
+      "calendar": "Lịch",
+      "custom": "Tùy chỉnh",
+      "destination": "Đích",
+      "group": "Nhóm",
+      "source": "Nguồn",
+      "status": "Trạng thái",
+      "threadCode": "Mã luồng",
+      "threadName": "Tên luồng",
+      "details": "Chi tiết"
+    },
+    "label": {
+      "add": "Thêm",
+      "addField": "Thêm trường",
+      "addFieldInfo": "Thêm trường thông tin",
+      "addNewGroup": "Thêm nhóm mới",
+      "addNewThread": "Thêm luồng mới",
+      "advancedSetup": "Thiết lập nâng cao",
+      "connection": "Connection",
+      "createNewThread": "Tạo luồng mới",
+      "dbUrl": "DB connection url",
+      "dbClassname": "DB driver classname",
+      "dbLocation": "DB driver location",
+      "dbUsername": "DB username",
+      "dbPassword": "DB password",
+      "dbType": "DB Type",
+      "delete": "Xóa",
+      "delimiter": "Delimiter",
+      "description": "Mô tả",
+      "detailThread": "Chi tiết luồng",
+      "directory": "Có chưa thư mục",
+      "disable": "Disable",
+      "edit": "Sửa",
+      "enable": "Enable",
+      "extract": "Giải nén",
+      "fetchSize": "Fetch Size",
+      "ftpServer": "FTP server",
+      "hdfsResource": "HDFS resources",
+      "hdfsPath": "HDFS path",
+      "hdfsGroup": "HDFS owner group",
+      "hdfsUser": "HDFS owner user",
+      "id": "ID",
+      "infoThread": "Thông tin luồng",
+      "kafkaBroker": "Kafka broker",
+      "kafkaTopic": "Kafka topic",
+      "kafkaTopics": "Kafka topics",
+      "listThread": "Flow manager",
+      "listConnection": "Danh sách kết nối",
+      "listFlowcustom": "Flow customized",
+      "hdfsBrowser": "HDFS Browser",
+      "logLevel": "Log Level",
+      "manipulation": "Thao tác",
+      "maxRow": "Max row per file",
+      "monitor": "Monitor",
+      "name": "Tên",
+      "nameGroup": "Tên nhóm",
+      "nameThread": "Tên luồng",
+      "owner": "Owner",
+      "path": "Path",
+      "password": "Password",
+      "port": "Port",
+      "record": "bản ghi",
+      "scheduling": "Lập lịch",
+      "seeLog": "Xem Log",
+      "setup": "Thiết lập",
+      "show": "Hiển thị",
+      "sqlQuery": "SQL query",
+      "start": "Start",
+      "stop": "Stop",
+      "taskParallel": "Số Task chạy song song",
+      "timezone": "Delta Timezone",
+      "title": "Danh sách các luồng",
+      "type": "Loại",
+      "typeCalendar": "Loại lịch",
+      "update": "Cập nhật",
+      "updateThread": "Cập nhật luồng",
+      "userName": "Username",
+      "cancel": "Huỷ",
+      "save": "Lưu",
+      "deleteItem": "Xoá bản ghi",
+      "confirmDelete": "Bạn chắc chắn muốn xóa bản ghi?",
+      "confirm": "Xác nhận"
+    },
+    "properties": {
+      "threadName": "Tên luồng"
+    }
+  },
+  "success": {
+    "http": {
+      "actionSuccessfully": "Thao tác thành công",
+      "notify": "Thông báo",
+      "addSuccess": "Thêm mới thành công",
+      "editSuccess": "Cập nhật thành công",
+      "addThreadSuccess": "Thêm mới luồng thành công",
+      "editThreadSuccess": "Cập nhật luồng thành công",
+      "updateModuleSuccess": "Cập nhật module thành công",
+      "updateModuleFail": "Cập nhật module thất bại",
+      "addModuleSuccess": "Thêm mới module thành công",
+      "addModuleFail": "Thêm mới module thất bại",
+      "deleteModuleSuccess": "Xoá module thành công",
+      "deleteModuleFail": "Xoá module thất bại",
+      "updateUseHdfsSuccess": "Cập nhật User thành công",
+      "updateUseHdfsFail": "Cập nhật User thất bại",
+      "addUseHdfsSuccess": "Thêm mới User thành công",
+      "addUseHdfsFail": "Thêm mới User thất bại",
+      "deleteUseHdfsSuccess": "Xoá User thành công",
+      "deleteUseHdfsFail": "Xoá User thất bại",
+      "deleteSuccess": "Xóa thành công"
+    }
+  },
+  "serverIpTables": {
+    "column": {
+      "ip": "Ip",
+      "userSSH": "Tài khoản SSH",
+      "passSSH": "Mật khẩu SSH",
+      "passRoot": "Mật khẩu Root"
+    },
+    "success": {
+      "addSuccess": "Thêm mới Server thành công",
+      "editSuccess": "Cập nhật Server thành công",
+      "deleteSuccess": "Xóa Server thành công"
+    },
+    "fail": {
+      "addFail": "Thêm mới server thất bại",
+      "editFail": "Cập nhật server thất bại",
+      "deleteFail": "Xóa server thất bại"
+    },
+    "label": {
+      "placeholder": "Nhập thông tin tìm kiếm",
+      "addNew": "Thêm mới server",
+      "active": "Hoạt động",
+      "status": "Trạng thái",
+      "lock": "Bị khóa",
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa",
+      "unlock": "Mở khóa",
+      "locks": "Khóa",
+      "editServer": "Sửa thông tin server",
+      "save": "Thêm mới",
+      "saveEdit": "Lưu lại",
+      "confirmLock": "Bạn chắc chắn muốn khoá server?",
+      "confirmUnlock": "Bạn chắc chắn muốn mở khoá server?",
+      "cancel": "Hủy"
+    }
+  },
+  "error": {
+    "http": {
+      "401": "Đăng nhập không thành công",
+      "errors": "Lỗi",
+      "duplicateName": "Tên đã tồn tại",
+      "duplicateIpAddress": "Địa chỉ IP đã tồn tại"
+    }
+  },
+  "monitor": {
+    "title": "Monitor",
+    "week": "Tuần",
+    "day": "Ngày",
+    "month": "Tháng",
+    "flowChart": "Biểu đồ lưu lượng các luồng",
+    "weeklyFlowChart": "Biểu đồ lưu lượng theo tuần",
+    "monthlyFlowChart": "Biểu đồ lưu lượng theo tháng",
+    "chartFileNumber": "Biểu đồ số lượng File",
+    "capacityChart": "Biểu đồ dung lượng",
+    "deleteThreadSucces": "Xóa luồng thành công",
+    "deleteThreadFail": "Xóa luồng thất bại"
+  },
+  "sideBar": {
+    "provisioning": "Cấp phép"
+  },
+  "footer": {
+    "title": "Viettel Big Data Platform – Copyright ©️ 2021 - Phát triển bởi Ban Quản Trị Dữ Liệu (DGD) - Bản quyền thuộc Tập đoàn Công Nghiệp Quân Đội Viettel "
+  },
+  "toast": {
+    "note": "Thông báo",
+    "addGroupSuccess": "Thêm nhóm mới thành công",
+    "addGroupError": "Thêm nhóm mới thất bại",
+    "resetPassWordSuccess": "Mật khẩu được reset thành công về 123456a@",
+    "successfulStreamStatusUpdate": "Cập nhật trạng thái luồng thành công",
+    "errorStreamStatusUpdate": "Cập nhật trạng thái luồng thất bại",
+    "saveAnswer": "Bạn có muốn lưu thay đổi?"
+  },
+  "process": {
+    "processing": "Đang xử lí...",
+    "messageHdfs": "Bạn chưa được gán user hdfs, vui lòng liên hệ với Admin để được hỗ trợ!",
+    "messageErrorServer": "Chưa kết nối được với máy chủ, vui lòng liên hệ với Admin để được hỗ trợ!"
+  },
+  "ipTable": {
+    "dulicate": "Bạn có muốn nhân đôi dòng?",
+    "content": "Nội dung",
+    "ChooseAServer": "Chọn máy chủ",
+    "deleteLine": "Bạn có muốn xóa dòng?",
+    "contentRow": "Nội dung dòng",
+    "choiceRuleType": "Chọn loại rule",
+    "UserNameNotBeEmpty": "Tên",
+    "EmailNotBeEmpty": "Email",
+    "reset": "Bạn có muốn resset?",
+    "checkConnect": "Kết nôi tới server thất bại"
+  },
+  "accessAuthorization": {
+    "title": "Danh sách các quyền truy cập Thrift",
+    "addOPermission": "Thêm quyền mới",
+    "createThrift": "Tạo mới quyền truy cập thrift cho nhóm",
+    "createThriftUser": "Tạo mới quyền truy cập thrift cho user",
+    "delete": "Bạn có chắc muốn xóa?",
+    "editThrift": "Sửa quyền truy cập thrift cho nhóm",
+    "editThriftUser": "Sửa quyền truy cập thrift cho user",
+    "deleteThrift": "Xóa quyền truy cập thrift cho nhóm",
+    "deleteThriftUser": "Xóa quyền truy cập thrift cho userr",
+    "add": "Thêm thành công",
+    "update": "Cập nhật thành công",
+    "groupAccess": "Quyền truy cập theo nhóm",
+    "userAccess": "Quyền truy cập theo User",
+    "error": "Lỗi server",
+    "dateCreated": "Ngày tạo",
+    "deadline": "Ngày hết hạn",
+    "chooseThritf": "Chọn thrift",
+    "chooseGroup": "Chọn nhóm",
+    "expiryDate": "Thời gian hết hạn",
+    "dateError": "Ngày tạo phải lớn hơn hoặc bằng ngày hiện tại và nhỏ hơn hoặc bằng ngày kết thúc",
+    "listError": {
+      "exist": "UserId và ThriftId đã tồn tại",
+      "notInFoIpTable": "Server chưa có thông tin  IP table",
+      "connectFail": "Lỗi kết nối"
+    }
+  },
+  "accessLog": {
+    "title": "Câu truy vấn",
+    "query": "Câu truy vấn ",
+    "dateCreated": "Ngày tạo",
+    "deadline": "Ngày hết hạn",
+    "from": "Từ ngày",
+    "to": "Đến ngày",
+    "accessDetails": "Chi tiết câu truy vấn"
+  },
+  "lookupTable": {
+    "sortBy": "Sắp xếp theo:",
+    "tableLookup": "Table lookup",
+    "relationName": "Relation name",
+    "jobName": "Job name",
+    "tableName": "Table name",
+    "tableAction": "Table action",
+    "jobStatus": "Job status",
+    "dateModifyRelation": "Date modify relation",
+    "dateModifyJob": "Date modify job",
+    "details": "Details",
+    "all": "All",
+    "searchByRelationName": "Relation name",
+    "searchByTableName": "Table name",
+    "searchByJobName": "Job name"
+  },
+  "userThrift": {
+    "group": {
+      "wpGroupName": "Tên nhóm",
+      "description": "Mô tả",
+      "groupAccount": "Tài khoản server",
+      "active": "Hoạt động",
+      "lock": "Bị khóa"
+    },
+    "column": {
+      "user": "Tài khoản",
+      "ip": "Ip",
+      "passWord": "Mật khẩu",
+      "group": "Nhóm",
+      "accountType": "Loại tài khoản",
+      "status": "Trạng thái",
+      "createTime": "Thời gian tạo",
+      "updateTime": "Thời gian cập nhật",
+      "action": "Hoạt động",
+      "phone": "Số điện thoại"
+    },
+    "label": {
+      "userName": "Tên người dùng",
+      "save": "Thêm mới",
+      "update": "Lưu lại",
+      "cancel": "Hủy bỏ",
+      "createUser": "Thêm người dùng mới",
+      "editUser": "Chỉnh sửa người dùng",
+      "createGroup": "Thêm nhóm mới",
+      "editGroup": "Chỉnh sửa nhóm",
+      "listServer": "Danh sách server",
+      "confirmDelete": "Bạn có chắc chắn muốn xóa?",
+      "titleDelete": "Xóa bản ghi",
+      "confirm": "Xác nhận",
+      "sso": "SSO",
+      "default": "Thường"
+    }
+  },
+  "Thrift": {
+    "column": {
+      "name": "Thrift",
+      "host": "Host",
+      "port": "Port",
+      "description": "Mô tả",
+      "status": "Trạng thái",
+      "action": "Hành động"
+    },
+    "label": {
+      "checkHost": "Host không tồn tại trong IP tables",
+      "name": "Tên thrift",
+      "create": "Thêm thrift mới",
+      "listThrift": "Danh sách các thrift",
+      "editThrift": "Chỉnh sửa thrift"
+    }
+  },
+  "label": {
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "unlock": "Mở khóa",
+    "locks": "Bị khóa",
+    "active": "Hoạt động",
+    "confirm": "Xác nhận",
+    "titleDelete": "Xoá bản ghi",
+    "save": "Thêm mới",
+    "saveIp": "Tạo mới",
+    "create": "Lưu lại",
+    "cancel": "Huỷ",
+    "createSuccess": "Thêm mới thành công",
+    "createFail": "Thêm mới thất bại",
+    "updateSuccess": "Cập nhật thành công",
+    "updateFail": "Cập nhật thất bại",
+    "deleteSuccess": "Xoá thành công",
+    "deleteFail": "Xoá thất bại",
+    "confirmDelete": "Bạn có chắc chắn muốn xóa?",
+    "group": "Nhóm"
+  },
+  "page": {
+    "show": "Hiển thị",
+    "record": "bản ghi"
+  }
+}

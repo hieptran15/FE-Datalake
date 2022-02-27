@@ -1,0 +1,36 @@
+<ngx-datatable class="dark fullscreen"
+               [columnMode]="'flex'"
+               [rows]="links"
+               [columns]="columns"
+
+               [headerHeight]="'auto'"
+               [rowHeight]="'auto'"
+               [footerHeight]="'auto'"
+               [messages]="{totalMessage:'bản ghi'}"
+>
+  <ng-container *ngFor="let col of columns">
+    <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        {{ column.name}}
+      </ng-template>
+      <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+        <ng-container [ngSwitch]="col.prop">
+          <ng-container *ngSwitchDefault>
+            {{ value }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'action_btn'" class="text-right">
+            <div>
+              <button  class="p-1" nbButton status="warning" ghost>
+                <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+              </button>
+              <button  class="p-1" nbButton status="danger" ghost>
+                <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>
+              </button>
+            </div>
+          </ng-container>
+
+        </ng-container>
+      </ng-template>
+    </ngx-datatable-column>
+  </ng-container>
+</ngx-datatable>

@@ -1,0 +1,149 @@
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+}
+
+* {
+  &:focus {
+    outline: none;
+  }
+}
+
+nb-layout {
+  .row {
+    .col-3 {
+      nb-card-header {
+        padding-top: 18px;
+        padding-bottom: 18px;
+      }
+
+      nb-card-body {
+        .listGroup {
+          overflow-y: scroll;
+          overflow-x: hidden;
+          max-height: 600px;
+
+          .WpGroup {
+            background-color: #222736;
+            border-radius: 5px;
+            height: 50px;
+
+            .item-Group {
+              border-radius: 5px;
+              background-color: #222736;
+              color: white;
+              border: none;
+              width: calc(100% - 56px);
+              line-height: 50px;
+              padding-left: 15px;
+              padding-right: 0;
+
+              &:hover {
+                color: #5b9909 !important;
+              }
+
+              &:focus {
+                background-color: #2e9ad0;
+              }
+
+              .pr-3 {
+                border: none;
+              }
+            }
+          }
+        }
+
+        .btn-create {
+          border-radius: 5px;
+          line-height: 50px;
+          background-color: #222736;
+          border: none;
+          height: 100%;
+          width: 100%;
+          color: white;
+          font-size: 14px;
+          display: flex;
+          font-weight: bold;
+
+          .icon {
+            padding-left: 7px;
+            padding-right: 5px;
+          }
+
+          &:hover {
+            background-color: #2e3648;
+          }
+        }
+      }
+    }
+
+    .col-9 {
+      nb-card-header {
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+
+      nb-card-body {
+        .header {
+          margin: 0;
+        }
+
+        .dark {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0.3125rem;
+  height: 0.3125rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #101426;
+  cursor: pointer;
+  border-radius: 0.15625rem;
+}
+
+::-webkit-scrollbar-track {
+  background: #192038;
+  border-radius: 0.15625rem;
+}
+
+::-webkit-scrollbar-corner {
+  background: #192038;
+  border-radius: 0.15625rem;
+}
+
+button.disabled {
+  opacity: 0.5;
+  background-color: #2e3648 !important;
+}
+
+::ng-deep .actives {
+  color: #1FFD35 !important;
+
+  span.text {
+    color: #1FFD35 !important;
+  }
+}
+
+::ng-deep .locks {
+  color: #FB4F4F !important;
+
+  span.text {
+    color: #FB4F4F !important;
+  }
+}
+
+.lock {
+  color: #ff3d71;
+}
+
+datatable-scroller {
+  width: 100% !important;
+}

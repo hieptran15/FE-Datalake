@@ -1,0 +1,354 @@
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+nb-layout {
+  .row {
+    .col-3 {
+      nb-card-header {
+        padding-bottom: 25px;
+        padding-top: 23px;
+      }
+
+      nb-card-body {
+        .select-all {
+
+        }
+
+        .listGroup {
+          overflow-y: scroll;
+          overflow-x: hidden;
+          max-height: calc(76vh - 140px);
+
+          .WpGroup {
+            background-color: var(--color-background-item-create);
+            border-radius: 5px;
+            height: 50px;
+
+            nb-icon {
+              color: var(--color-text-light);
+            }
+
+            .item-Group {
+              border-radius: 5px;
+              background-color: var(--color-background-item-create);
+              color: var(--color-text-light);
+              border: none;
+              width: 100%;
+              line-height: 50px;
+              padding-left: 15px;
+              padding-right: 0;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+
+              &:hover {
+                background-color: var(--color-text-card-item-active-user);
+              }
+
+              &:focus {
+                background-color: var(--color-text-card-item-active-user);
+
+                &::after {
+                  background-color: var(--color-text-card-item-active-user);
+                }
+              }
+
+              .pr-3 {
+                border: none;
+
+                * {
+                  color: var(--color-text-light);
+                }
+              }
+            }
+
+            .btn-edit {
+              padding: 7px !important;
+
+              &:hover {
+                background-color: var(--color-text-card-item-active-user) !important;
+                color: var(--color-text-light) !important;
+              }
+            }
+          }
+        }
+
+        .btn-create {
+          nb-icon {
+            color: var(--color-text-light);
+          }
+
+          border-radius: 5px;
+          line-height: 50px;
+          border: 2px solid var(--color-background-btn-create-role);
+          background-color: var(--color-line-table);
+          height: 100%;
+          width: 100%;
+          color: var(--color-text-light);
+          font-size: 14px;
+          display: flex;
+          font-weight: bold;
+
+          .icon {
+            padding-left: 7px;
+            padding-right: 5px;
+          }
+
+          &:hover {
+            background-color: #363e54;
+          }
+        }
+      }
+    }
+
+    .col-9 {
+      nb-card-header {
+        padding-bottom: 18px;
+        padding-top: 20px;
+
+        .title {
+          align-self: center;
+        }
+      }
+
+      nb-card-body {
+        overflow: visible;
+
+        .header-body {
+          margin-bottom: 16px;
+          margin-top: 16px;
+
+          .page {
+            margin-right: 0;
+          }
+
+          .search {
+            margin-right: 0;
+            margin-left: 0;
+
+            ::placeholder {
+              color: #999;
+              opacity: 1; /* Firefox */
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+button.disabled {
+  opacity: 0.5;
+  background-color: var(--color-button-disable) !important;
+}
+
+::ng-deep .actives {
+  color: #1ffd35 !important;
+
+  span.text {
+    color: #1ffd35 !important;
+  }
+}
+
+::ng-deep .locks {
+  color: #fb4f4f !important;
+
+  span.text {
+    color: #fb4f4f !important;
+  }
+}
+
+//::-webkit-scrollbar {
+//  width: 0.3125rem;
+//  height: 0.3125rem;
+//}
+//
+//::-webkit-scrollbar-thumb {
+//  background: var(--color-background-item-create);
+//  cursor: pointer;
+//  border-radius: 0.15625rem;
+//}
+//
+//::-webkit-scrollbar-track {
+//  background: #192038;
+//  border-radius: 0.15625rem;
+//}
+//
+//::-webkit-scrollbar-corner {
+//  background: #192038;
+//  border-radius: 0.15625rem;
+//}
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.appearance-ghost.status-basic:hover {
+  background-color: transparent !important;
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh !important;
+  }
+
+  .ngx-datatable.dark .datatable-body .datatable-body-row .datatable-body-cell {
+    padding: 0.545rem 1.2rem;
+  }
+
+  .ngx-datatable.dark .datatable-body {
+    max-height: 54vh;
+    overflow-y: auto;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0.3125rem;
+    height: 0.3125rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-background-item-create);
+    cursor: pointer;
+    border-radius: 0.15625rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #192038;
+    border-radius: 0.15625rem;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: #192038;
+    border-radius: 0.15625rem;
+  }
+}
+
+.list-ip {
+  position: relative;
+  height: 100px;
+
+  .div-item {
+    //background-color: var(--color-text-card-item-active-user);
+    border: 2px solid #363e54;
+    padding: 0;
+    border-radius: 5px;
+
+    .d-flexs {
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: 100px;
+      border-radius: 5px;
+      width: calc(100% - 33px);
+      padding: 5px 10px;
+
+      .ip-item {
+        display: inline-block;
+        height: 40px;
+        line-height: 40px;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 3px;
+        margin-right: 5px;
+        margin-top: 5px;
+        background-color: #1d75b3;
+        position: relative;
+
+        &:hover {
+          .actions {
+            display: flex;
+          }
+        }
+
+        .actions {
+          position: absolute;
+          right: 0;
+          top: -9px;
+          display: none;
+          height: 20px;
+
+
+          & > div {
+            background: grey;
+            border-radius: 50%;
+            cursor: pointer;
+
+            nb-icon {
+              line-height: 2;
+            }
+
+            &:hover {
+              background: #363e54;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  button {
+    background-color: #3e4b6f !important;
+    position: absolute;
+    // color: var(--color-text-light) !important;
+    right: 20px;
+    top: 5px;
+    border: none;
+    opacity: 0.8;
+
+    &:hover {
+      background-color: #363e54;
+      opacity: 1;
+    }
+  }
+}
+
+// .selected {
+//   div {
+//     color: var(--color-text-card-item-active) !important;
+
+//     nb-icon {
+//       color: var(--color-text-card-item-active) !important;
+//     }
+//   }
+
+//custom color text with button group
+.listGroup span.pl-2.custom-show-data nb-icon {
+  // color: var(--color-text-light);
+}
+
+//custom button table
+::ng-deep {
+  ngx-datatable {
+    button {
+      * {
+        color: unset;
+      }
+    }
+  }
+}
+
+//
+//::ng-deep textarea {
+//  background: var(--background-container);
+//}
+.custom-show-data {
+  color: var(--color-text-light);
+}
+
+.div-item, .icon nb-icon {
+  background: var(--background-container);
+}

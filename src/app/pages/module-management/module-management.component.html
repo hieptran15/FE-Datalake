@@ -1,0 +1,546 @@
+<!--&lt;!&ndash;<nav aria-label="breadcrumb">&ndash;&gt;-->
+<!--&lt;!&ndash;  <ol class="breadcrumb" style="margin-bottom: 0 !important; background-color: #181E38;">&ndash;&gt;-->
+<!--&lt;!&ndash;    <li class="breadcrumb-item">&ndash;&gt;-->
+<!--&lt;!&ndash;      <a class="text-decoration-none" routerLink="/webportal/group-chart"&ndash;&gt;-->
+<!--&lt;!&ndash;      >VDP&ndash;&gt;-->
+<!--&lt;!&ndash;      </a>&ndash;&gt;-->
+<!--&lt;!&ndash;    </li>&ndash;&gt;-->
+<!--&lt;!&ndash;    <li class="breadcrumb-item">&ndash;&gt;-->
+<!--&lt;!&ndash;      <a class="text-decoration-none"&ndash;&gt;-->
+<!--&lt;!&ndash;      >Cấu hình hệ thống&ndash;&gt;-->
+<!--&lt;!&ndash;      </a>&ndash;&gt;-->
+<!--&lt;!&ndash;    </li>&ndash;&gt;-->
+<!--&lt;!&ndash;    <li class="breadcrumb-item" aria-current="page">&ndash;&gt;-->
+<!--&lt;!&ndash;      <a class="text-decoration-none" routerLink="/webportal/module-management"&ndash;&gt;-->
+<!--&lt;!&ndash;      >Module Manager&ndash;&gt;-->
+<!--&lt;!&ndash;      </a>&ndash;&gt;-->
+<!--&lt;!&ndash;    </li>&ndash;&gt;-->
+<!--&lt;!&ndash;  </ol>&ndash;&gt;-->
+<!--&lt;!&ndash;</nav>&ndash;&gt;-->
+<!--<nb-layout>-->
+<!--  <nb-layout-column style="padding-left: 0 !important;padding-right: 0 !important;padding-top: 15.6px !important;">-->
+<!--    <div>-->
+<!--      <nb-card [nbSpinner]="isLoading" [nbSpinnerMessage]="'process.processing' | translate" nbSpinnerStatus="primary">-->
+<!--        <nb-card-header>-->
+<!--          <div class="d-flex justify-content-between">-->
+<!--            <span> {{'module.label.listModule' | translate}}</span>-->
+<!--            <div class="d-flex justify-content-end edit-button">-->
+<!--              <button *hasAnyAuthority="authority.MODULE_MANAGER.MODULE_MANAGER_WRITE" type="button"-->
+<!--                      (click)="openAddorEditDialog(addOrEdit)">-->
+<!--                <nb-icon icon="plus-outline"></nb-icon>-->
+<!--                <strong title="title-page">{{'module.label.create' | translate}}</strong>-->
+<!--              </button>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </nb-card-header>-->
+<!--        &lt;!&ndash;        <nb-card-header>Kết quả tìm kiếm</nb-card-header>&ndash;&gt;-->
+<!--        <nb-card-body>-->
+<!--          <div class="d-flex justify-content-between row">-->
+<!--            <div class="d-flex page">-->
+<!--              <span>{{'data-ingestion.label.show' | translate}}</span>-->
+<!--              <ng-select [items]="limits"-->
+<!--                         class="selectPage"-->
+<!--                         bindLabel="name"-->
+<!--                         [(ngModel)]="limit"-->
+<!--                         [clearable]="false">-->
+<!--              </ng-select>-->
+<!--              <span>{{'data-ingestion.label.record' | translate}}</span>-->
+<!--            </div>-->
+<!--            <div class="col-4">-->
+<!--              <nb-form-field>-->
+<!--                <input nbInput fullWidth trim="blur" style="padding-left: 10px" class="input-edit"-->
+<!--                       placeholder="{{'module.column.moduleName' | translate}}" [(ngModel)]="searchText"-->
+<!--                       (change)="query()">-->
+<!--                <nb-icon nbPrefix icon="search-outline" pack="eva"-->
+<!--                         style="position: absolute;top: 10px;z-index: 3; right: 10px;"></nb-icon>-->
+<!--              </nb-form-field>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;            <div class="col-2">&ndash;&gt;-->
+<!--            &lt;!&ndash;              <button nbButton status="primary" type="button" nbTooltip="Search" nbTooltipStatus="primary" nbTooltipPlacement="top" (click)="query()">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <nb-icon icon="search-outline"></nb-icon> Search&ndash;&gt;-->
+<!--            &lt;!&ndash;              </button>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--          </div>-->
+<!--          <ngx-datatable class="dark fullscreen"-->
+<!--                         #table-->
+<!--                         [columnMode]="'force'"-->
+<!--                         [rows]="listModule"-->
+<!--                         [count]="listModule.length"-->
+<!--                         [limit]="limit"-->
+<!--                         [headerHeight]="'auto'"-->
+<!--                         [rowHeight]="'auto'"-->
+<!--                         [loadingIndicator]="true"-->
+<!--                         [footerHeight]="'auto'"-->
+<!--                         [columns]="columns"-->
+<!--                         [messages]="{totalMessage: 'data-ingestion.label.record' | translate}">-->
+<!--            <ng-container *ngFor="let col of columns">-->
+<!--              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name| translate}}" [flexGrow]="col.flexGrow"-->
+<!--                                    [sortable]="false">-->
+<!--                <ng-template let-column="column" ngx-datatable-header-template>-->
+<!--                  <ng-container [ngSwitch]="col.prop">-->
+<!--                    <ng-container *ngSwitchDefault>-->
+<!--                      {{ column.name |translate}}-->
+<!--                    </ng-container>-->
+<!--                    <ng-container *ngSwitchCase="'stt'">-->
+<!--                      <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>-->
+<!--                    </ng-container>-->
+<!--                    <ng-container *ngSwitchCase="'action'">-->
+<!--                      <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>-->
+<!--                    </ng-container>-->
+<!--                  </ng-container>-->
+<!--                </ng-template>-->
+<!--                <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>-->
+<!--                  <ng-container [ngSwitch]="col.prop">-->
+<!--                    <ng-container *ngSwitchCase="'stt'">-->
+<!--                      <div class="text-center"> {{rowIndex + 1}}</div>-->
+<!--                    </ng-container>-->
+<!--                    <ng-container *ngSwitchDefault>-->
+<!--                        <span class="custom-show-data" [title]="value">-->
+<!--                          {{ value ? value : 'N/A' }}-->
+<!--                        </span>-->
+<!--                    </ng-container>-->
+
+
+<!--                    <ng-container *ngSwitchCase="'action'">-->
+<!--                      <div *hasAnyAuthority="authority.MODULE_MANAGER.MODULE_MANAGER_WRITE"-->
+<!--                           class="w-100 d-flex justify-content-center">-->
+<!--                        <button class="edit" status="warning" nbButton ghost-->
+<!--                                nbTooltip="{{'data-ingestion.label.edit'| translate}}"-->
+<!--                                (click)="openAddorEditDialog(addOrEdit, row, 'edit')">-->
+<!--                          <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>-->
+<!--                        </button>-->
+<!--                        <button class="p-1" nbButton status="danger" ghost-->
+<!--                                nbTooltip="{{'data-ingestion.label.delete'| translate}}"-->
+<!--                                (click)="dialogService.open(confirmDelete, {context: row, closeOnBackdropClick:false})">-->
+<!--                          <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>-->
+<!--                        </button>-->
+<!--                      </div>-->
+<!--                    </ng-container>-->
+<!--                  </ng-container>-->
+<!--                </ng-template>-->
+<!--              </ngx-datatable-column>-->
+<!--              <ngx-datatable-footer>-->
+<!--                <ng-template-->
+<!--                  ngx-datatable-footer-template-->
+<!--                  let-rowCount="rowCount"-->
+<!--                  let-pageSize="pageSize"-->
+<!--                  let-selectedCount="selectedCount"-->
+<!--                  let-curPage="curPage"-->
+<!--                  let-offset="offset">-->
+<!--                  <div style="padding: 5px 10px;width:250px">-->
+<!--                    <div *ngIf="rowCount > 0">-->
+<!--                      &lt;!&ndash;                            Showing {{(offset * pageSize)+1}} to {{(rowCount>&ndash;&gt;-->
+<!--                      &lt;!&ndash;                            (curPage*pageSize))?(curPage*pageSize):(rowCount)}} of&ndash;&gt;-->
+<!--                      &lt;!&ndash;                            {{(rowCount)}} records.&ndash;&gt;-->
+<!--                      &lt;!&ndash;                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * 10 + 1}} - {{rowCount - curPage * 10 >= 0 ? (curPage - 1) * 10 + 10 : rowCount}}/{{rowCount}}, page: {{curPage}}/{{getTotalPage(rowCount, pageSize)}}</span>&ndash;&gt;-->
+<!--                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * limit + 1}}-->
+<!--                        - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}-->
+<!--                        /{{rowCount}} {{'data-ingestion.label.record' | translate}}</span>-->
+<!--                    </div>-->
+<!--                    <div *ngIf="rowCount === 0">-->
+<!--                      <span>0 records</span>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <datatable-pager-->
+<!--                    [pagerLeftArrowIcon]="'datatable-icon-left'"-->
+<!--                    [pagerRightArrowIcon]="'datatable-icon-right'"-->
+<!--                    [page]="curPage"-->
+<!--                    [size]="pageSize"-->
+<!--                    [count]="rowCount"-->
+<!--                    [hidden]="!((rowCount / pageSize) > 1)"-->
+<!--                    (change)="table.onFooterPage($event)">-->
+<!--                  </datatable-pager>-->
+<!--                </ng-template>-->
+<!--              </ngx-datatable-footer>-->
+<!--            </ng-container>-->
+<!--          </ngx-datatable>-->
+<!--        </nb-card-body>-->
+<!--      </nb-card>-->
+<!--    </div>-->
+<!--  </nb-layout-column>-->
+<!--</nb-layout>-->
+
+
+<div class="tagger-Monitor">
+  <!--       -->
+  <nb-layout>
+    <nb-layout-column style=" padding-right: 4px !important;padding-left: 0 !important; padding-top: 0 !important;">
+      <div class="row">
+        <div class="col-3 pr-0">
+          <nb-card [nbSpinner]="isLoading" [nbSpinnerMessage]="'Processing...'" nbSpinnerStatus="primary"
+                   class="monitor-ingestion mt-3" style="border: none ; height: 89vh;"
+                   nbSpinnerStatus="primary">
+            <nb-card-header class="d-flex justify-content-between align-items-center">
+              <div>
+                <span> {{'module.label.listModule' | translate}}</span>
+              </div>
+            </nb-card-header>
+            <nb-card-body style="padding:24px 14px">
+              <div class="row m-0  edit-button">
+                <button *hasAnyAuthority="authority.MODULE_MANAGER.MODULE_MANAGER_WRITE" type="button"
+                        (click)="openAddorEditDialog(addOrEdit)">
+                  <nb-icon icon="plus-outline"></nb-icon>
+                  <strong title="title-page">{{'New Module' }}</strong>
+                </button>
+              </div>
+              <div class="row list-item-module d-flex" style="height:87%; overflow-y:scroll">
+                <button [ngClass]="{selected: item?.moduleName === isLoadingFirst   }"
+                        *ngFor="let item of listModule;let i=index"
+                        (click)="detailModule(item,false)"
+                        class="module-name-item d-flex justify-content-between">
+                      <span class="" style="color:var(--color-text-light)">
+                        {{ item.moduleName}}
+                      </span>
+                  <div>
+                    <button class="p-1" nbButton ghost
+                            nbTooltip="{{'data-ingestion.label.delete'| translate}}"
+                            (click)="dialogService.open(confirmDelete, {context: item, closeOnBackdropClick:false})">
+                      <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>
+                    </button>
+                  </div>
+                </button>
+              </div>
+            </nb-card-body>
+            <nb-card-footer style="border-top:1px solid transparent">
+
+            </nb-card-footer>
+          </nb-card>
+        </div>
+        <div class="col-9  m-0">
+          <div class="row m-0 p-0 ">
+            <div class="col-12 p-0 m-0">
+              <nb-card [nbSpinner]="isLoading" [nbSpinnerMessage]="'Processing...'" nbSpinnerStatus="primary"
+                       class="monitor-ingestion mt-3" style="border: none ; min-height: 36vh;"
+                       nbSpinnerStatus="primary">
+                <nb-card-header class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span>Module detail</span>
+                  </div>
+                </nb-card-header>
+                <nb-card-body class="module-detail-background">
+                  <div class="module-detail" [formGroup]="formGroupDetail">
+                    <div class="row">
+                      <div class="col-3">
+                        Name:
+                      </div>
+                      <div class="col-9">
+                        <input class="input-edit" nbInput fullWidth trim="blur"
+                               placeholder="{{'module.column.moduleName' | translate}}"
+                               formControlName="moduleName"
+                               [readOnly]="true">
+                        <ngx-inline-message [message]="'module.column.moduleName'| translate"
+                                            [formName]="formGroupDetail.get('moduleName')"></ngx-inline-message>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-3">
+                        Roles:
+                      </div>
+                      <div class="col-9">
+                        <ng-select [items]="listPermission"
+                                   [hideSelected]="true"
+                                   [closeOnSelect]="true"
+                                   [clearAllText]="''"
+                                   multiple="true"
+                                   bindLabel="code"
+                                   bindValue="code"
+                                   formControlName="permissions"
+                                   appendTo=""
+                        >
+                        </ng-select>
+                        <ngx-inline-message [message]="'permissions'"
+                                            [formName]="formGroupDetail.get('permissions')"></ngx-inline-message>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-3">
+                        Descriptions:
+                      </div>
+                      <div class="col-9">
+                          <textarea class="edit-text-area" nbInput [rows]="'3'" fullWidth
+                                    formControlName="description"></textarea>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <!--                  </div>-->
+                  <div class="w-100 mt-3 button-area edit-button d-flex justify-content-center">
+                    <button (click)="UpdateDetail()"
+
+                            [class.disabled]="!formGroupDetail.valid"
+                            [disabled]="!formGroupDetail.valid"
+                    >Cập nhật
+                    </button>
+                    <!--                    <button class="edit-button-cancel">Đóng</button>-->
+                  </div>
+                </nb-card-body>
+
+              </nb-card>
+            </div>
+            <div class="col-12 p-0 m-0" *ngIf="isListConfig===true">
+              <nb-card [nbSpinner]="isLoading" [nbSpinnerMessage]="'Processing...'" nbSpinnerStatus="primary"
+                       class="monitor-ingestion mt-3" style="border: none ; min-height: 48vh;"
+                       nbSpinnerStatus="primary">
+                <nb-card-header class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span>List config</span>
+                  </div>
+                </nb-card-header>
+                <nb-card-body class="module-detail-background">
+                  <!--                  <div class="module-detail-background">-->
+                  <div class="module-detail" [formGroup]="formGroupListConfig">
+                    <div class="row">
+                      <div class="col-4">
+                        Nifi host:
+                      </div>
+
+                      <div class="col-8 mb-0 d-flex flex-row align-items-start justify-content-between">
+                        <div>
+                          <input class="input-edit" nbInput fullWidth trim="blur"
+                                 formControlName="nifi_host"
+                          >
+                          <ngx-inline-message [message]="'NifiHost'"
+                                              [formName]="formGroupListConfig.get('nifi_host')"></ngx-inline-message>
+                        </div>
+                        <div>
+                          <span class="text-nowrap px-4">Nifi post:</span>
+                        </div>
+                        <div>
+                          <input class="input-edit" nbInput fullWidth trim="blur"
+                                 formControlName="nifi_post"
+                          >
+                          <ngx-inline-message [message]="'NifiPost'"
+                                              [formName]="formGroupListConfig.get('nifi_post')"></ngx-inline-message>
+                        </div>
+
+
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-4">
+                        Redis connection string:
+                      </div>
+                      <div class="col-8">
+                        <input class="input-edit" nbInput fullWidth trim="blur"
+                               formControlName="redis_connection"
+                        >
+                        <ngx-inline-message [message]="'Redis'"
+                                            [formName]="formGroupListConfig.get('redis_connection')"></ngx-inline-message>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-4">
+                        Sential master:
+                      </div>
+                      <div class="col-8">
+                        <input class="input-edit" nbInput fullWidth trim="blur"
+                               formControlName="sential_master"
+                        >
+                        <ngx-inline-message [message]="'Master'"
+                                            [formName]="formGroupListConfig.get('sential_master')"></ngx-inline-message>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-4">
+                        Redis password:
+                      </div>
+                      <div class="col-8">
+                        <input class="input-edit" nbInput fullWidth trim="blur"
+                               type="text"
+                               formControlName="redis_password"
+                        >
+                        <ngx-inline-message [message]="'RedisPassword'"
+                                            [formName]="formGroupListConfig.get('redis_password')"></ngx-inline-message>
+                      </div>
+                    </div>
+
+
+                    <div class="row mt-2">
+                      <div class="col-4">
+                        Knox authentication:
+                      </div>
+                      <div class="col-8 mb-0 d-flex justify-content-between align-items-start">
+                        <div class="w-100">
+                          <input class="input-edit" nbInput fullWidth trim="blur"
+                                 formControlName="knox_authentication"
+                          >
+                          <ngx-inline-message [message]="'Knox authentication'"
+                                              [formName]="formGroupListConfig.get('knox_authentication')"></ngx-inline-message>
+                          <!--                                                <div class="input-form-radius">-->
+                        </div>
+                        <nb-toggle style="transform: scale(0.7);margin-right:-8px"></nb-toggle>
+                        <!--                                                </div>-->
+                      </div>
+                    </div>
+
+
+                    <div class="row mt-2">
+                      <div class="col-4">
+                        Nifi https:
+                      </div>
+                      <div class="col-7">
+                        <!--                        <input class="input-edit" nbInput fullWidth trim="blur"-->
+                        <!--                               formControlName="NifiHttps"-->
+                        <!--                        >-->
+
+                        <nb-radio-group class="d-flex mb-0 justify-content-between" name="export"
+                                        formControlName="nifi_htttps">
+                          <nb-radio [value]="'yes'" [checked]="formGroupListConfig.value.NifiHttps === 'yes'">
+                            <span>Yes</span>
+                          </nb-radio>
+                          <nb-radio [value]="'no'" [checked]="formGroupListConfig.value.NifiHttps === 'no'">
+                            <span>No</span></nb-radio>
+                        </nb-radio-group>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="w-100 mt-3 button-area edit-button d-flex justify-content-center">
+                    <button (click)="openFormConfirm(StepAction)"
+
+                            [class.disabled]="!formGroupListConfig.valid"
+                            [disabled]="!formGroupListConfig.valid"
+                    >Cập nhật
+                    </button>
+                    <!--                    <button class="edit-button-cancel">Đóng</button>-->
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nb-layout-column>
+  </nb-layout>
+</div>
+
+
+<ng-template #confirmDelete let-data let-deleteRef="dialogRef">
+  <nb-card style="width: 400px;">
+    <nb-card-header class="d-flex justify-content-between">
+      <div>{{'module.label.deleteItem'|translate}}</div>
+      <button nbButton ghost (click)="deleteRef.close()" style="background: none; border: none; color: #8C95B2">
+        <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body>
+      {{'module.label.confirmDelete'|translate}}
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end edit-button">
+        <button
+          (click)="delete(data.moduleId); deleteRef.close()">
+          <nb-icon icon="checkmark-outline"></nb-icon>
+          <strong>{{'module.label.confirm'|translate}}</strong>
+        </button>
+        <button class="ml-2 edit-button-cancel" (click)="deleteRef.close()">
+          <nb-icon icon="close-outline"></nb-icon>
+          <strong>{{'user.label.cancel'|translate}}</strong>
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+
+<ng-template #addOrEdit let-data let-ref="dialogRef">
+  <nb-card style="width: 40vw;">
+    <nb-card-header>
+      <div class="d-flex justify-content-between">
+        <div *ngIf="data.action !== 'edit'">{{'module.label.create' | translate}}</div>
+        <div *ngIf="data.action === 'edit'">{{'module.label.edit' | translate}}</div>
+        <div>
+          <button nbButton ghost (click)="ref.close()" style="background: none; border: none; color: #8C95B2">
+            <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body style="overflow: visible">
+      <div [formGroup]="formGroup">
+        <div class="row">
+          <div class="col-3">
+            {{'module.column.moduleName' | translate}}
+          </div>
+          <div class="col-9">
+            <input class="input-edit" nbInput fullWidth trim="blur"
+                   placeholder="{{'module.column.moduleName' | translate}}"
+                   formControlName="moduleName"
+                   [readOnly]="data.action === 'edit'">
+            <ngx-inline-message [message]="'module.column.moduleName'| translate"
+                                [formName]="formGroup.get('moduleName')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-3">
+            {{'module.label.roles' | translate}}
+          </div>
+          <div class="col-9">
+            <ng-select [items]="listPermission"
+                       [hideSelected]="true"
+                       [closeOnSelect]="true"
+                       [clearAllText]="''"
+                       multiple="true"
+                       bindLabel="code"
+                       bindValue="code"
+                       formControlName="permissions"
+                       appendTo=""
+            >
+            </ng-select>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-3">
+            {{'module.column.description' | translate}}
+          </div>
+          <div class="col-9">
+            <textarea class="edit-text-area" nbInput [rows]="'3'" fullWidth formControlName="description"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end edit-button">
+        <button (click)="save(ref)">
+          <nb-icon icon="checkmark-outline"></nb-icon>
+          <strong> {{'module.label.save' | translate}}</strong>
+        </button>
+        <button class="ml-2 edit-button-cancel"
+                (click)="ref.close()">
+          <nb-icon icon="close-outline"></nb-icon>
+          <strong>{{'module.label.cancel' | translate}}</strong>
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+
+<ng-template #StepAction let-data let-ref="dialogRef">
+  <nb-card class="step-action-background">
+    <nb-card-header class="title-step-header">
+      <div class="d-flex justify-content-between m-0"><span class="">{{data.title}}</span>
+        <button style="background: none; border: none; color: #8C95B2" size="small" (click)="ref.close()">
+          <nb-icon icon="close-outline"></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="action-popup-body">
+      <div class="h-100 d-flex position-relative flex-column align-items-baseline">
+        <div><span>{{data.body}}</span></div>
+        <div class="w-100 button-area edit-button d-flex justify-content-center">
+          <!--          actionForm(ref)-->
+          <button (click)="UpdateListConfig2(ref)"
+          >Xác nhận
+          </button>
+          <button class="edit-button-cancel" (click)="ref.close()">Đóng</button>
+        </div>
+      </div>
+    </nb-card-body>
+    <!--    <nb-card-footer>-->
+
+    <!--    </nb-card-footer>-->
+  </nb-card>
+</ng-template>

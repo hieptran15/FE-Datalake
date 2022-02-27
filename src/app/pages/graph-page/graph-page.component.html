@@ -1,0 +1,121 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb" style="margin-bottom: 0 !important;background-color: #222736;">
+    <li class="breadcrumb-item">
+      <a class="text-decoration-none" routerLink="/pages/dashboard"
+         style="color: white;font-size: 13px; font-weight: bold">VDP
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <a class="text-decoration-none"
+         style="color: white;font-size: 13px; font-weight: bold">Thông tin hệ thống
+      </a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a class="text-decoration-none" routerLink="/pages/dashboard"
+         style="color: white;font-size: 13px; font-weight: bold">Dashboard
+      </a>
+    </li>
+  </ol>
+</nav>
+<nb-layout>
+  <nb-layout-column
+    [nbSpinner]="checkerrorServer"
+    [nbSpinnerMessage]="'process.messageErrorServer' | translate"
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;">
+    <nb-card [nbSpinner]="loading"
+             nbSpinnerStatus="primary"
+             nbSpinnerSize="giant">
+      <nb-card-header>
+        <div class="row" style="padding: 0 10px">
+          <div style="width: 30%">
+            <nav>
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item active"><a href="#" style="text-decoration: none" class="colorTest">Trang
+                  chủ</a></li>
+                <li class="breadcrumb-item active" *ngFor="let data of breadcrumb; let number = index ">
+                  <a (click)="changeBreadcrumb(number);"
+                     [ngClass]="{'colorTest' : number !== breadcrumb.length - 1}">{{data?.label}}</a></li>
+              </ol>
+            </nav>
+          </div>
+          <div style="width: 70%;justify-content: flex-end" class=" d-flex  align-items-stretch edit-button">
+            <div style="width: 420px" class="d-flex ">
+              <ng-select fullWidth [items]="clusters$ | async" bindLabel="label" [hideSelected]="true"
+                         style="width: 100%;"
+                         typeToSearchText="Chọn cụm" [typeahead]="clustersInput$" [loading]="clustersLoading"
+                         [(ngModel)]="cluster" (focus)="clustersInput$.next()" appendTo=""
+                         placeholder="Chọn Cụm server/ Cụm ứng dụng/ Ứng dụng/ Tag "
+              >
+                <ng-template ng-header-tmp>
+                  <div class="row">
+                    <div class="col-8">Tên</div>
+                    <div class="col-4">Tags</div>
+                  </div>
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+                  <div class="row">
+                    <div class="col-8 text-truncate" nbTooltip="{{item.label}}"
+                         title="{{item.label}}">{{item.label}}</div>
+                    <div class="col-4 text-truncate" nbTooltip="{{item.tags}}" title="{{item.tags}}">{{item.tags}}</div>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+            <button (click)="search()" class="ml-2 mr-2">
+              <nb-icon icon="search" pack="fa"></nb-icon>
+            </button>
+            <ng-container *hasAnyAuthority="authoritiesConstant.DASHBOARD.DASHBOARD_WRITE">
+              <button *ngIf="editable && !isEditing" (click)="editDiagram()">
+                <nb-icon icon="pencil-alt" pack="fa"></nb-icon>
+              </button>
+              <button *ngIf="editable && isEditing" class="mr-2" (click)="saveDiagram()">
+                <nb-icon icon="save" pack="fa"></nb-icon>
+              </button>
+            </ng-container>
+            <button *ngIf="editable && isEditing" type="button" (click)="editDiagram(false)">
+              <nb-icon icon="times" pack="fa"></nb-icon>
+            </button>
+            <button class="ml-2" (click)="hideRelation(true)">
+              <nb-icon [icon]="isHideLink ? 'link' : 'unlink'" pack="fa"></nb-icon>
+            </button>
+            <button class="ml-2" *hasAnyAuthority="authoritiesConstant.DASHBOARD.DASHBOARD_WRITE" [nbPopover]="popOver"
+                    nbPopoverPlacement="bottom">
+              <nb-icon icon="settings-outline" pack="eva"></nb-icon>
+            </button>
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row form-group">
+        </div>
+        <div class="wrapper">
+          <div id="myOverviewDiv" class="overview"></div>
+          <gojs-diagram id="" #myDiagram [initDiagram]='initDiagram'
+                        [nodeDataArray]='diagramNodeData'
+                        [linkDataArray]='diagramLinkData'
+                        [divClassName]='diagramDivClassName'
+                        [skipsDiagramUpdate]="skipsDiagramUpdate"
+                        [modelData]='diagramModelData'
+                        (modelChange)='diagramModelChange($event)'>
+          </gojs-diagram>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+
+<ng-template #popOver>
+  <ul class="menu-popover">
+    <li routerLink="/pages/application">
+      <nb-icon class="mr-2" [icon]="'list'" pack="fa"></nb-icon>
+      Quản lý cụm ứng dụng
+    </li>
+    <li routerLink="/pages/node">
+      <nb-icon class="mr-2" [icon]="'grid-outline'" pack="eva"></nb-icon>
+      Quản lý ứng dụng
+    <li routerLink="/pages/link">
+      <nb-icon class="mr-2" [icon]="'link'" pack="fa"></nb-icon>
+      Quản lý liên kết
+    </li>
+  </ul>
+</ng-template>

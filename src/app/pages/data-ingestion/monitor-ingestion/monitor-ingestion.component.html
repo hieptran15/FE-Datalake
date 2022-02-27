@@ -1,0 +1,239 @@
+<div class="tagger-Monitor">
+  <nb-layout>
+    <nb-layout-column
+      style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 0!important;padding-top: 15.6px !important;">
+      <nb-card class="monitor-ingestion" [formGroup]="formGroup" style="border: none"
+               nbSpinnerStatus="primary" [nbSpinner]="isLoading" [nbSpinnerMessage]="'Processing...'">
+        <nb-card-header class="d-flex justify-content-between align-items-center">
+          <div>
+            <span>{{"data-ingestion.label.title"| translate}}</span>
+          </div>
+          <div class="d-flex">
+            <div class="edit-add-left">
+              <ng-select
+                style="min-width: 8vw"
+                appendTo=""
+                [clearable]="false"
+                [items]="listProvisioning"
+                bindValue=""
+                bindLabel=""
+                [(ngModel)]="selectProvisioning"
+                (change)="changSource($event)"
+                [ngModelOptions]="{standalone: true}"
+              >
+              </ng-select>
+            </div>
+            <div class="edit-add-left edit-button">
+              <button *hasAnyAuthority="authority.INGESTION_FLOW_MANAGER.INGESTION_FLOW_MANAGER_WRITE"
+                      style="text-align: center;text-transform: revert;"
+                      (click)="createThread()">
+                <nb-icon [icon]="'plus'" pack="eva"></nb-icon>
+                <strong>
+                  {{"data-ingestion.label.addNewThread" | translate}}
+                </strong>
+              </button>
+            </div>
+            <div class="edit-add-right edit-button">
+              <button *hasAnyAuthority="authority.INGESTION_FLOW_MANAGER.INGESTION_FLOW_MANAGER_WRITE"
+                      style="text-align: center;text-transform: revert;"
+                      (click)="this.dialogService.open(addNewGroupPopup); nameGroup = ''">
+                <nb-icon [icon]="'plus'" pack="eva"></nb-icon>
+                <strong>
+                  {{"data-ingestion.label.addNewGroup" | translate}}
+                </strong>
+              </button>
+            </div>
+          </div>
+        </nb-card-header>
+        <nb-card-body>
+          <div style="min-height: 70px" class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <span>{{'data-ingestion.label.show' | translate}}</span>
+              <ng-select style="margin: 0 10px;min-width: 60px;" [items]="limits"
+                         bindLabel="name"
+                         [(ngModel)]="limit"
+                         [clearable]="false"
+                         appendTo=""
+                         [ngModelOptions]="{standalone: true}">
+              </ng-select>
+              <span>{{'data-ingestion.label.record' | translate}}</span>
+            </div>
+            <div style="width: 80%;justify-content: flex-end;" class="group-right d-flex">
+              <div style="padding-right: 20px;padding-right: 20px;min-width: 45%;position: relative">
+                <input class="input-edit" nbInput fullWidth
+                       placeholder='{{"data-ingestion.label.nameThread" | translate}}'
+                       formControlName="flowName" (change)="doSearchFlow()">
+                <nb-icon nbPrefix icon="search-outline" pack="eva"
+                         style="position: absolute;top: 8px;z-index: 3; right: 26px;"></nb-icon>
+              </div>
+              <div class="group" style="padding-right: 20px;min-width: 17%">
+                <ng-select appendTo="" [items]="listGroup" bindLabel="groupName" bindValue="id" formControlName="group"
+                           placeholder="{{'data-ingestion.column.group'|translate}}"
+                           [closeOnSelect]="true"
+                           [clearAllText]="''" (change)="doSearchFlow()">
+                </ng-select>
+              </div>
+              <!--        <div class="col-2">-->
+              <!--          <ng-select [items]="listDestination" bindLabel="name" bindValue="value" formControlName="destination"-->
+              <!--                     [clearable]="false" (change)="doSearchFlow()">-->
+              <!--          </ng-select>-->
+              <!--        </div>-->
+              <div style="padding-right: 20px;min-width: 11%">
+                <ng-select appendTo="" [items]="listStatus" bindLabel="name" bindValue="value" formControlName="status"
+                           placeholder="{{'data-ingestion.column.status'| translate }}"
+                           [closeOnSelect]="true"
+                           [clearAllText]="''" (change)="doSearchFlow()">
+                </ng-select>
+              </div>
+              <div style="padding-right: 20px;min-width: 9%">
+                <ng-select appendTo="" [items]="listSource" bindLabel="name" bindValue="value" formControlName="source"
+                           placeholder="{{'data-ingestion.column.source'| translate }}"
+                           [closeOnSelect]="true"
+                           [clearAllText]="''" (change)="doSearchFlow()">
+                </ng-select>
+              </div>
+              <div style="min-width: 15%">
+                <ng-select appendTo="" [items]="listCalendar" bindLabel="name" bindValue="value"
+                           placeholder="{{'data-ingestion.column.calendar'| translate }}"
+                           formControlName="calendar"
+                           [closeOnSelect]="true"
+                           [clearAllText]="''" (change)="doSearchFlow()">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <ngx-datatable
+            #tableFlow
+            [rows]="rows"
+            [columns]="columns"
+            headerHeight="auto"
+            [messages]="{totalMessage: 'data-ingestion.label.record' | translate}"
+            class="dark"
+            [columnMode]="'force'"
+            [footerHeight]="50"
+            [loadingIndicator]="true"
+            [limit]="limit"
+            rowHeight="auto">
+            <ng-container *ngFor="let col of columns">
+              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [sortable]="false"
+                                    [flexGrow]="col.flexGrow">
+
+                <ng-template let-column="column" ngx-datatable-header-template>
+                  <ng-container [ngSwitch]="col.prop">
+                    <ng-container *ngSwitchDefault>
+                      {{ column.name |translate }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'action'">
+                      <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'id'">
+                      <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+
+                <ng-template let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template let-row="row">
+                  <ng-container [ngSwitch]="col.prop">
+                    <ng-container *ngSwitchDefault>
+                      <div class="d-flex w-100">
+                        <span class="custom-show-data" [title]="value">{{value}}</span>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'id'">
+                      <div class="w-100 text-center">
+                        <span>{{value}}</span>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'scheduleStrategy'">
+                      <div class="w-100">
+                        <span>{{value}}: {{rows[rowIndex]['schedulingPeriod']}}</span>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngSwitchCase="'action'">
+                      <div class="w-100 text-center">
+                        <button nbButton status="warning" ghost (click)="detailThread(rows[rowIndex])">
+                          <nb-icon [icon]="'edit-2-outline'"></nb-icon>
+                        </button>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-footer>
+                <ng-template
+                  ngx-datatable-footer-template
+                  let-rowCount="rowCount"
+                  let-pageSize="pageSize"
+                  let-selectedCount="selectedCount"
+                  let-curPage="curPage"
+                  let-offset="offset">
+                  <div style="padding: 5px 10px;width: 250px">
+                    <div *ngIf="rowCount > 0">
+                      <!--                            Showing {{(offset * pageSize)+1}} to {{(rowCount>-->
+                      <!--                            (curPage*pageSize))?(curPage*pageSize):(rowCount)}} of-->
+                      <!--                            {{(rowCount)}} records.-->
+                      <!--                    <span>(Record {{(curPage - 1) * limit + 1}} - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + 10 : rowCount}}/{{rowCount}})</span>-->
+                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * limit + 1}}
+                        - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}
+                        /{{rowCount}} {{'data-ingestion.label.record' | translate}}</span>
+                    </div>
+                    <div *ngIf="rowCount === 0">
+                      <span>0 {{'data-ingestion.label.record' | translate}}</span>
+                    </div>
+                  </div>
+                  <datatable-pager
+                    [pagerLeftArrowIcon]="'datatable-icon-left'"
+                    [pagerRightArrowIcon]="'datatable-icon-right'"
+                    [page]="curPage"
+                    [size]="pageSize"
+                    [count]="rowCount"
+                    [hidden]="!((rowCount / pageSize) > 1)"
+                    (change)="tableFlow.onFooterPage($event)">
+                  </datatable-pager>
+                </ng-template>
+              </ngx-datatable-footer>
+            </ng-container>
+          </ngx-datatable>
+        </nb-card-body>
+      </nb-card>
+    </nb-layout-column>
+  </nb-layout>
+
+  <ng-template #addNewGroupPopup let-ref="dialogRef" let-data>
+    <nb-card style="width: 25vw">
+      <nb-card-header class="d-flex justify-content-between align-items-center">
+        <div>
+          {{"data-ingestion.label.addNewGroup" | translate}}
+        </div>
+        <div>
+          <button style="background: none; border: none; color: #8C95B2" nbButton ghost (click)="ref.close()">
+            <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px"></nb-icon>
+          </button>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="mb-4 d-flex align-items-center">
+          <label class="mr-3"
+                 style="width: 26%;line-height: 40px">{{"data-ingestion.label.nameGroup" | translate}}</label>
+          <input class="input-edit" fullWidth nbInput name="name-group" [(ngModel)]="nameGroup">
+        </div>
+        <div class="edit-button d-flex justify-content-end">
+          <button style="margin-right: 10px" status="basic" (click)="addGroup(ref)"
+                  [disabled]="nameGroup ? false : true">
+            <nb-icon [icon]="'checkmark-outline'"></nb-icon>
+            <strong>
+              {{"data-ingestion.label.add" | translate}}
+            </strong>
+          </button>
+          <button class="edit-button-cancel" (click)="ref.close()">
+            <nb-icon [icon]="'close-outline'"></nb-icon>
+            <strong>
+              {{'user.label.cancel' | translate}}
+            </strong>
+          </button>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </ng-template>
+</div>

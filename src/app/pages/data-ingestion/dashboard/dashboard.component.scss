@@ -1,0 +1,61 @@
+.w-h-body {
+  width: auto;
+  height: calc(100vh - 216px);
+}
+
+.h-chart {
+  height: 614px;
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  nb-spinner .message {
+    color: #e91e63;
+    background: azure;
+    padding: 40px 30px;
+    border-radius: 5px;
+  }
+
+  nb-spinner.status-basic {
+    background-color: transparent;
+
+    .spin-circle {
+      display: none;
+    }
+  }
+}
+
+@media screen and (min-device-width: 720px) and (max-width: 1366px) {
+  .h-chart {
+    height: 340px;
+  }
+  .w-h-body {
+    width: auto;
+    height: 100%;
+  }
+}
+
+@media screen and (min-device-width: 1366px) and (max-width: 1600px) {
+  .h-chart {
+    height: 470px;
+  }
+  .w-h-body {
+    width: auto;
+    height: 100%;
+  }
+}
+
+:host ::ng-deep {
+  .highcharts-credits {
+    display: none;
+  }
+}

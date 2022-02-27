@@ -1,0 +1,56 @@
+.chart-user {
+  width: 100%;
+
+  &__left {
+    background-color: var(--background-container);
+    width: 40%;
+    margin-right: 15px;
+    border-radius: 5px;
+    height: 412px;
+  }
+
+  &__right {
+    background-color: var(--background-container);
+    width: 60%;
+    border-radius: 5px;
+    height: 412px;
+  }
+}
+
+:host ::ng-deep {
+
+  .title-chart-total {
+    color: var(--color-text-light);
+    font-size: 32px;
+    font-weight: 500;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left:-11.5vw;
+  }
+
+  rect.highcharts-background {
+    background: transparent;
+    fill: var(--background-container);
+    border-radius: 5px;
+  }
+
+  .highcharts-legend .highcharts-legend-item text tspan {
+    color: var(--color-text-light) !important;
+    font-size: 12px;
+    fill: var(--color-text-light) !important;
+  }
+
+  svg.highcharts-root {
+    border-radius: 5px;
+  }
+
+  g.highcharts-label.highcharts-data-label {
+    display: none;
+  }
+
+  path.highcharts-tick {
+    stroke: gray;
+  }
+}

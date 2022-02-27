@@ -1,0 +1,48 @@
+@import '~app/@theme/styles/themes';
+
+nb-card {
+  //overflow: scroll;
+  //overflow-x: hidden;
+  //min-width: 80vw;
+  //max-width: 80vw;
+  //height: 63vh;
+}
+
+:host ::ng-deep {
+  textarea {
+    color: var(--color-text-light);
+    font-size: 14px;
+    margin: 0;
+    width: 100%;
+    height: 540px;
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    resize: none;
+
+    &:focus-visible {
+      border: none;
+    }
+
+    &:focus {
+      border: none;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+}

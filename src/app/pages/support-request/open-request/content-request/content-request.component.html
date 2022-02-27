@@ -1,0 +1,907 @@
+<nb-layout>
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;background: var(--background-container);"
+    [nbSpinner]="isLoading" [nbSpinnerMessage]="'Processing'" nbSpinnerStatus="primary">
+    <nb-card style="background: var(--background-container);">
+      <div class="row">
+        <div style="padding: 0 10px" class="col-6">
+          <div [formGroup]="formGroupInfoGroup" class="info-sr">
+            <div class="row mb-3">
+              <div class="col-3 align-center">
+                <strong>Thông tin SR</strong>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-2 align-center">
+                <label>Mã SR:</label>
+              </div>
+              <div class="col-4">
+                <input formControlName="code_SR" trim="blur" [readOnly]="true" class="input-edit" nbInput fullWidth
+                       disabled="true"
+                       name="ftp-server">
+              </div>
+              <div class="col-2 align-center">
+                <label>Người tạo:</label>
+              </div>
+              <div class="col-4">
+                <input formControlName="userHandler" readonly disabled trim="blur" nbInput fullWidth class="input-edit"
+                       name="port">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-2 align-center">
+                <label>Tiêu đề:</label>
+              </div>
+              <div class="col-10">
+                <input
+                  [readOnly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                  [disabled]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                  formControlName="title" trim="blur" class="input-edit" nbInput fullWidth name="user-name">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-2 align-center">
+                <label>Mô tả:</label>
+              </div>
+              <div class="col-10">
+                <div class="custom-textarea d-flex justify-content-between">
+                  <div class="custom-textarea__item">
+                    <textarea
+                      [readOnly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                      formControlName="descriptions" class="edit-text-area"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--            // add-->
+            <div *ngIf="!paramId">
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Ngày khởi tạo:</label>
+                </div>
+                <div class="col-4">
+                  <div>
+                    <p-calendar formControlName="dateCreate" [style]="{'width':'100%'}"
+                                [showIcon]="true"
+                                [disabled]="true"
+                                dateFormat="yy-mm-dd"></p-calendar>
+                  </div>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Loại SR:</label>
+                </div>
+                <div class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="typeSr"
+                    [readonly]="true"
+                    disabled="true"
+                    class="edit-button-hive"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listTypeSr" [value]="item?.key">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div *ngIf="typeRequest === 'iptables'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Server:</label>
+                </div>
+                <div class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="server"
+                    class="edit-button-hive"
+                    bindLabel="connectionName"
+                    bindValue="id"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listAllServer" [value]="item?.id">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <ngx-inline-message [message]="'Server'"
+                                      [formName]="formGroupInfoGroup.get('server')"></ngx-inline-message>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Port:</label>
+                </div>
+                <div class="col-4">
+                  <input (keydown)="portValidate($event)" trim="blur" formControlName="port" class="input-edit" nbInput
+                         fullWidth name="user-name">
+                  <ngx-inline-message [message]="'Port'"
+                                      [formName]="formGroupInfoGroup.get('port')"></ngx-inline-message>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div *ngIf="typeRequest === 'lb_connection'" class="col-2 align-center">
+                  <label>RP APP:</label>
+                </div>
+                <div *ngIf="typeRequest === 'lb_connection'" class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="rp_app"
+                    (change)="changeThriftByRpApp()"
+                    class="edit-button-hive"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listAllRpApp" [value]="item?.id">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <ngx-inline-message [message]="'RP APP'"
+                                      [formName]="formGroupInfoGroup.get('rp_app')"></ngx-inline-message>
+                </div>
+                <div *ngIf="typeRequest === 'lb_connection'" class="col-4 d-flex align-center">
+                  <nb-checkbox class="d-flex align-items-center" (checkedChange)="toggleRpApp($event)">Thêm mới
+                  </nb-checkbox>
+                </div>
+                <div *ngIf="typeRequest === 'lb_connection'" class="col-2">
+                </div>
+                <div *ngIf="typeRequest === 'thrift_connection'" class="col-2 align-center">
+                  <label>Thrift:</label>
+                </div>
+                <div *ngIf="typeRequest === 'thrift_connection'" class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="thrift"
+                    class="edit-button-hive"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listThrift" [value]="item?.id">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <ngx-inline-message [message]="'Thrifts'"
+                                      [formName]="formGroupInfoGroup.get('thrift')"></ngx-inline-message>
+                </div>
+                <div *ngIf="typeRequest !== 'lb_connection'" class="col-2 align-center">
+                  <label>File:</label>
+                </div>
+                <div *ngIf="typeRequest !== 'lb_connection'" class="col-4">
+                  <div class="position-relative">
+                    <div class="d-flex align-items-center">
+                      <input style="overflow: hidden;text-overflow: ellipsis;font-size: 12px" required
+                             class="input-edit"
+                             formControlName="fileName"
+                             nbInput readonly fullWidth trim="blur">
+                      <button *ngIf="formGroupInfoGroup.value.fileName !== null" (click)="clearFileName()"
+                              style="background: var(--bg-back); border: 1px solid var(--border-select-dropdown) !important; color: #8C95B2; height: 35px;border-radius: 0px 5px 5px 0px;"
+                              size="small">
+                        <nb-icon [icon]="'close-circle-outline'"></nb-icon>
+                      </button>
+                    </div>
+                    <div *ngIf="formGroupInfoGroup.value.fileName === null" class="position-absolute"
+                         style="top: 16%;left: 10%;">
+                      <label style="color: #0F70F5;font-weight: 600;font-size: 12px; margin-top: 2px; cursor: pointer"
+                             for="attach-file"
+                             class="attach mr-2 d-flex align-items-center">
+                        Browser file
+                        <nb-icon style="margin-left: 9px;font-size: 16px" [icon]="'cloud-upload-outline'"></nb-icon>
+                      </label>
+                      <input (change)="onFileChange($event)" style="display: none" id="attach-file" nbInput type="file"
+                             name="attach-file" accept="*"
+                             required/>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="typeRequest === 'iptables'" class="col-2 align-center">
+                  <label>Ngày kết thúc:</label>
+                </div>
+                <div *ngIf="typeRequest === 'iptables'" class="col-4">
+                  <div>
+                    <p-calendar [disabled]="dataItems?.createOrHandler && dataItems?.status === 'waiting'"
+                                class="edit-calender-body" appendTo="body" formControlName="dateEnd"
+                                [style]="{'width':'100%'}"
+                                [showIcon]="true"
+                                dateFormat="yy-mm-dd"></p-calendar>
+                    <ngx-inline-message [message]="'date end'"
+                                        [formName]="formGroupInfoGroup.get('dateEnd')"></ngx-inline-message>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="typeRequest === 'lb_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Server:</label>
+                </div>
+                <div class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="server"
+                    [disabled]="!rpAppChecked"
+                    [readonly]="!rpAppChecked"
+                    class="edit-button-hive"
+                    bindLabel="connectionName"
+                    bindValue="id"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listAllServer" [value]="item?.id">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <ngx-inline-message *ngIf="rpAppChecked" [message]="'Server'"
+                                      [formName]="formGroupInfoGroup.get('server')"></ngx-inline-message>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Port:</label>
+                </div>
+                <div class="col-4">
+                  <input [readOnly]="!rpAppChecked" [disabled]="!rpAppChecked" (keydown)="portValidate($event)"
+                         formControlName="port" trim="blur" class="input-edit" nbInput
+                         fullWidth name="user-name">
+                  <ngx-inline-message *ngIf="rpAppChecked" [message]="'Port'"
+                                      [formName]="formGroupInfoGroup.get('port')"></ngx-inline-message>
+                </div>
+              </div>
+              <div *ngIf="typeRequest === 'lb_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Directory:</label>
+                </div>
+                <div class="col-10">
+                  <input [readOnly]="!rpAppChecked" [disabled]="!rpAppChecked" trim="blur" formControlName="directory"
+                         class="input-edit" nbInput fullWidth name="user-name">
+                  <ngx-inline-message *ngIf="rpAppChecked" [message]="'Directory'"
+                                      [formName]="formGroupInfoGroup.get('directory')"></ngx-inline-message>
+                </div>
+              </div>
+              <div *ngIf="typeRequest === 'lb_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Thrift:</label>
+                </div>
+                <div class="col-10">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="thrift"
+                    class="edit-button-hive"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listThrift" [value]="item?.id">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <ngx-inline-message [message]="'Thrifts'"
+                                      [formName]="formGroupInfoGroup.get('thrift')"></ngx-inline-message>
+                </div>
+              </div>
+              <div *ngIf="typeRequest === 'lb_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>File:</label>
+                </div>
+                <div class="col-4">
+                  <div class="position-relative">
+                    <div class="d-flex align-items-center">
+                      <input style="overflow: hidden;text-overflow: ellipsis;font-size: 12px" required
+                             class="input-edit"
+                             formControlName="fileName"
+                             nbInput readonly fullWidth trim="blur">
+                      <button *ngIf="formGroupInfoGroup.value.fileName !== null" (click)="clearFileName()"
+                              style="background: var(--bg-back); border: 1px solid var(--border-select-dropdown) !important; color: #8C95B2; height: 35px;border-radius: 0px 5px 5px 0px;"
+                              size="small">
+                        <nb-icon [icon]="'close-circle-outline'"></nb-icon>
+                      </button>
+                    </div>
+                    <div *ngIf="formGroupInfoGroup.value.fileName === null" class="position-absolute"
+                         style="top: 16%;left: 10%;">
+                      <label style="color: #0F70F5;font-weight: 600;font-size: 12px; margin-top: 2px; cursor: pointer"
+                             for="attach-filess"
+                             class="attach mr-2 d-flex align-items-center">
+                        Browser file
+                        <nb-icon style="margin-left: 9px;font-size: 16px" [icon]="'cloud-upload-outline'"></nb-icon>
+                      </label>
+                      <input (change)="onFileChange($event)" style="display: none" id="attach-filess" nbInput
+                             type="file"
+                             name="attach-file" accept="*"
+                             required/>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Ngày kết thúc:</label>
+                </div>
+                <div class="col-4">
+                  <div>
+                    <p-calendar formControlName="dateEnd" appendTo="body" [style]="{'width':'100%'}"
+                                [showIcon]="true"
+                                dateFormat="yy-mm-dd"></p-calendar>
+                    <ngx-inline-message [message]="'date end'"
+                                        [formName]="formGroupInfoGroup.get('dateEnd')"></ngx-inline-message>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="typeRequest === 'thrift_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Ngày hiệu lực:</label>
+                </div>
+                <div class="col-4">
+                  <div>
+                    <p-calendar formControlName="inactiveAt" appendTo="body" [style]="{'width':'100%'}"
+                                [showIcon]="true"
+                                dateFormat="yy-mm-dd"></p-calendar>
+                    <ngx-inline-message [message]="'Effective date'"
+                                        [formName]="formGroupInfoGroup.get('inactiveAt')"></ngx-inline-message>
+                  </div>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Ngày kết thúc:</label>
+                </div>
+                <div class="col-4">
+                  <div>
+                    <p-calendar formControlName="dateEnd" appendTo="body" [style]="{'width':'100%'}"
+                                [showIcon]="true"
+                                dateFormat="yy-mm-dd"></p-calendar>
+                    <ngx-inline-message [message]="'date end'"
+                                        [formName]="formGroupInfoGroup.get('dateEnd')"></ngx-inline-message>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--            // edit-->
+            <div *ngIf="paramId">
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Loại SR:</label>
+                </div>
+                <div class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="typeSr"
+                    [readonly]="true"
+                    disabled="true"
+                    class="edit-button-hive"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listTypeSr" [value]="item?.key">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Trạng thái:</label>
+                </div>
+                <div class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="status"
+                    [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                    class="edit-button-hive"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listStatusSr" [value]="item?.key">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div *ngIf="dataItems?.type === 'iptables'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Server:</label>
+                </div>
+                <div class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="server"
+                    class="edit-button-hive"
+                    bindLabel="connectionName"
+                    bindValue="id"
+                    [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listAllServer" [value]="item?.id">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <ngx-inline-message [message]="'Server'"
+                                      [formName]="formGroupInfoGroup.get('server')"></ngx-inline-message>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Port:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    (keydown)="portValidate($event)"
+                    [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                    formControlName="port" trim="blur" class="input-edit" nbInput fullWidth name="user-name">
+                  <ngx-inline-message [message]="'Port'"
+                                      [formName]="formGroupInfoGroup.get('port')"></ngx-inline-message>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Ngày khởi tạo:</label>
+                </div>
+                <div class="col-4">
+                  <div>
+                    <p-calendar formControlName="dateCreate" [style]="{'width':'100%'}" [disabled]="true"
+                                [showIcon]="true"
+                                dateFormat="yy-mm-dd"></p-calendar>
+                  </div>
+                </div>
+                <div class="col-2 align-center">
+                  <label>File:</label>
+                </div>
+                <div class="col-4">
+                  <div class="position-relative">
+                    <div class="d-flex align-items-center">
+                      <input style="overflow: hidden;text-overflow: ellipsis;font-size: 12px" required
+                             class="input-edit"
+                             formControlName="fileName"
+                             nbInput readonly fullWidth trim="blur">
+                      <button *ngIf="formGroupInfoGroup.value.fileName !== null" (click)="clearFileName()"
+                              style="background: var(--bg-back); border: 1px solid var(--border-select-dropdown) !important; color: #8C95B2; height: 35px;border-radius: 0px 5px 5px 0px;"
+                              size="small">
+                        <nb-icon [icon]="'close-circle-outline'"></nb-icon>
+                      </button>
+                    </div>
+                    <div *ngIf="formGroupInfoGroup.value.fileName === null" class="position-absolute"
+                         style="top: 16%;left: 10%;">
+                      <label style="color: #0F70F5;font-weight: 600;font-size: 12px; margin-top: 2px; cursor: pointer"
+                             for="attach-files"
+                             class="attach mr-2 d-flex align-items-center">
+                        Browser file
+                        <nb-icon style="margin-left: 9px;font-size: 16px" [icon]="'cloud-upload-outline'"></nb-icon>
+                      </label>
+                      <input (change)="onFileChange($event)" style="display: none" id="attach-files" nbInput type="file"
+                             name="attach-file" accept="*"
+                             required/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="dataItems?.type === 'lb_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>RP APP:</label>
+                </div>
+                <div class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="rp_app"
+                    (change)="changeThriftByRpApp()"
+                    class="edit-button-hive"
+                    [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listAllRpApp" [value]="item?.id">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <ngx-inline-message [message]="'RP APP'"
+                                      [formName]="formGroupInfoGroup.get('rp_app')"></ngx-inline-message>
+                </div>
+                <div class="col-4 d-flex align-center">
+                  <nb-checkbox class="d-flex align-items-center" (checkedChange)="toggleRpApp($event)">Thêm mới
+                  </nb-checkbox>
+                </div>
+                <div class="col-2">
+                </div>
+              </div>
+              <div *ngIf="dataItems?.type === 'lb_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Server:</label>
+                </div>
+                <div class="col-4">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="server"
+                    class="edit-button-hive"
+                    bindLabel="connectionName"
+                    bindValue="id"
+                    [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0 || !rpAppChecked"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listAllServer" [value]="item?.id">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <ngx-inline-message *ngIf="rpAppChecked" [message]="'Server'"
+                                      [formName]="formGroupInfoGroup.get('server')"></ngx-inline-message>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Port:</label>
+                </div>
+                <div class="col-4">
+                  <input
+                    (keydown)="portValidate($event)"
+                    [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0 || !rpAppChecked"
+                    formControlName="port" trim="blur" class="input-edit" nbInput fullWidth name="user-name">
+                  <ngx-inline-message *ngIf="rpAppChecked" [message]="'Port'"
+                                      [formName]="formGroupInfoGroup.get('port')"></ngx-inline-message>
+                </div>
+              </div>
+              <div *ngIf="dataItems?.type === 'lb_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Directory:</label>
+                </div>
+                <div class="col-10">
+                  <input
+                    [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0 || !rpAppChecked"
+                    trim="blur"
+                    formControlName="directory" class="input-edit" nbInput fullWidth name="user-name">
+                  <ngx-inline-message *ngIf="rpAppChecked" [message]="'Directory'"
+                                      [formName]="formGroupInfoGroup.get('directory')"></ngx-inline-message>
+                </div>
+              </div>
+              <div *ngIf="dataItems?.type !== 'iptables'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Thrift:</label>
+                </div>
+                <div class="col-10">
+                  <ng-select
+                    [clearable]="true"
+                    formControlName="thrift"
+                    class="edit-button-hive"
+                    [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                    fullWidth appendTo="">
+                    <ng-option *ngFor="let item of listThrift" [value]="item?.id">
+                      <span>{{item?.name}}</span>
+                    </ng-option>
+                  </ng-select>
+                  <ngx-inline-message [message]="'Thrifts'"
+                                      [formName]="formGroupInfoGroup.get('thrift')"></ngx-inline-message>
+                </div>
+              </div>
+              <div *ngIf="dataItems?.type === 'lb_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Ngày kết thúc:</label>
+                </div>
+                <div class="col-4">
+                  <div>
+                    <p-calendar formControlName="dateEnd" appendTo="body" [style]="{'width':'100%'}"
+                                [showIcon]="true"
+                                dateFormat="yy-mm-dd"></p-calendar>
+                    <ngx-inline-message [message]="'date end'"
+                                        [formName]="formGroupInfoGroup.get('dateEnd')"></ngx-inline-message>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="dataItems?.type === 'thrift_connection'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Ngày hiệu lực:</label>
+                </div>
+                <div class="col-4">
+                  <div>
+                    <p-calendar
+                      [disabled]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                      formControlName="inactiveAt" appendTo="body" [style]="{'width':'100%'}"
+                      [showIcon]="true"
+                      dateFormat="yy-mm-dd"></p-calendar>
+                    <ngx-inline-message [message]="'Effective date'"
+                                        [formName]="formGroupInfoGroup.get('inactiveAt')"></ngx-inline-message>
+                  </div>
+                </div>
+                <div class="col-2 align-center">
+                  <label>Ngày kết thúc:</label>
+                </div>
+                <div class="col-4">
+                  <div>
+                    <p-calendar
+                      [disabled]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                      class="edit-calender-body" appendTo="body" formControlName="dateEnd"
+                      [style]="{'width':'100%'}"
+                      [showIcon]="true"
+                      dateFormat="yy-mm-dd"></p-calendar>
+                    <ngx-inline-message [message]="'date end'"
+                                        [formName]="formGroupInfoGroup.get('dateEnd')"></ngx-inline-message>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="dataItems?.type === 'iptables'" class="row mb-3">
+                <div class="col-2 align-center">
+                  <label>Ngày kết thúc:</label>
+                </div>
+                <div class="col-4">
+                  <div>
+                    <p-calendar
+                      [disabled]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                      class="edit-calender-body" appendTo="body" formControlName="dateEnd"
+                      [style]="{'width':'100%'}"
+                      [showIcon]="true"
+                      dateFormat="yy-mm-dd"></p-calendar>
+                    <ngx-inline-message [message]="'date end'"
+                                        [formName]="formGroupInfoGroup.get('dateEnd')"></ngx-inline-message>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="padding: 0 10px" class="col-6">
+          <div class="list-user">
+            <div class="row">
+              <div class="d-flex justify-content-between list-user__content">
+                <div class="d-flex">
+                  <strong style="margin-right: 20px">Danh sách user</strong>
+                  <div style="cursor: pointer">
+                    <label style="color: #0F70F5;font-weight: 600;font-size: 12px; margin-top: 2px; cursor: pointer"
+                           for="attach-file-upload"
+                           class="attach mr-2 d-flex align-items-center">
+                      <nb-icon style="margin-left: 9px;font-size: 16px" [icon]="'cloud-upload-outline'"></nb-icon>
+                      <b>Upload file</b>
+                    </label>
+                    <input (change)="onFileChangeUpload($event)" style="display: none" id="attach-file-upload" nbInput
+                           type="file"
+                           onclick="this.value=null;"
+                           name="attach-file" accept=".cvc,.xls,.xlsx"
+                           required/>
+                  </div>
+                </div>
+                <div style="cursor: pointer" class="d-flex align-items-center">
+                  <div *ngIf="this.fileNameUpload === '' && typeRequest"
+                       style="margin-right: 10px; color: #8C95B2" class="d-flex align-items-center">
+                    <nb-icon icon="cloud-download-outline" pack="eva"></nb-icon>
+                    <b>{{'Download file'}}</b>
+                  </div>
+                  <div (click)="downloadFile()" *ngIf="paramId"
+                       style="margin-right: 10px; color: #0f70f5" class="d-flex align-items-center">
+                    <nb-icon icon="cloud-download-outline" pack="eva"></nb-icon>
+                    <b *ngIf="this.fileNameUpload === ''">{{dataItems?.fileListUser ? dataItems?.fileListUser : ''}}</b>
+                    <b *ngIf="this.fileNameUpload !== ''">{{this.fileNameUpload}}</b>
+                  </div>
+                  <div *ngIf="this.fileNameUpload !== '' && typeRequest"
+                       style="margin-right: 10px; color: #0f70f5" class="d-flex align-items-center">
+                    <nb-icon icon="cloud-download-outline" pack="eva"></nb-icon>
+                    <b>{{this.fileNameUpload}}</b>
+                  </div>
+                  <svg (click)="clearFileUpload()" width="13" height="12"
+                       viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M6.03272 0C2.69663 0 0 2.682 0 6C0 9.318 2.69663 12 6.03272 12C9.36882 12 12.0654 9.318 12.0654 6C12.0654 2.682 9.36882 0 6.03272 0ZM8.6268 8.58C8.57098 8.63562 8.50469 8.67975 8.43171 8.70986C8.35873 8.73997 8.2805 8.75547 8.20149 8.75547C8.12248 8.75547 8.04425 8.73997 7.97127 8.70986C7.89829 8.67975 7.83199 8.63562 7.77618 8.58L6.03272 6.846L4.28927 8.58C4.17647 8.69219 4.02348 8.75521 3.86396 8.75521C3.70444 8.75521 3.55145 8.69219 3.43865 8.58C3.32585 8.46781 3.26249 8.31566 3.26249 8.157C3.26249 8.07844 3.27804 8.00065 3.30827 7.92807C3.3385 7.8555 3.3828 7.78955 3.43865 7.734L5.18211 6L3.43865 4.266C3.32585 4.15381 3.26249 4.00166 3.26249 3.843C3.26249 3.68434 3.32585 3.53219 3.43865 3.42C3.55145 3.30781 3.70444 3.24479 3.86396 3.24479C4.02348 3.24479 4.17647 3.30781 4.28927 3.42L6.03272 5.154L7.77618 3.42C7.83203 3.36445 7.89834 3.32039 7.97131 3.29032C8.04429 3.26026 8.1225 3.24479 8.20149 3.24479C8.28048 3.24479 8.35869 3.26026 8.43166 3.29032C8.50464 3.32039 8.57094 3.36445 8.6268 3.42C8.68265 3.47555 8.72695 3.5415 8.75718 3.61407C8.78741 3.68665 8.80296 3.76444 8.80296 3.843C8.80296 3.92156 8.78741 3.99935 8.75718 4.07193C8.72695 4.1445 8.68265 4.21045 8.6268 4.266L6.88334 6L8.6268 7.734C8.85604 7.962 8.85604 8.346 8.6268 8.58Z"
+                      fill="#8C95B2"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div style="width: 100%;background: var(--bg-back);border-radius: 5px; margin: 0 15px;padding: 6px 10px;"
+                   class=" position-relative">
+                <table style="width:100%;margin: 0 2px">
+                  <tr class="table-row-listUser-header">
+                    <th style="width: 100px">Username</th>
+                    <th style="width: 240px">IP</th>
+                    <th style="width: 150px;padding-left: 20px">Group</th>
+                    <th></th>
+                  </tr>
+                  <tr [formGroup]="row" *ngFor="let row of listUserForm.controls; let i = index"
+                      class="table-row-listUser">
+                    <td class="position-relative">
+                      <ng-select
+                        style="max-width: 212px;min-width: 160px;margin-right: 20px"
+                        class="select-edit-sr"
+                        formControlName="userName"
+                        [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                        appendTo=""
+                        (change)="onSetValueGroup(row,i)"
+                      >
+                        <ng-option
+                          *ngFor="let item of listUser" [value]="item">
+                          <span showTooltip>{{item?.login}}</span></ng-option>
+                      </ng-select>
+                    </td>
+                    <td class="position-relative">
+                      <ng-select
+                        class="select-edit-sr"
+                        style="margin-right: 20px"
+                        formControlName="ipAddress"
+                        [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                        appendTo=""
+                      >
+                        <ng-option
+                          *ngFor="let item of lists[i]" [value]="item?.ipAddress">
+                          <span showTooltip>{{item?.ipAddress}}</span></ng-option>
+                      </ng-select>
+                    </td>
+                    <td>
+                      <input style="box-shadow: 5px 5px 5px rgb(0 0 0 / 10%);" trim="blur" nbInput fullWidth
+                             class="input-edit" readonly [disabled]="true"
+                             formControlName="groupName">
+                    </td>
+                    <td class="d-flex justify-content-end align-items-center">
+                      <div *ngIf="i >= 1"
+                           style="cursor: pointer;margin-top: 8px; margin-right: 2px">
+                        <svg width="13" height="12" viewBox="0 0 13 12" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M6.03272 0C2.69663 0 0 2.682 0 6C0 9.318 2.69663 12 6.03272 12C9.36882 12 12.0654 9.318 12.0654 6C12.0654 2.682 9.36882 0 6.03272 0ZM8.6268 8.58C8.57098 8.63562 8.50469 8.67975 8.43171 8.70986C8.35873 8.73997 8.2805 8.75547 8.20149 8.75547C8.12248 8.75547 8.04425 8.73997 7.97127 8.70986C7.89829 8.67975 7.83199 8.63562 7.77618 8.58L6.03272 6.846L4.28927 8.58C4.17647 8.69219 4.02348 8.75521 3.86396 8.75521C3.70444 8.75521 3.55145 8.69219 3.43865 8.58C3.32585 8.46781 3.26249 8.31566 3.26249 8.157C3.26249 8.07844 3.27804 8.00065 3.30827 7.92807C3.3385 7.8555 3.3828 7.78955 3.43865 7.734L5.18211 6L3.43865 4.266C3.32585 4.15381 3.26249 4.00166 3.26249 3.843C3.26249 3.68434 3.32585 3.53219 3.43865 3.42C3.55145 3.30781 3.70444 3.24479 3.86396 3.24479C4.02348 3.24479 4.17647 3.30781 4.28927 3.42L6.03272 5.154L7.77618 3.42C7.83203 3.36445 7.89834 3.32039 7.97131 3.29032C8.04429 3.26026 8.1225 3.24479 8.20149 3.24479C8.28048 3.24479 8.35869 3.26026 8.43166 3.29032C8.50464 3.32039 8.57094 3.36445 8.6268 3.42C8.68265 3.47555 8.72695 3.5415 8.75718 3.61407C8.78741 3.68665 8.80296 3.76444 8.80296 3.843C8.80296 3.92156 8.78741 3.99935 8.75718 4.07193C8.72695 4.1445 8.68265 4.21045 8.6268 4.266L6.88334 6L8.6268 7.734C8.85604 7.962 8.85604 8.346 8.6268 8.58Z"
+                            fill="#FF313C"/>
+                        </svg>
+                      </div>
+                      <div style="margin-top: 8px" *ngIf="i < 1">
+                        <nb-icon nbTooltip="{{'Add'}}" style="cursor: pointer;color:#0F70F5"
+                                 (click)="addRowUser(row,i)"
+                                 icon="plus-circle-outline"
+                                 pack="eva"></nb-icon>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+                <div style="max-height: 245px;overflow-y: auto;overflow-x: hidden;margin: 0 22px 0 10px;">
+                  <table style="width:100%;">
+                    <tr class="table-row-listUser-header">
+                      <th style="width: 167px"></th>
+                      <th style="width: 230px"></th>
+                      <th style="width: 100px"></th>
+                      <th></th>
+                    </tr>
+                    <tr *ngFor="let row of listUserEditMapping; let i = index" class="table-list-user">
+                      <td class="position-relative">
+                        <span>{{row?.userName}}</span>
+                      </td>
+                      <td>
+                        <span>{{row?.ipAddress}}</span>
+                      </td>
+                      <td>
+                        <span>{{row['groupName']}}</span>
+                      </td>
+                      <td class="d-flex justify-content-end align-items-center">
+                        <div (click)="deleteRowUser(row, i)" style="cursor: pointer; margin-right: 2px">
+                          <svg width="13" height="12" viewBox="0 0 13 12" fill="none"
+                               xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M6.03272 0C2.69663 0 0 2.682 0 6C0 9.318 2.69663 12 6.03272 12C9.36882 12 12.0654 9.318 12.0654 6C12.0654 2.682 9.36882 0 6.03272 0ZM8.6268 8.58C8.57098 8.63562 8.50469 8.67975 8.43171 8.70986C8.35873 8.73997 8.2805 8.75547 8.20149 8.75547C8.12248 8.75547 8.04425 8.73997 7.97127 8.70986C7.89829 8.67975 7.83199 8.63562 7.77618 8.58L6.03272 6.846L4.28927 8.58C4.17647 8.69219 4.02348 8.75521 3.86396 8.75521C3.70444 8.75521 3.55145 8.69219 3.43865 8.58C3.32585 8.46781 3.26249 8.31566 3.26249 8.157C3.26249 8.07844 3.27804 8.00065 3.30827 7.92807C3.3385 7.8555 3.3828 7.78955 3.43865 7.734L5.18211 6L3.43865 4.266C3.32585 4.15381 3.26249 4.00166 3.26249 3.843C3.26249 3.68434 3.32585 3.53219 3.43865 3.42C3.55145 3.30781 3.70444 3.24479 3.86396 3.24479C4.02348 3.24479 4.17647 3.30781 4.28927 3.42L6.03272 5.154L7.77618 3.42C7.83203 3.36445 7.89834 3.32039 7.97131 3.29032C8.04429 3.26026 8.1225 3.24479 8.20149 3.24479C8.28048 3.24479 8.35869 3.26026 8.43166 3.29032C8.50464 3.32039 8.57094 3.36445 8.6268 3.42C8.68265 3.47555 8.72695 3.5415 8.75718 3.61407C8.78741 3.68665 8.80296 3.76444 8.80296 3.843C8.80296 3.92156 8.78741 3.99935 8.75718 4.07193C8.72695 4.1445 8.68265 4.21045 8.6268 4.266L6.88334 6L8.6268 7.734C8.85604 7.962 8.85604 8.346 8.6268 8.58Z"
+                              fill="#FF313C"/>
+                          </svg>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <small style="color: #dc3545;font-size: 12px;" *ngIf="isValidateListUser">List user not empty</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div style="width: 100%; padding: 0 1.5rem;margin: 12px 0 8px 0;" class="d-flex align-items-center">
+          <span style="font-weight: bold; font-size: 14px; color: var(--color-text-light);">Người xét duyệt</span>
+          <div style="margin-left: 10px;min-width: 193px">
+            <ng-select
+              [clearable]="true"
+              class="edit-button-hive"
+              [(ngModel)]="keySearchUser"
+              placeholder="Thêm user SR"
+              [readonly]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+              (change)="addUserSR($event)"
+              fullWidth appendTo="">
+              <ng-option *ngFor="let item of listUser" [value]="item">
+                <span>{{item?.login}}</span>
+              </ng-option>
+            </ng-select>
+          </div>
+          <small style="color: #dc3545;font-size: 12px;margin-left: 10px;" *ngIf="isValidateListReview">Reviewer not
+            empty</small>
+        </div>
+      </div>
+      <div class="row">
+        <div style="width: 100%; padding: 0 0.9rem;">
+          <ngx-datatable class="dark fullscreen" #table
+                         [columnMode]="'force'"
+                         [limit]="limit"
+                         [rows]="rowData"
+                         [headerHeight]="'auto'"
+                         [rowHeight]="'auto'"
+                         [footerHeight]="'auto'"
+                         [columns]="columnsTable"
+                         [messages]="
+{totalMessage: 'data-ingestion.label.record' | translate}">
+            <ng-container *ngFor="let col of columnsTable">
+              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name | translate}}" [flexGrow]="col.flexGrow"
+                                    [sortable]="false"
+                                    [sortable]="col.prop === 'stt' || col.prop === 'userName' ? true : false"
+              >
+                <ng-template let-column="column" ngx-datatable-header-template>
+                  <ng-container [ngSwitch]="col.prop">
+                    <ng-container *ngSwitchDefault>
+                      {{ column.name |translate }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'stt'">
+                      <span class="w-100 text-cente">{{ column.name |translate}}</span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'status'">
+                      <div class="text-center"><span class="w-100">{{ column.name |translate}}</span></div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'action'">
+                      <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+                <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                  <ng-container [ngSwitch]="col.prop">
+                    <ng-container *ngSwitchCase="'stt'">
+                      <span class="text-center">{{rowIndex + 1}}</span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'userName'">
+                      <span class="text-center">{{row?.login}}</span>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <span [title]="value"> {{ value ? value : 'N/A' }} </span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'action'">
+                      <div
+                        class="w-100 d-flex justify-content-center">
+                        <button
+                          [disabled]="dataItems?.createOrHandler === 1 && dataItems?.status === 'waiting' || dataItems?.createOrHandler === 0"
+                          (click)="deleteUserSR(row?.id)" class="edit"
+                          status="warning" nbButton ghost
+                          nbTooltip="{{'Delete'}}"
+                        >
+                          <svg class="edit-delete-user-sr" width="13" height="12"
+                               viewBox="0 0 13 12" fill="none"
+                               xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M6.03272 0C2.69663 0 0 2.682 0 6C0 9.318 2.69663 12 6.03272 12C9.36882 12 12.0654 9.318 12.0654 6C12.0654 2.682 9.36882 0 6.03272 0ZM8.6268 8.58C8.57098 8.63562 8.50469 8.67975 8.43171 8.70986C8.35873 8.73997 8.2805 8.75547 8.20149 8.75547C8.12248 8.75547 8.04425 8.73997 7.97127 8.70986C7.89829 8.67975 7.83199 8.63562 7.77618 8.58L6.03272 6.846L4.28927 8.58C4.17647 8.69219 4.02348 8.75521 3.86396 8.75521C3.70444 8.75521 3.55145 8.69219 3.43865 8.58C3.32585 8.46781 3.26249 8.31566 3.26249 8.157C3.26249 8.07844 3.27804 8.00065 3.30827 7.92807C3.3385 7.8555 3.3828 7.78955 3.43865 7.734L5.18211 6L3.43865 4.266C3.32585 4.15381 3.26249 4.00166 3.26249 3.843C3.26249 3.68434 3.32585 3.53219 3.43865 3.42C3.55145 3.30781 3.70444 3.24479 3.86396 3.24479C4.02348 3.24479 4.17647 3.30781 4.28927 3.42L6.03272 5.154L7.77618 3.42C7.83203 3.36445 7.89834 3.32039 7.97131 3.29032C8.04429 3.26026 8.1225 3.24479 8.20149 3.24479C8.28048 3.24479 8.35869 3.26026 8.43166 3.29032C8.50464 3.32039 8.57094 3.36445 8.6268 3.42C8.68265 3.47555 8.72695 3.5415 8.75718 3.61407C8.78741 3.68665 8.80296 3.76444 8.80296 3.843C8.80296 3.92156 8.78741 3.99935 8.75718 4.07193C8.72695 4.1445 8.68265 4.21045 8.6268 4.266L6.88334 6L8.6268 7.734C8.85604 7.962 8.85604 8.346 8.6268 8.58Z"
+                              fill="#FF313C"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-footer>
+                <ng-template
+                  ngx-datatable-footer-template
+                  let-rowCount="rowCount"
+                  let-pageSize="pageSize"
+                  let-selectedCount="selectedCount"
+                  let-curPage="curPage"
+                  let-offset="offset">
+                  <div style="padding: 5px 10px;width:200px">
+                    <div *ngIf="rowCount > 0">
+                    <span>{{'Hiển thị' | translate}} {{(curPage - 1) * limit + 1}}
+                      - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}
+                      /{{rowCount}} {{'bản ghi' | translate}}</span>
+                    </div>
+                    <div *ngIf="rowCount === 0">
+                      <span>0 {{'data-ingestion.label.record' | translate}}</span>
+                    </div>
+                  </div>
+                  <datatable-pager
+                    [pagerLeftArrowIcon]="'datatable-icon-left'"
+                    [pagerRightArrowIcon]="'datatable-icon-right'"
+                    [page]="curPage"
+                    [size]="pageSize"
+                    [count]="rowCount"
+                    [hidden]="!((rowCount / pageSize) > 1)"
+                    (change)="table.onFooterPage($event)">
+                  </datatable-pager>
+                </ng-template>
+              </ngx-datatable-footer>
+            </ng-container>
+          </ngx-datatable>
+        </div>
+      </div>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+<ng-template #confirmSendOrSaveSR let-data let-ref="dialogRef">
+  <nb-card style="width: 450px; height: 220px">
+    <nb-card-header class="d-flex justify-content-md-between">
+      <span *ngIf="data.title === 'send'">Gửi SR</span>
+      <span *ngIf="data.title === 'save'">Lưu SR</span>
+      <span *ngIf="data.title === 'cancel'">Hủy</span>
+      <span *ngIf="data.title === 'agree'">Đồng ý</span>
+      <span *ngIf="data.title === 'rejected'">Từ chối</span>
+      <button style="background: none; border: none; color: #8C95B2" size="small" (click)="ref.close()">
+        <nb-icon icon="close-outline" style="font-size: 20px"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body style="padding-top: 20px">
+      <span *ngIf="data.title === 'send'">Bạn có chắc chắn muốn gửi thao tác này?</span>
+      <span *ngIf="data.title === 'save'">Bạn có chắc chắn muốn lưu thao tác này?</span>
+      <span *ngIf="data.title === 'cancel'">Bạn có chắc chắn muốn hủy thao tác này?</span>
+      <span *ngIf="data.title === 'agree'">Bạn có chắc chắn muốn thực hiện thao tác này?</span>
+      <span *ngIf="data.title === 'rejected'">Bạn có chắc chắn muốn thực hiện thao tác này?</span>
+    </nb-card-body>
+    <nb-card-footer class="d-flex edit-button justify-content-center">
+      <button *ngIf="data.title === 'send'" (click)="sendSR(ref, '')" class="mr-2">
+        Xác nhận
+      </button>
+      <button *ngIf="data.title === 'save'" (click)="sendSR(ref, 'update')" class="mr-2">
+        Xác nhận
+      </button>
+      <button *ngIf="data.title === 'cancel'" (click)="cancelSR(ref)" class="mr-2">
+        Xác nhận
+      </button>
+      <button *ngIf="data.title === 'agree'" (click)="updateResult(ref, 'approved')" class="mr-2">
+        Xác nhận
+      </button>
+      <button *ngIf="data.title === 'rejected'" (click)="updateResult(ref, 'rejected')" class="mr-2">
+        Xác nhận
+      </button>
+      <button class="edit-button-cancel" (click)="ref.close()">
+        Hủy
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

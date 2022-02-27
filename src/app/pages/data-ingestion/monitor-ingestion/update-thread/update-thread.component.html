@@ -1,0 +1,993 @@
+<div class="tagger-Monitor">
+  <nb-layout>
+    <nb-layout-column style=" padding-right: 5px !important;padding-left: 0 !important;padding-top: 0 !important;">
+      <div class="row detail-thread">
+        <div class="col-9">
+          <nb-card>
+            <nb-card-header>
+              <label>{{"data-ingestion.label.infoThread" | translate}}</label>
+            </nb-card-header>
+            <nb-card-body>
+              <div class="row mb-3">
+                <div class="col-2">
+                  <label>{{"data-ingestion.label.id" | translate}}</label>
+                </div>
+                <div class="col-3">
+                  <label>{{flow?.id}}</label>
+                </div>
+                <div class="col-2">
+                  <label>{{"data-ingestion.column.group" | translate}}</label>
+                </div>
+                <div class="col-5">
+                  <label>{{flow?.groupName}}</label>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-2">
+                  <div class="mb-3"><label>{{"data-ingestion.label.name" | translate}}</label></div>
+                  <div><label>{{"data-ingestion.label.owner" | translate}}</label></div>
+                </div>
+                <div class="col-3">
+                  <div class="mb-3"><span>{{flow?.flowName}}</span></div>
+                  <div><span>{{flow?.createdBy}}</span></div>
+                </div>
+                <div class="col-2">
+                  <label>{{"data-ingestion.label.description" | translate}}</label>
+                </div>
+                <div class="col-5">
+              <textarea class="edit-text-area" nbInput fullWidth [disabled]="true"
+                        [value]="flow?.description"></textarea>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-2">
+                  <label>{{"data-ingestion.column.calendar" | translate}}</label>
+                </div>
+                <div class="col-3">
+                  <label>{{flow?.scheduleStrategy + ': ' + flow?.schedulingPeriod}}</label>
+                </div>
+                <div class="col-2">
+                  <label>{{"data-ingestion.label.type" | translate}}</label>
+                </div>
+                <div class="col-5">
+                  Data Ingestion
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-2">
+                  <label>{{"data-ingestion.label.logLevel" | translate}}</label>
+                </div>
+                <div class="col-3">
+                  <label>{{flow?.bulletinLevel}}</label>
+                </div>
+                <div class="col-2">
+                  <label>{{"data-ingestion.column.status" | translate}}</label>
+                </div>
+                <div class="col-5">
+                  <span style="color: red; font-weight: bold;">{{flow?.currentState}}</span>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-2">
+                  <label>{{"data-ingestion.label.advancedSetup" | translate}}</label>
+                </div>
+                <div class="col-10">
+              <textarea class="edit-text-area" nbInput fullWidth [rows]="3" [disabled]="true"
+                        [value]="flow?.flowAdvancedConfig"></textarea>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <div class="col-3" style="height: 458px;">
+          <nb-card>
+            <nb-card-header>
+              <label>{{"data-ingestion.label.manipulation" | translate}}</label>
+            </nb-card-header>
+            <nb-card-body>
+              <div class="justify-content-between">
+                <div class="d-flex justify-content-between" style="margin-bottom: 20px">
+                  <button nbButton
+                          style="background-color: #9e9e9e; color: white;border:none;font-size: 12px;min-width: 28%"
+                          [ngClass]="flow?.state === 'DISABLED' ? 'd-block' : 'd-none'"
+                          (click)="dialogService.open(update, {context: 'ENABLED'})">
+                    {{"data-ingestion.label.enable" | translate}}
+                  </button>
+                  <button nbButton
+                          style="background: linear-gradient(45deg, rgb(240, 47, 47), rgb(231, 27, 41)); color: white; border:none;font-size: 12px;min-width: 28%"
+                          [ngClass]="flow?.state === 'DISABLED' ? 'd-none' : 'd-block'"
+                          (click)="dialogService.open(update, {context: 'DISABLED'})">
+                    {{"data-ingestion.label.disable" | translate}}
+                  </button>
+                  <button
+                    style="border:none;font-size: 12px;min-width: 28%" nbButton
+                    [ngStyle]="flow?.state === 'DISABLED' ? {'color': 'white', 'background-color': '#525252' ,'pointer-events': 'none'} : {'color': 'white', 'background': 'linear-gradient(45deg, rgb(76, 175, 80), rgb(139, 195, 74))'}"
+                    [disabled]="flow?.state === 'DISABLED'"
+                    [ngClass]="flow?.currentState != 'RUNNING' ? 'd-block' : 'd-none'"
+                    (click)="dialogService.open(update, {context: 'RUNNING'})">
+                    {{"data-ingestion.label.start" | translate}}
+                  </button>
+                  <button nbButton
+                          style="background-color: red; color: white;border:none;font-size: 12px;min-width: 28%"
+                          [ngClass]="flow?.currentState === 'RUNNING' ? 'd-block' : 'd-none'"
+                          (click)="dialogService.open(update, {context: 'STOPPED'})">
+                    {{"data-ingestion.label.stop" | translate}}
+                  </button>
+                  <button *hasAnyAuthority="authority.INGESTION_FLOW_MANAGER.INGESTION_FLOW_MANAGER_WRITE"
+                          style="border:none;font-size: 12px;min-width: 28%" nbButton
+                          [ngStyle]="flow?.state === 'DISABLED' ? {'color': 'white', 'background-color': '#525252' ,'pointer-events': 'none'} : {'color': 'white', 'background': 'linear-gradient(45deg, rgb(255, 152, 0), rgb(204, 187, 31))'}"
+                          [disabled]="flow?.state === 'DISABLED'" (click)="editFlow()">
+                    {{"data-ingestion.label.edit" | translate}}
+                  </button>
+                </div>
+                <div *hasAnyAuthority="authority.INGESTION_FLOW_MANAGER.INGESTION_FLOW_MANAGER_WRITE"
+                     class="d-flex justify-content-between">
+                  <!--            <button nbButton style="background-color: #f44336; color: white" [disabled]="flow?.state === 'DISABLED'">-->
+                  <!--              {{"data-ingestion.label.edit" | translate}}-->
+                  <!--            </button>-->
+                  <button nbButton
+                          style="background: linear-gradient(45deg, rgb(148, 14, 14), rgb(247, 83, 83)); color: white;border:none;font-size: 12px ; min-width: 28%"
+                          (click)="dialogService.open(delete)">
+                    {{"data-ingestion.label.delete" | translate}}
+                  </button>
+                  <button
+                    style="border:none;font-size: 12px;min-width: 64%" nbButton
+                    [ngStyle]="flow?.state === 'DISABLED' ? {'color': 'white', 'background-color': '#525252' ,'pointer-events': 'none'} : {'color': 'white', 'background': 'linear-gradient(45deg, rgb(7, 139, 153), rgb(60, 231, 249))'}"
+                    [disabled]="flow?.state === 'DISABLED'" (click)="getLog();dialogService.open(viewLog)">
+                    {{"data-ingestion.label.seeLog" | translate}}
+                  </button>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+          <nb-card style="min-height: 655px; ">
+            <nb-card-header>
+              <div class="d-flex justify-content-between align-items-center">
+                <label>{{"data-ingestion.label.monitor" | translate}}</label>
+                <div class="w-30">
+                  <ng-select
+                    appendTo=""
+                    [clearable]="false"
+                    [items]="timeTypes"
+                    bindValue="value"
+                    bindLabel="name"
+                    name="timeType"
+                    [(ngModel)]="timeType"
+                    (change)="newChart(idFlow)"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </nb-card-header>
+            <nb-card-body>
+              <div class="row">
+                <div class="col-12 h-100">
+                  <!--                  <strong style="font-size: 14px;font-weight: 100;">{{'monitor.chartFileNumber' | translate}}</strong>-->
+                  <!--                  <br>-->
+                  <div *ngIf="chartDatas.length !== 0 ">
+                    <highcharts-chart
+                      [Highcharts]="Highcharts"
+                      [options]="chartOptions"
+                      [(update)]="chartUpdate"
+                      style="width: 100%; min-height: 270px; display: block;"
+                    ></highcharts-chart>
+                  </div>
+                  <div
+                    style="display: flex;justify-content: center;align-items: center;min-height: 270px;border-bottom: 2px solid #363e54;"
+                    *ngIf="chartDatas.length === 0 ">
+                    {{'validation.noData' | translate}}
+                  </div>
+                </div>
+                <div class="col-12 h-100 mt-2">
+                  <!--                  <strong style="font-size: 14px;font-weight: 100;">{{'monitor.capacityChart' | translate}}</strong>-->
+                  <!--                  <br>-->
+                  <div *ngIf="chartFiles.length !== 0 ">
+                    <highcharts-chart
+                      [Highcharts]="Highcharts"
+                      [options]="chartOptions2"
+                      [(update)]="chartUpdate"
+                      style="width: 100%; min-height: 270px; display: block;"
+                    ></highcharts-chart>
+                  </div>
+                  <div *ngIf="chartFiles.length === 0 "
+                       style="display: flex;justify-content: center;align-items: center;min-height: 270px">
+                    {{'validation.noData' | translate}}
+                  </div>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <div class="col-5">
+          <nb-card style="min-height: 365px;">
+            <nb-card-header>
+              <label>{{"data-ingestion.column.source" | translate}}</label>
+            </nb-card-header>
+            <nb-card-body>
+              <div *ngIf="flow?.sourceConnectionType === 'FTP'">
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.type" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConnectionType}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.connection" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label
+                      style="display: block;text-overflow: ellipsis;overflow: hidden;">{{flow?.sourceConnectionName}}</label>
+                  </div>
+                  <div class="col-4">
+                    <div class="details-connection" (click)="this.dialogService.open(showDetailsSource)">
+                      {{'data-ingestion.column.details' | translate}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.path" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig?.ftp_path}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.delimiter" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig?.delimiter}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-12">
+                    <nb-checkbox [disabled]="true" class="mr-4" status="basic"
+                                 [value]="flow?.sourceConfig?.is_compression">{{"data-ingestion.label.extract" | translate}}</nb-checkbox>
+                    <nb-checkbox [disabled]="true" class="mr-4" status="basic"
+                                 [value]="flow?.sourceConfig?.is_add_attribute">{{"data-ingestion.label.addField" | translate}}</nb-checkbox>
+                    <nb-checkbox [disabled]="true" status="basic" [value]="flow?.sourceConfig?.is_have_subfolder"
+                                 [hidden]="flow?.sinkConnectionType === 'Kafka'">{{"data-ingestion.label.directory" | translate}}</nb-checkbox>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.timezone" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig?.delta_time_zone}}</label>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="flow?.sourceConnectionType === 'RDBMS'">
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.type" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConnectionType}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.connection" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label
+                      style="display: block;text-overflow: ellipsis;overflow: hidden;">{{flow?.sourceConnectionName}}</label>
+                  </div>
+                  <div class="col-4">
+                    <div class="details-connection" (click)="this.dialogService.open(showDetailsSource)">
+                      {{'data-ingestion.column.details' | translate}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.dbType" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['Database Type']}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.sqlQuery" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['query']}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.fetchSize" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['fetch_size']}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.delimiter" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['delimiter']}}</label>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="flow?.sourceConnectionType === 'HIVE'">
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.type" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConnectionType}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.connection" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label
+                      style="display: block;text-overflow: ellipsis;overflow: hidden;">{{flow?.sourceConnectionName}}</label>
+                  </div>
+                  <div class="col-4">
+                    <div class="details-connection" (click)="this.dialogService.open(showDetailsSource)">
+                      {{'data-ingestion.column.details' | translate}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.sqlQuery" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['query']}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.fetchSize" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['fetch_size']}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.delimiter" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['delimiter']}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>Csv Header</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['csvHeader']}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>Max Rows Per File</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['max_rows_per_file']}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>Output Format</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sourceConfig['outPutFormat']}}</label>
+                  </div>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <div class="col-4">
+          <nb-card style="min-height: 365px;">
+            <nb-card-header>
+              <label>{{"data-ingestion.column.destination" | translate}}</label>
+            </nb-card-header>
+            <nb-card-body>
+              <div *ngIf="flow?.sinkConnectionType === 'HDFS'">
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.type" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sinkConnectionType}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.connection" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label
+                      style="text-overflow: ellipsis;overflow: hidden;width: 173px;">{{flow?.sinkConnectionName}}</label>
+                  </div>
+                  <div class="col-4">
+                    <div class="details-connection" (click)="this.dialogService.open(showDetailsSink)">
+                      {{'data-ingestion.column.details' | translate}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.hdfsResource" | translate}}</label> <span
+                    style="color: red;">*</span>
+                  </div>
+                  <div class="col-8">
+                    <label style="word-break: break-word">{{flow?.hdfsResource}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.hdfsPath" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-8">
+                    <label style="word-break: break-word">{{flow?.sinkConfig?.hdfs_path}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.hdfsGroup" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sinkConfig?.hdfs_owner_group}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.hdfsUser" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sinkConfig?.hdfs_owner_user}}</label>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="flow?.sinkConnectionType === 'Kafka'">
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.type" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sinkConnectionType}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.connection" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label
+                      style="text-overflow: ellipsis;overflow: hidden;width: 173px;">{{flow?.sinkConnectionName}}</label>
+                  </div>
+                  <div class="col-4">
+                    <div class="details-connection" (click)="this.dialogService.open(showDetailsSink)">
+                      {{'data-ingestion.column.details' | translate}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.kafkaTopic" | translate}}</label> <span style="color: red;">*</span>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sinkConfig?.topic}}</label>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="flow?.sinkConnectionType === 'FTP'">
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.type" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sinkConnectionType}}</label>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>{{"data-ingestion.label.connection" | translate}}</label>
+                  </div>
+                  <div class="col-4">
+                    <label
+                      style="text-overflow: ellipsis;overflow: hidden;width: 173px;">{{flow?.sinkConnectionName}}</label>
+                  </div>
+                  <div class="col-4">
+                    <div class="details-connection" (click)="this.dialogService.open(showDetailsSink)">
+                      {{'data-ingestion.column.details' | translate}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <label>FTP path</label>
+                  </div>
+                  <div class="col-4">
+                    <label>{{flow?.sinkConfig['ftp_path']}}</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-12">
+                  <nb-checkbox [disabled]="true" class="mr-4" status="basic"
+                               [value]="flow?.sinkConfig?.is_compression">Compress
+                  </nb-checkbox>
+                  <nb-checkbox [disabled]="true" status="basic"
+                               [value]="flow?.sinkConfig?.is_have_subfolder">{{"data-ingestion.label.directory" | translate}}</nb-checkbox>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+    </nb-layout-column>
+  </nb-layout>
+</div>
+<ng-template #delete let-ref="dialogRef">
+  <nb-card style="min-height: 250px; min-width: 400px;">
+    <nb-card-header class="d-flex justify-content-between">
+      <span>{{'flow-customized.label.deleteThread' | translate}}</span>
+      <button style="background: none; border: none; color: #8C95B2" nbButton status="primary" (click)="ref.close()">
+        <nb-icon [icon]="'close'"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body class="text-center d-flex align-items-center">
+      <label>{{'flow-customized.label.confirmDeleteThread?' | translate}}</label>
+    </nb-card-body>
+    <nb-card-footer class="d-flex edit-button justify-content-end">
+      <button class="mr-3" (click)="deleteFlow(ref)">
+        {{'flow-customized.label.yes'  | translate}}
+      </button>
+      <button class="edit-button-cancel" (click)="ref.close()">
+        {{'flow-customized.label.no'  | translate}}
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #update let-ref="dialogRef" let-data>
+  <nb-card style="min-height: 250px; min-width: 400px;">
+    <nb-card-header class="d-flex justify-content-between">
+      <span>{{'flow-customized.label.updateTheStatus' | translate}}</span>
+      <button style="background: none; border: none; color: #8C95B2" nbButton status="primary" (click)="ref.close()">
+        <nb-icon [icon]="'close'"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body class="text-center d-flex align-items-center">
+      <label>{{'flow-customized.label.confirmUpdateThread' | translate}}</label>
+    </nb-card-body>
+    <nb-card-footer class="d-flex edit-button justify-content-end">
+      <button class="mr-3" (click)="updateStateFlow(data, ref)">
+        {{'flow-customized.label.yes'  | translate}}
+      </button>
+      <button class="edit-button-cancel" (click)="ref.close()">
+        {{'flow-customized.label.no'  | translate}}
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #viewLog let-ref="dialogRef" let-data>
+  <nb-card class="body-log">
+    <nb-card-header>
+      <div class="d-flex align-items-center justify-content-between">
+        <span>Log</span>
+        <button style="background: none; border: none; color: #8C95B2" nbButton (click)="ref.close()" status="danger"
+                nbTooltip="Đóng">
+          <nb-icon
+            icon="close-outline"
+          ></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="d-flex" style="background-color: black">
+      <div>
+        <span class="m-3 d-block" style="color: #d4d4d4; size: 90%;"
+              *ngFor="let log of logs">
+          <span [ngClass]="log.level === 'ERROR' ? 'text-danger' : log.level === 'WARNING' ? ' text-warning' : '' ">
+          <span>[{{log.timestamp}}]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>{{log.level}}&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;</span>
+          <span>[{{log.category}}]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>{{log.sourceName}}:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span class="mb-3">{{log.message}}</span>
+          </span>
+        </span>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+<ng-template #showDetailsSource let-ref="dialogRef" let-data>
+  <nb-card style="min-width: 50vw;">
+    <nb-card-header class="d-flex justify-content-between">
+      <div style="width: 100%;justify-content: space-between; align-items: center" class="d-flex">
+        <span>{{'data-ingestion.column.details'|translate}}</span>
+        <div>
+          <button style="background: none; border: none; color: #8C95B2" nbButton ghost (click)="ref.close()">
+            <nb-icon [icon]="'times'" pack="fa"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="" *ngIf="flow?.sourceConnectionType === 'FTP'">
+        <div class="row">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">{{'connection-manager.label.nameConnection' | translate}}</span>
+            <div class="w-75 ml-3">
+              <input style="text-overflow: ellipsis;" readonly value="{{fptConnection?.connectionName}}" trim="blur"
+                     class="custom-input" nbInput
+                     fullWidth>
+            </div>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">{{'connection-manager.label.typeConnection' | translate}}</span>
+            <div class="w-75 ml-3">
+              <input readonly value="{{fptConnection?.connectionType}}" trim="blur" class="custom-input" nbInput
+                     fullWidth>
+            </div>
+          </div>
+        </div>
+        <form class="w-100" *ngIf="fptConnection">
+          <div class="row mt-3">
+            <div class="col-6 d-flex align-items-lg-center">
+              <span class="w-25"> FTP server</span>
+              <div class="w-75 ml-3">
+                <span class="w-100"><input readonly value="{{fptConnection?.ftpServer}}" class="custom-input"
+                                           trim="blur" nbInput
+                                           fullWidth></span>
+              </div>
+            </div>
+            <div class="col-6 d-flex align-items-lg-center">
+              <span class="w-25">Port</span>
+              <div class="w-75 ml-3">
+            <span class="w-100"><input readonly value="{{fptConnection?.ftpPort}}" class="custom-input" trim="blur"
+                                       nbInput fullWidth></span>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-6 d-flex align-items-lg-center">
+              <span class="w-25"> Username</span>
+              <div class="w-75 ml-3">
+                <span class="w-100"><input readonly value="VIETTEL" class="custom-input" trim="blur" nbInput fullWidth></span>
+              </div>
+            </div>
+            <div class="col-6 d-flex align-items-lg-center">
+              <span class="w-25">Password</span>
+              <span class="w-75 ml-3 d-flex">
+                <nb-form-field class="w-100">
+                  <input readonly [type]="getInputTypeFTP()" value="{{fptConnection?.ftpPassword}}" nbInput fullWidth
+                         class="custom-input" trim="blur">
+              <button nbSuffix nbButton ghost (click)="toggleShowPasswordFTP()">
+                <nb-icon [icon]="showPasswordFTP ? 'eye-outline' : 'eye-off-2-outline'"
+                         pack="eva"
+                         [attr.aria-label]="showPasswordFTP ? 'hide password' : 'show password'">
+                </nb-icon>
+              </button>
+            </nb-form-field>
+              </span>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-6 d-flex align-items-lg-center">
+              <span class="w-25"> Connection Mode</span>
+              <div class="w-75 ml-3">
+                <input readonly value="{{fptConnection?.connectionMode}}" nbInput fullWidth class="custom-input"
+                       trim="blur">
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-6 d-flex align-items-lg-center">
+              <span class="w-25"> Connection Timeout</span>
+              <span class="w-75 ml-3"><input readonly value="{{fptConnection?.connectionTimeout}}" nbInput fullWidth
+                                             class="custom-input" trim="blur"></span>
+            </div>
+            <div class="col-6 d-flex align-items-lg-center">
+              <span class="w-25">Data TimeOut</span>
+              <span class="w-75 ml-3"><input readonly value="{{fptConnection?.dataTimeout}}" nbInput fullWidth
+                                             class="custom-input" trim="blur"></span>
+            </div>
+          </div>
+          <div class="mt-3 d-flex align-items-lg-end">
+            <div style="width: 120px"><span>Remote Roll BatchSize</span></div>
+            <div class="w-100 pl-3">
+              <input readonly value="{{fptConnection?.remotePollBatchSize}}" nbInput fullWidth class="custom-input"
+                     trim="blur">
+            </div>
+          </div>
+          <div style="justify-content: flex-end;" class="d-flex mt-5">
+          </div>
+        </form>
+      </div>
+      <div *ngIf="flow?.sourceConnectionType === 'RDBMS'">
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Connection Name</span>
+            <span class="w-75 ml-3"><input readonly value="{{RDBMSconnection?.connectionName}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Connection Type</span>
+            <span class="w-75 ml-3"><input readonly value="{{RDBMSconnection?.connectionType}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> DB Connection Url</span>
+            <span class="w-75 ml-3"><input readonly value="{{RDBMSconnection?.dbConnectionUrl}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">DB Driver Classname</span>
+            <span class="w-75 ml-3"><input readonly value="{{RDBMSconnection?.dbDriverClassname}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> DB Driver Locations</span>
+            <span class="w-75 ml-3"><input readonly value="{{RDBMSconnection?.dbDriverLocations}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">DB pool Controlle rserviceId</span>
+            <span class="w-75 ml-3"><input readonly value="{{RDBMSconnection?.dbpoolControllerserviceId}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div style="justify-content: flex-end;" class="d-flex mt-5">
+        </div>
+      </div>
+      <div *ngIf="flow?.sourceConnectionType === 'HIVE'">
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Connection Name</span>
+            <span class="w-75 ml-3"><input readonly value="{{HIVEconnection?.connectionName}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">DatabaseUrl</span>
+            <span class="w-75 ml-3"><input readonly value="{{HIVEconnection?.databaseUrl}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Data base User</span>
+            <span class="w-75 ml-3"><input readonly value="{{HIVEconnection?.databaseUser}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Database Password</span>
+            <span class="w-75 ml-3">
+            <nb-form-field class="w-100">
+              <input [type]="getInputTypeFTP()" readonly
+                     value="{{HIVEconnection?.databasePassword}}" nbInput
+                     fullWidth
+                     class="custom-input" trim="blur">
+              <button nbSuffix nbButton ghost (click)="toggleShowPasswordFTP()">
+                <nb-icon [icon]="showPasswordFTP ? 'eye-outline' : 'eye-off-2-outline'"
+                         pack="eva"
+                         [attr.aria-label]="showPasswordFTP ? 'hide password' : 'show password'">
+                </nb-icon>
+              </button>
+            </nb-form-field>
+              </span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Hive Config Resources</span>
+            <span class="w-75 ml-3"><input readonly value="{{HIVEconnection?.hiveConfigResources}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Max Total Connection</span>
+            <span class="w-75 ml-3"><input readonly value="{{HIVEconnection?.maxTotalConnection}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Max wait time</span>
+            <span class="w-75 ml-3"><input readonly value="{{HIVEconnection?.maxWaitTime}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Advanced Config</span>
+            <span class="w-75 ml-3"><input readonly value="{{HIVEconnection?.advancedConfig}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Created By</span>
+            <span class="w-75 ml-3"><input readonly value="{{HIVEconnection?.createdBy}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">DB pool Controller service Id</span>
+            <span class="w-75 ml-3"><input readonly value="{{HIVEconnection?.dbpoolControllerserviceId}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div style="justify-content: flex-end;" class="d-flex mt-5">
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #showDetailsSink let-ref="dialogRef" let-data>
+  <nb-card style="min-width: 50vw;">
+    <nb-card-header class="d-flex justify-content-between">
+      <div style="width: 100%;justify-content: space-between; align-items: center" class="d-flex">
+        <span>{{'data-ingestion.column.details' | translate}}</span>
+        <div>
+          <button style="background: none; border: none; color: #8C95B2" nbButton ghost (click)="ref.close()">
+            <nb-icon [icon]="'times'" pack="fa"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="" *ngIf="flow?.sinkConnectionType === 'HDFS'">
+        <div class="row">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">{{'connection-manager.label.nameConnection' | translate}}</span>
+            <div class="w-75 ml-3">
+              <input readonly value="{{hdfsConnection?.connectionName}}" trim="blur" class="custom-input" nbInput
+                     fullWidth>
+            </div>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">{{'connection-manager.label.typeConnection' | translate}}</span>
+            <div class="w-75 ml-3">
+              <input readonly value="{{hdfsConnection?.connectionType}}" trim="blur" class="custom-input" nbInput
+                     fullWidth>
+            </div>
+          </div>
+        </div>
+        <form class="w-100">
+          <div class="row mt-3">
+            <div class="col-6 d-flex align-items-lg-center">
+              <span class="w-25"> Resource</span>
+              <div class="w-75 ml-3">
+                <span class="w-100"><input readonly value="{{fptConnection?.ftpServer}}" class="custom-input"
+                                           trim="blur" nbInput
+                                           fullWidth></span>
+              </div>
+            </div>
+          </div>
+          <div style="justify-content: flex-end;" class="d-flex mt-5">
+          </div>
+        </form>
+      </div>
+      <div *ngIf="flow?.sinkConnectionType === 'Kafka'">
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Connection Name</span>
+            <span class="w-75 ml-3"><input readonly value="{{Kafkaconnection?.connectionName}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Connection Type</span>
+            <span class="w-75 ml-3"><input readonly value="{{Kafkaconnection?.connectionType}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Kafka Brokers</span>
+            <span class="w-75 ml-3"><input readonly value="{{Kafkaconnection?.kafkaBrokers}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Parameter ContextId</span>
+            <span class="w-75 ml-3"><input readonly value="{{Kafkaconnection?.parameterContextId}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div style="justify-content: flex-end;" class="d-flex mt-5">
+        </div>
+      </div>
+      <div *ngIf="flow?.sinkConnectionType === 'FTP'">
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Connection Name</span>
+            <span class="w-75 ml-3"><input readonly value="{{fptConnectionSink?.connectionName}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Connection Timeout</span>
+            <span class="w-75 ml-3"><input readonly value="{{fptConnectionSink?.connectionTimeout}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Connection Type</span>
+            <span class="w-75 ml-3"><input readonly value="{{fptConnectionSink?.connectionType}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Data Timeout</span>
+            <span class="w-75 ml-3"><input readonly value="{{fptConnectionSink?.dataTimeout}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Ftp Username</span>
+            <span class="w-75 ml-3">
+              <input readonly value="{{fptConnectionSink?.ftpUsername}}" nbInput fullWidth
+                     class="custom-input" trim="blur">
+            </span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Ftp Password</span>
+            <span class="w-75 ml-3">
+              <nb-form-field class="w-100">
+                <input [type]="getInputType()" readonly value="{{fptConnectionSink?.ftpPassword}}" nbInput
+                       fullWidth
+                       class="custom-input" trim="blur">
+                  <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+                        <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                                 pack="eva"
+                                 [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                        </nb-icon>
+                      </button>
+              </nb-form-field>
+            </span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Ftp Server</span>
+            <span class="w-75 ml-3"><input readonly value="{{fptConnectionSink?.ftpServer}}" nbInput fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Ftp Port</span>
+            <span class="w-75 ml-3"><input readonly value="{{fptConnectionSink?.ftpPort}}" nbInput
+                                           fullWidth
+                                           class="custom-input" trim="blur"></span>
+          </div>
+        </div>
+        <div class="mt-3 d-flex align-items-lg-end">
+          <div style="width: 120px"><span>Parameter ContextId</span></div>
+          <div class="w-100 pl-3">
+            <input readonly value="{{fptConnectionSink?.parameterContextId}}" nbInput fullWidth class="custom-input"
+                   trim="blur">
+          </div>
+        </div>
+        <div style="justify-content: flex-end;" class="d-flex mt-5">
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template>

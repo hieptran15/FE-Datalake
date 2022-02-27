@@ -1,0 +1,43 @@
+<nb-card class="dialog dialog-md">
+  <nb-card-header>
+    {{title}}
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group" [formGroup]="url">
+          <label class="label">Url<span class="text-danger">*</span></label>
+          <input type="text" nbInput fullWidth formControlName="url" (change)="trimChar('url')"/>
+          <ngx-inline-message [message]="'Đường dẫn'"
+                              [formName]="url.get('url')"></ngx-inline-message>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group" [formGroup]="url">
+          <label class="label">Nhãn<span class="text-danger">*</span></label>
+          <input type="text" nbInput fullWidth formControlName="label" (change)="trimChar('label')"/>
+          <ngx-inline-message [message]="'Nhãn'"
+                              [formName]="url.get('label')"></ngx-inline-message>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" [formGroup]="url">
+      <label class="label">Mô tả</label>
+      <ckeditor [config]="config" formControlName="description"></ckeditor>
+      <ngx-inline-message [message]="'Mô tả'" (change)="trimChar('description')"
+                          [formName]="url.get('description')"></ngx-inline-message>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="float-right d-flex edit-button">
+      <button type="button" (click)="save()"
+              [disabled]="isSaving || url.invalid">Lưu
+      </button>
+      <button class="ml-2" type="button" (click)="ref.close()">Hủy</button>
+    </div>
+  </nb-card-footer>
+</nb-card>
+
+
+
+

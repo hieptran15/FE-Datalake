@@ -1,0 +1,245 @@
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~@nebular/theme/styles/global/breakpoints';
+@import '../../styles/themes';
+
+@include nb-install-component() {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    width: calc(#{nb-theme(sidebar-width)} - #{nb-theme(header-padding)});
+  }
+  /*hightlight header*/
+  nb-action.active {
+    background-color: #191e32;
+    height: 77px;
+
+    ::ng-deep {
+
+      svg {
+        fill: white;
+      }
+
+      nb-icon::before {
+        color: white;
+      }
+    }
+  }
+  nb-action {
+    height: auto;
+    display: flex;
+    align-content: center;
+  }
+  nb-action:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .control-item label.tittle {
+    overflow: hidden;
+    display: none;
+    //font-weight: normal;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    //width: 0;
+    margin-bottom: 0 !important;
+    //transition-property: width;
+    //transition-duration: 2s;
+    //transition-timing-function: linear;
+    //transition-delay: 1s;
+  }
+  .control-item:hover label.tittle {
+    display: block;
+    width: auto;
+  }
+
+  nb-user {
+    cursor: pointer;
+  }
+
+  ::ng-deep nb-search button {
+    padding: 0 !important;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    width: auto;
+
+    .sidebar-toggle {
+      @include nb-ltr(padding-right, 1.25rem);
+      @include nb-rtl(padding-left, 1.25rem);
+      text-decoration: none;
+      color: nb-theme(text-hint-color);
+
+      nb-icon {
+        font-size: 1.75rem;
+      }
+    }
+
+    .logo {
+      padding: 0 1.25rem;
+      font-size: 1.75rem;
+      @include nb-ltr(border-left, 1px solid nb-theme(divider-color));
+      @include nb-rtl(border-right, 1px solid nb-theme(divider-color));
+      white-space: nowrap;
+      text-decoration: none;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .control-item {
+      display: none;
+    }
+    .user-action {
+      border: none;
+      padding: 0;
+    }
+  }
+
+  @include media-breakpoint-down(is) {
+    nb-select {
+      display: none;
+    }
+  }
+}
+
+.header-container {
+  width: 100%;
+
+  .logo-container {
+    width: 100%;
+
+    .breadcrumb {
+
+      padding: 0;
+      margin: 0;
+      background: none !important;
+    }
+
+    nav {
+      box-shadow: none;
+    }
+  }
+}
+
+.edit-icon-dark-mode {
+  .dark-item {
+    color: var(--color-icon-dark-theme);
+
+    nb-icon {
+      color: var(--color-icon-dark-theme);
+    }
+  }
+
+  nb-toggle {
+    transform: scale(0.7);
+    margin-top: 7px;
+    margin-left: 5px;
+    margin-right: 2px;
+  }
+
+  .light-item {
+    color: var(--color-icon-light-theme);
+
+    nb-icon {
+      color: var(--color-icon-light-theme);
+    }
+  }
+}
+
+:host ::ng-deep {
+  nb-select.appearance-outline.status-basic .select-button {
+    background-color: #222736;
+    border-color: #222736;
+
+    &:focus {
+      background-color: #222736;
+      border-color: #222736;
+    }
+  }
+}
+
+nb-action {
+  border-left: none !important;
+}
+
+nb-layout-header.fixed {
+  left: 20% !important;
+}
+
+ng-select .ng-select-container:hover {
+  border: none !important;
+}
+
+nb-option-list.size-medium nb-option {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.edit-account {
+  align-items: center;
+
+  .avatar {
+    img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+    }
+
+    padding-right: 10px;
+  }
+
+  .title {
+    align-items: center;
+    cursor: pointer;
+  }
+}
+
+.child-menu-active {
+  background-color: #191e32;
+}
+
+.menu-border {
+  nb-list:last-child nb-list-item {
+    border: none;
+  }
+
+  nb-list:first-child nb-list-item {
+    border: none;
+  }
+}
+
+.full-screen {
+  cursor: pointer;
+
+  nb-icon {
+    transition: 0.3s;
+  }
+}
+
+.full-screen:hover nb-icon {
+  transform: rotate(
+      180deg
+  );
+}
+
+.sidebar-toggle {
+  nb-icon {
+    transition: 0.2s;
+  }
+}
+
+ng-select.edit-lang-drop.ng-select-opened > .ng-select-container {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.sidebar-toggle:hover nb-icon {
+  transform: scale(1.2);
+  color: #1d75b3;
+}

@@ -1,0 +1,95 @@
+<nb-card class="edit-size">
+  <!--  <nb-card-header style="margin-bottom: 0 !important;" class="p-2 d-flex justify-content-between align-items-center">-->
+  <!--    <span [title]="data?.title.length > 15 ? data.title : ''"-->
+  <!--          style="font-size:14px; font-weight: bold; text-overflow: ellipsis;overflow: hidden;">-->
+  <!--      {{data?.title && data?.title.length > 15 ? data.title.substring(0, 15).concat('...') : data.title}}-->
+  <!--    </span>-->
+  <!--    <div class="actions">-->
+  <!--      <button nbButton class="edit p-1 mr-2" nbTooltip="Edit chart" status="warning" (click)="edit()"-->
+  <!--              *hasAnyAuthority="authoritiesConstant.GROUP_CHART.GROUP_CHART_WRITE">-->
+  <!--        <nb-icon icon="edit-outline" size="large"></nb-icon>-->
+  <!--      </button>-->
+  <!--      <button nbButton class="delete p-1" nbTooltip="Delete chart" status="danger" (click)="delete()"-->
+  <!--              *hasAnyAuthority="authoritiesConstant.GROUP_CHART.GROUP_CHART_WRITE">-->
+  <!--        <nb-icon icon="close-outline" size="large"></nb-icon>-->
+  <!--      </button>-->
+
+  <!--    </div>-->
+
+  <!--  </nb-card-header>-->
+  <!--    <nb-card-body (click)="navigateToDetail(data)">-->
+  <!--      <div class="chart-desc">-->
+  <!--        <span>{{data?.textAndPieChart?.description}}</span>-->
+  <!--      </div>-->
+  <!--      <div class="chart-body">-->
+  <!--          <span class="chart-text" *ngIf="data.textAndPieChart"-->
+  <!--                [style.color]="data.textAndPieChart.color">{{data.textAndPieChart.chartData}}</span>-->
+  <!--      </div>-->
+  <!--    </nb-card-body>-->
+
+  <!--code giao dien moi -->
+
+  <nb-card-body>
+    <div class="row p-2" style="min-height: 108px">
+      <div (click)="navigateToDetail(data)" class="col-10 d-flex flex-column justify-content-between">
+       <span class="dashboard-card-user-title" [title]="data?.title.length > 15 ? data.title : ''">
+         {{data?.title && data?.title.length > 15 ? data.title.substring(0, 15).concat('...') : data.title}}
+       </span>
+        <div style="margin: 15px 0">
+          <span class="number-dashboard-card-user" *ngIf="data.textAndPieChart"
+                [style.color]="data.textAndPieChart.color">{{data.textAndPieChart.chartData}}</span>
+          <span class="number-dashboard-card-user" *ngIf="!data.textAndPieChart">&nbsp;</span>
+        </div>
+
+        <span class="dashboard-card-user-title">
+
+          Cập nhật 30 phút trước
+        </span>
+      </div>
+      <div class="col-2">
+           <span class="actions" [nbPopover]="listAction"
+                 nbPopoverTrigger="click"
+                 nbPopoverPlacement="top"
+                 [nbPopoverContext]="{data : data}">
+    <!--                            <span class="actions"-->
+             <!--                                  data-toggle="popover"-->
+             <!--                                  data-placement="right"-->
+             <!--                                  data-content="{data:row}">-->
+                                <nb-icon icon="more-vertical-outline"></nb-icon>
+                              </span>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+
+<!--code nb-pop-over-->
+
+
+<ng-template #listAction let-data>
+  <nb-list>
+    <nb-list-item class="d-flex justify-content-center align-items-center" style="padding: 0px;">
+      <button class="p-1" nbButton ghost (click)="edit()"
+      >
+        Chỉnh sửa
+      </button>
+    </nb-list-item>
+    <nb-list-item class="d-flex justify-content-center align-items-center" style="padding: 0px;">
+      <button class="copy action-and-config" (click)="delete()"
+              nbButton ghost>
+        Xóa
+      </button>
+
+
+      <!--            <button nbButton class="edit p-1 mr-2" nbTooltip="Edit chart" status="warning" -->
+      <!--                    *hasAnyAuthority="authoritiesConstant.GROUP_CHART.GROUP_CHART_WRITE">-->
+      <!--              <nb-icon icon="edit-outline" size="large"></nb-icon>-->
+      <!--            </button>-->
+      <!--            <button nbButton class="delete p-1" nbTooltip="Delete chart" status="danger" -->
+      <!--                    *hasAnyAuthority="authoritiesConstant.GROUP_CHART.GROUP_CHART_WRITE">-->
+      <!--              <nb-icon icon="close-outline" size="large"></nb-icon>-->
+      <!--            </button>-->
+
+    </nb-list-item>
+  </nb-list>
+</ng-template>

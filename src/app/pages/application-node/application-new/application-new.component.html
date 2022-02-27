@@ -1,0 +1,357 @@
+<nb-card class="dialog dialog-md">
+  <nb-card-header>
+    {{title}}
+  </nb-card-header>
+  <nb-card-body>
+    <nb-card>
+      <nb-card-header>Thông tin</nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-custom-1">
+            <div class="col-lg-12 form-group" style="padding: 0" [formGroup]="node">
+              <label class="label">Loại ứng dụng <span class="text-danger">*</span></label>
+              <ng-select fullWidth formControlName="nodeType"
+                         [items]="nodeTypes" bindValue="itemValue" bindLabel="itemName">
+              </ng-select>
+              <ngx-inline-message [message]="'Loại ứng dụng'" [formName]="node.get('nodeType')"></ngx-inline-message>
+            </div>
+            <div class="col-lg-12 form-group" style="padding: 0" [formGroup]="node">
+              <label class="label">Tên ứng dụng <span class="text-danger">*</span></label>
+              <input type="text" nbInput fullWidth formControlName="nodeName" (change)="trimChar('nodeName')"
+                     style="padding-left: 10px" autofocus>
+              <ngx-inline-message [message]="'Tên ứng dụng'" [formName]="node.get('nodeName')"></ngx-inline-message>
+            </div>
+          </div>
+          <div class="col-custom-2 form-group" [formGroup]="node">
+            <div class="row">
+              <label class="label">Icon/ảnh đại diện</label>
+            </div>
+            <div class="row">
+              <div>
+                <input
+                  hidden
+                  type="file"
+                  #iconInput
+                  accept='image/*' (change)="preview(iconInput.files)"
+                />
+                <nb-icon icon="image-outline" style="width: 130px; height: 130px; border: 1px solid white"
+                         *ngIf="!(iconUrl || data?.iconId)">
+                </nb-icon>
+                <div style="width: 150px; height: 150px; border: 1px solid white; position: relative"
+                     *ngIf="iconUrl || data?.iconId"
+                     class="col-lg-11">
+                  <img [src]="iconUrl || (data?.iconId ? env.imageUrl + data.iconId : '')"
+                       class="img-fluid img-preview">
+                </div>
+              </div>
+              <div class="col" style="position: relative">
+                <div class="row" style="position: absolute; bottom: 0">
+                  <button (click)="iconInput.click()" nbButton status="primary" class="" ghost>
+                    <nb-icon icon="upload-outline">
+                    </nb-icon>
+                  </button>
+                  <button (click)="removeIcon()" nbButton status="danger" class="" ghost>
+                    <nb-icon icon="trash-outline">
+                    </nb-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <ngx-inline-message [message]="'Icon/ảnh đại diện'" [formName]="node.get('iconId')"></ngx-inline-message>
+          </div>
+          <div class="col-lg-12 form-group">
+            <label class="label">Cụm<span class="text-danger">*</span></label>
+            <ng-select fullWidth [(ngModel)]="cluster" [items]="clusters$ | async" bindLabel="treeName"
+                       [hideSelected]="true"
+                       typeToSearchText="Chọn cụm" [typeahead]="clustersInput$" [loading]="clustersLoading"
+                       (focus)="clustersInput$.next()" placeholder="Chọn cụm server/ cụm ứng dụng" autofocus>
+            </ng-select>
+
+          </div>
+          <div class="col-lg-12 form-group" [formGroup]="node">
+            <label class="label">Tags</label>
+            <ng-select [items]="tags"
+                       [addTag]="addTagFn"
+                       [hideSelected]="true"
+                       multiple="true"
+                       bindLabel="name"
+                       formControlName="tags">
+            </ng-select>
+          </div>
+          <div class="col-lg-12 form-group">
+            <label class="label">Mô tả</label>
+            <ckeditor type="divarea" (dataChange)="node.get('description').patchValue($event)"
+                      [data]="node.get('description').value"></ckeditor>
+            <ngx-inline-message [message]="'Mô tả'" [formName]="node.get('description')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="row" *ngFor="let object of objects" [formGroup]="nodeInfoFg" [ngSwitch]="object.inputType">
+          <div class="col-lg-6 form-group" *ngSwitchDefault>
+            <label class="label">{{object.label || object.fieldName}}</label>
+            <input type="text" nbInput fullWidth [formControlName]="object.fieldName">
+            <ngx-inline-message [message]="object.label || object.fieldName"
+                                [formName]="nodeInfoFg.get(object.fieldName)"></ngx-inline-message>
+          </div>
+          <div class="col-lg-6 form-group" *ngSwitchCase="InputType.SELECT">
+            <label class="label">{{object.label || object.fieldName}}</label>
+            <ng-select [items]="object.source" fullWidth
+                       [formControlName]="object.fieldName"></ng-select>
+            <ngx-inline-message [message]="object.label || object.fieldName"
+                                [formName]="nodeInfoFg.get(object.fieldName)"></ngx-inline-message>
+          </div>
+          <div class="col-lg-6 form-group" *ngSwitchCase="InputType.DATE">
+            <label class="label">{{object.label || object.fieldName}}</label>
+            <input type="text" nbInput fullWidth [nbDatepicker]="datepicker" [formControlName]="object.fieldName">
+            <nb-datepicker #datepicker></nb-datepicker>
+            <ngx-inline-message [message]="object.label || object.fieldName"
+                                [formName]="nodeInfoFg.get(object.fieldName)"></ngx-inline-message>
+          </div>
+          <div class="col-lg-6 form-group" *ngSwitchCase="InputType.TEXTAREA">
+            <label class="label">{{object.label || object.fieldName}}</label>
+            <textarea nbInput fullWidth [formControlName]="object.fieldName"></textarea>
+            <ngx-inline-message [message]="object.label || object.fieldName"
+                                [formName]="nodeInfoFg.get(object.fieldName)"></ngx-inline-message>
+          </div>
+          <div class="col-lg-6 form-group" *ngSwitchCase="InputType.CHECKBOX">
+            <nb-checkbox [value]="object.value">{{object.label || object.fieldName}}</nb-checkbox>
+            <ngx-inline-message [message]="object.label || object.fieldName"
+                                [formName]="nodeInfoFg.get(object.fieldName)"></ngx-inline-message>
+          </div>
+          <div class="col-lg-6 form-group" *ngSwitchCase="InputType.RADIO">
+            <label class="label">{{object.label || object.fieldName}}</label>
+            <nb-radio-group>
+              <nb-radio *ngFor="let option of object.source"
+                        [value]="option.value" [formControlName]="object.fieldName">
+                {{ option.label }}
+              </nb-radio>
+            </nb-radio-group>
+            <ngx-inline-message [message]="object.label || object.fieldName"
+                                [formName]="nodeInfoFg.get(object.fieldName)"></ngx-inline-message>
+          </div>
+          <div class="col-lg-6 form-group" *ngSwitchCase="InputType.NUMBER">
+            <label class="label">{{object.label || object.fieldName}}</label>
+            <input type="number" nbInput fullWidth [formControlName]="object.fieldName">
+            <ngx-inline-message [message]="object.label || object.fieldName"
+                                [formName]="nodeInfoFg.get(object.fieldName)"></ngx-inline-message>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Ảnh slide</label>
+          <button nbButton (click)="imageInput.click()" status="success" size="small" class="float-right">
+            <nb-icon icon="plus-outline"></nb-icon>
+            Thêm ảnh
+          </button>
+          <input hidden type="file" multiple #imageInput accept='image/*' (change)="preview(imageInput.files, true)"/>
+        </div>
+        <div class="form-group">
+          <ngx-datatable class="dark fullscreen"
+                         [columnMode]="'flex'"
+                         [rows]="imageDatas"
+                         [headerHeight]="'auto'"
+                         [rowHeight]="'auto'"
+                         [footerHeight]="'auto'"
+                         [messages]="{totalMessage:'bản ghi'}"
+          >
+            <ngx-datatable-column name="Thứ tự" [flexGrow]="1">
+              <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                {{rowIndex + 1}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Ảnh" [flexGrow]="1">
+              <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                <div style="width: 50px; height: 50px; position: relative;">
+                  <img [src]="row.id ? env.imageUrl + row.id : row.previewData" class="img-fluid img-preview"/>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Tên ảnh" [flexGrow]="2">
+              <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                {{row.imageName}}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Hành động" [flexGrow]="1">
+              <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                <button nbButton status="primary" ghost (click)="moveDownImage(rowIndex)"
+                        [disabled]="rowIndex === imageDatas.length - 1" class="p-1">
+                  <nb-icon icon="arrow-ios-downward-outline" size="tiny"></nb-icon>
+                </button>
+                <button nbButton status="primary" ghost (click)="moveUpImage(rowIndex)" [disabled]="rowIndex === 0"
+                        class="p-1">
+                  <nb-icon icon="arrow-ios-upward-outline" size="tiny"></nb-icon>
+                </button>
+                <button nbButton status="danger" ghost (click)="removeImage(rowIndex)" class="p-1">
+                  <nb-icon icon="close-outline" size="tiny"></nb-icon>
+                </button>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+        <!--table Url-->
+        <div class="form-group">
+          <label class="label">Danh sách url</label>
+          <button nbButton (click)="openDialogUrl()" status="success" size="small" class="float-right">
+            <nb-icon icon="plus-outline"></nb-icon>
+            Thêm URL
+          </button>
+        </div>
+        <div class="form-group">
+          <ngx-datatable class="dark fullscreen"
+                         [columnMode]="'force'"
+                         [rows]="urls"
+                         [headerHeight]="'auto'"
+                         [rowHeight]="'auto'"
+                         [footerHeight]="'auto'"
+                         [columns]="columnUrl"
+                         [messages]="{totalMessage:'bản ghi'}"
+          >
+            <ng-container *ngFor="let col of columnUrl">
+              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                  {{ column.name}}
+                </ng-template>
+                <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                  <ng-container [ngSwitch]="col.prop">
+                    <ng-container *ngSwitchCase="'id'">
+                      {{rowIndex + 1 + (page.pageNumber * page.size)}}
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      {{ value }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'action_btn'" class="text-right">
+                      <div>
+                        <button class="p-1" nbButton status="warning" ghost (click)="editUrl(row, rowIndex)">
+                          <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+                        </button>
+                        <button class="p-1" nbButton status="danger" ghost (click)="deleteUrl(row, rowIndex)">
+                          <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>
+                        </button>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+              </ngx-datatable-column>
+            </ng-container>
+          </ngx-datatable>
+        </div>
+        <!--Table server-->
+        <div class="form-group" *ngIf="this.node.controls.nodeType.value === nodeType">
+          <label class="label">Danh sách server</label>
+          <button nbButton (click)="openDialog()" status="success" size="small" class="float-right">
+            <nb-icon icon="plus-outline"></nb-icon>
+            Thêm Server
+          </button>
+        </div>
+
+        <div class="form-group" *ngIf="this.node.controls.nodeType.value === nodeType">
+          <ngx-datatable class="dark fullscreen"
+                         [columnMode]="'force'"
+                         [rows]="servers"
+                         [headerHeight]="'auto'"
+                         [rowHeight]="'auto'"
+                         [footerHeight]="'auto'"
+                         [columns]="columns"
+                         [messages]="{totalMessage:'bản ghi'}"
+          >
+            <ng-container *ngFor="let col of columns">
+              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                  {{ column.name}}
+                </ng-template>
+                <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                  <ng-container [ngSwitch]="col.prop">
+                    <ng-container *ngSwitchCase="'id'">
+                      {{rowIndex + 1 + (page.pageNumber * page.size)}}
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      {{ value }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'action_btn'" class="text-right">
+                      <div>
+                        <button class="p-1" nbButton status="warning" ghost (click)="edit(row, rowIndex)">
+                          <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+                        </button>
+                        <button class="p-1" nbButton status="danger" ghost (click)="delete(row, rowIndex)">
+                          <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>
+                        </button>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+              </ngx-datatable-column>
+            </ng-container>
+          </ngx-datatable>
+        </div>
+      </nb-card-body>
+    </nb-card>
+    <nb-card>
+      <nb-card-header>Style</nb-card-header>
+      <nb-card-body class="row">
+        <div class="form-group col-lg-6" [formGroup]="node">
+          <label class="label">Màu nền</label>
+          <nb-form-field>
+            <input style="padding-left: 10px" [colorPicker]="node.get('background').value"
+                   (change)="trimChar('background')" #background
+                   [cpPresetColors]="['#ffffff','#000000','#8ab871','#6fa050']"
+                   [cpOutputFormat]="'auto'" fullWidth nbInput formControlName="background" [(cpToggle)]="cpBackground"
+                   (colorPickerChange)="node.get('background').setValue($event)">
+            <button nbSuffix nbButton type="button" (click)="cpBackground=!cpBackground" class="color-picker-toggle"
+                    [style.background]="node.get('background').value || 'transparent'">
+              &nbsp;
+            </button>
+          </nb-form-field>
+          <ngx-inline-message [message]="'Màu nền'"
+                              [formName]="node.get('background')"></ngx-inline-message>
+        </div>
+        <div class="form-group col-lg-6" [formGroup]="node">
+          <label class="label">Màu chữ</label>
+          <nb-form-field>
+            <input style="padding-left: 10px" [colorPicker]="node.get('textColor').value"
+                   (change)="trimChar('textColor')" #textColor
+                   [cpPresetColors]="['#ffffff','#000000','#8ab871','#6fa050']"
+                   [cpOutputFormat]="'auto'" fullWidth nbInput formControlName="textColor" [(cpToggle)]="cpTextColor"
+                   (colorPickerChange)="node.get('textColor').setValue($event)">
+            <button nbSuffix nbButton type="button" (click)="cpTextColor=!cpTextColor" class="color-picker-toggle"
+                    [style.background]="node.get('textColor').value || 'transparent'"
+            >
+              &nbsp;
+            </button>
+          </nb-form-field>
+          <ngx-inline-message [message]="'Màu chữ'"
+                              [formName]="node.get('textColor')"></ngx-inline-message>
+        </div>
+        <div class="form-group col-lg-6" [formGroup]="node">
+          <label class="label">Kiểu border</label>
+          <ngx-border-select [(borderStyle)]="borderStyle"></ngx-border-select>
+        </div>
+        <div class="form-group col-lg-6" [formGroup]="node">
+          <label class="label">Màu border</label>
+          <nb-form-field>
+            <input style="padding-left: 10px" [colorPicker]="node.get('borderColor').value"
+                   (change)="trimChar('borderColor')" #borderColor
+                   [cpPresetColors]="['#ffffff','#000000','#8ab871','#6fa050']"
+                   [cpOutputFormat]="'auto'" fullWidth nbInput formControlName="borderColor"
+                   [(cpToggle)]="cpBorderColor"
+                   (colorPickerChange)="node.get('borderColor').setValue($event)">
+            <button nbSuffix nbButton type="button" (click)="cpBorderColor=!cpBorderColor" class="color-picker-toggle"
+                    [style.background]="node.get('borderColor').value || 'transparent'"
+            >&nbsp;
+            </button>
+          </nb-form-field>
+          <ngx-inline-message [message]="'Màu border'"
+                              [formName]="node.get('borderColor')"></ngx-inline-message>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="float-right d-flex edit-button">
+      <button type="button" (click)="save()"
+
+      >Lưu
+      </button>
+      <button type="button" class="ml-2" (click)="ref.close()">Hủy</button>
+    </div>
+  </nb-card-footer>
+</nb-card>
+

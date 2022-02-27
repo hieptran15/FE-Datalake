@@ -1,0 +1,210 @@
+.custom-title {
+  color: #38A4F8;
+  font-size: 31px;
+  line-height: 40px;
+  //text-transform: uppercase;
+  font-family: Sarabun;
+  font-style: normal;
+  font-weight: bold;
+  text-align: center;
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px auto;
+
+  position: static;
+  width: 302px;
+  height: 80px;
+  right: 0px;
+  top: 0px;
+}
+
+.row {
+  margin-left: unset;
+  margin-right: unset;
+  display: grid;
+  justify-content: center;
+}
+
+.pupup-status {
+  background: #181E38;
+  min-width: 471px;
+  height: 245px;
+  border-radius: 5px;
+
+  .pupup-header-status {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #777e91;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.5rem;
+    color: white;
+  }
+
+  .pupup-body-status {
+    flex: 1;
+    overflow: auto;
+    padding: 2rem 1.5rem;
+
+    b {
+      color: white;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 18px;
+    }
+  }
+}
+
+.login-form {
+  margin: 41px auto;
+}
+
+:host ::ng-deep {
+  input::placeholder {
+    color: #0B0D26;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+  }
+
+  nb-checkbox.status-basic .text {
+    color: #0B0D26;
+  }
+
+  nb-checkbox .native-input:focus:checked + .custom-checkbox {
+    box-shadow: 0 0 0 0.375rem white;
+  }
+
+  nb-checkbox .native-input:focus:checked + .custom-checkbox {
+    box-shadow: 0 0 0 0.375rem white;
+  }
+
+  nb-checkbox .native-input:focus:not(:checked) + .custom-checkbox:not(:hover):not(:active) {
+    box-shadow: 0 0 0 0.375rem white, inset 0 0 0 100vmax white;
+  }
+
+  nb-checkbox .native-input:focus:not(:checked) + .custom-checkbox {
+    box-shadow: 0 0 0 0.375rem white;
+  }
+
+  span.custom-checkbox {
+    transform: scale(0.8);
+  }
+}
+
+input#account, #password {
+  background-color: #ffffff;
+  color: #0B0D26 !important;
+  border: none;
+}
+
+
+form.login-form.ng-pristine.ng-invalid {
+  width: unset;
+}
+
+.form-control-group {
+  margin-top: 18px;
+  border: 1px solid #0B0D26;
+  width: 300px !important;
+  border-radius: 4px;
+  box-sizing: border-box;
+  align-items: center;
+  display: flex;
+  margin-bottom: unset;
+}
+
+.form-control-group .icon-login {
+
+}
+
+.boxCheck {
+  color: #0B0D26;
+}
+
+.signup-or {
+  color: #0B0D26;
+  text-align: center;
+  font-size: 12px;
+  position: relative;
+}
+
+.signup-or span {
+  display: inline-block;
+  padding: 10px 10px;
+  background-color: #FFFFFF;
+  z-index: 2;
+  position: relative;
+}
+
+.signup-or:after {
+  content: "";
+  width: 100%;
+  height: 1px;
+  background-color: #38A4F8;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.signup-social {
+  display: block;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #0B0D26;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  font-family: Sarabun;
+  margin-top: 26px;
+}
+
+span.signup-social-text {
+  color: #0F70F5;
+}
+
+svg {
+  margin-left: 10px;
+}
+
+ngx-inline-message {
+  position: absolute;
+}
+
+button.appearance-filled.full-width.size-medium.status-primary.shape-rectangle.nb-transition {
+  margin-top: 18px;
+}
+
+.logo-vt {
+  position: fixed;
+  top: 49px;
+  left: 53px;
+}
+
+.check-rem {
+  display: flex;
+  margin-top: 21px;
+  margin-bottom: 26px;
+}
+
+/////// tablet: width>=40px and width <=1024px
+@media only screen and (min-width: 740px) and (max-width: 1023px) {
+  .logo-vt {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 739px) {
+  .logo-vt {
+    display: none;
+  }
+}
+

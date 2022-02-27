@@ -1,0 +1,537 @@
+<!--<nav aria-label="breadcrumb">-->
+<!--  <ol class="breadcrumb" style="margin-bottom: 0 !important; background-color: #181E38;">-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+<!--         >VDP-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none"-->
+<!--         >HDFS Tools-->
+<!--      </a></li>-->
+<!--    <li class="breadcrumb-item" aria-current="page">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/hdfs-browser"-->
+<!--         >-->
+<!--        {{"data-ingestion.label.hdfsBrowser" | translate}}-->
+<!--      </a>-->
+<!--    </li>-->
+<!--  </ol>-->
+<!--</nav>-->
+<nb-layout>
+  <nb-layout-column
+    style="padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important">
+    <nb-card class="checkUserHdfs" [nbSpinner]="checkUserHdfs"
+             [nbSpinnerMessage]="'process.messageHdfs' | translate">
+      <nb-card-header>
+        <div class="breadcrumb-path">
+          <div class="lu-breadcrumb">
+        <span class="title-page" style="cursor: pointer"
+              [class.has-url]="i !== breadcrumb?.length - 1 && breadcrumb?.length > 1"
+              (click)="onBreadcrumbClick(i)"
+              class="breadcrumb-item" *ngFor="let item of breadcrumb; let i = index">{{item?.name}}  </span>
+            <button class="btn-copyPath" type="button" nbButton nbTooltip="{{'HDFSBrowser.label.copyPath' | translate}}"
+                    style="color:var(--color-text-light); background-color:var(--background-table);" status="primary"
+                    (click)="copyText(defaultPathBre)">
+              <nb-icon icon="copy-outline"></nb-icon>
+            </button>
+          </div>
+          <input [(ngModel)]="pathBreadcrumb" [value]="pathBreadcrumb" type="text" name="path-to-copy"
+                 style="display: none">
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div style="position: relative" class="table-wrap">
+          <div *ngIf="isLoading" style="position: absolute;z-index: 999;left: 50%;top: 25%;">
+            <img style="width: 30px" alt="" src="assets/images/loading.gif"/><span>Processing...</span>
+          </div>
+          <nb-form-field>
+            <div class="d-flex w-100 mb-3">
+              <div class="w-100 position-relative mr-3">
+                <form (ngSubmit)="updateFilter(path)">
+                  <input #search nbInput type="text" name="search" autocomplete="off" class="input-edit mb-0"
+                         [(ngModel)]="path">
+                  <nb-icon nbPrefix icon="search-outline" pack="eva"
+                           style="position: absolute;top: 8px;z-index: 3; right: 10px;"></nb-icon>
+                </form>
+              </div>
+              <div>
+                <!--                                <nb-select style="max-width: initial; width: 200px" class="mr-3" placeholder="User_Hdfs"-->
+                <!--                                           [(ngModel)]="selectedHdfsUser">-->
+                <!--                                  <nb-option *ngFor="let item of listUserHdfs" [value]="item.hdfsUser">{{item.hdfsUser}}</nb-option>-->
+                <!--                                </nb-select>-->
+                <ng-select style="max-width: initial; width: 200px" class="mr-3" placeholder="User_Hdfs"
+                           [clearable]="false"
+                           placeholder="User_Hdfs"
+                           appendTo=""
+                           [(ngModel)]="selectedHdfsUser"
+                           (change)="getHdfs(null, true)"
+                >
+                  <ng-option
+                    *ngFor="let item of listUserHdfs" [value]="item.hdfsUser">
+                    <span showTooltip>{{item.hdfsUser}}</span>
+                  </ng-option>
+                </ng-select>
+
+              </div>
+              <div>
+                <!--                <nb-select style="max-width: initial; width: 300px" placeholder="Cluster_TayLake"-->
+                <!--                           [(ngModel)]="selectedCluster"-->
+                <!--                           (selectedChange)="getHdfs(null, true)">-->
+                <!--                  <nb-option *ngFor="let cluster of clusters"-->
+                <!--                             [value]="cluster.hdfsAddress">{{cluster.uiName}}</nb-option>-->
+                <!--                </nb-select>-->
+                <ng-select style="max-width: initial; width: 300px" placeholder="Cluster_TayLake"
+                           appendTo=""
+                           [(ngModel)]="selectedCluster"
+                           (change)="getHdfs(null, true)"
+                >
+                  <ng-option
+                    *ngFor="let item of clusters" [value]="item.hdfsAddress">
+                    <span showTooltip>{{item.uiName}}</span>
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div style="margin-bottom: 32px;margin-top: 20px;" class="cluster d-flex justify-content-between">
+              <div class="w-50 d-flex page">
+                <span>{{'data-ingestion.label.show' | translate}}</span>
+                <ng-select [items]="limits"
+                           bindLabel="name"
+                           [(ngModel)]="limit"
+                           [clearable]="false">
+                </ng-select>
+                <span>{{'data-ingestion.label.record' | translate}}</span>
+              </div>
+              <form class="path d-flex flex-nowrap edit-button" (ngSubmit)="getHdfs(path)">
+                <button style="min-width: 0 !important;" type="button"
+                        nbTooltip="{{'HDFSBrowser.label.reload' | translate}}"
+                        class="ml-2"
+                        (click)="getHdfs(pathBreadcrumb)">
+                  <nb-icon icon="repeat-outline"></nb-icon>
+                </button>
+
+                <button style="min-width: 0 !important;"
+                        *hasAnyAuthority="authoritiesConstant.HDFS_BROWSER.HDFS_BROWSER_WRITE" type="button"
+                        class="ml-2"
+                        (click)="dialogService.open(createNewFile,{ closeOnEsc: true, hasBackdrop: true,closeOnBackdropClick:false}); hidePopup();destinationPath='';fileName='';fileContent='';pathBreadcrumb=defaultPathBre"
+                        nbTooltip="{{'HDFSBrowser.label.newFile' | translate}}">
+                  <nb-icon icon="file-outline"></nb-icon>
+                </button>
+                <button style="min-width: 0 !important;"
+                        *hasAnyAuthority="authoritiesConstant.HDFS_BROWSER.HDFS_BROWSER_WRITE" type="button"
+                        class="ml-2"
+                        (click)="dialogService.open(treeviewPopup, {context: { action: 'new-folder'}, closeOnEsc: true, hasBackdrop: true,closeOnBackdropClick:false}); makeId(6); hidePopup(); folderName = '';destinationPath='';pathBreadcrumb=defaultPathBre"
+                        nbTooltip="{{'HDFSBrowser.label.newFolder' | translate}}">
+                  <nb-icon icon="folder-add-outline"></nb-icon>
+                </button>
+              </form>
+            </div>
+          </nb-form-field>
+          <div style="margin-bottom: 50px">
+            <ngx-datatable
+              #table
+              class="dark"
+              [columnMode]="'force'"
+              [rows]="hdfs"
+              [columns]="columns"
+              [count]="hdfs?.length"
+              [headerHeight]="'auto'"
+              [messages]="{totalMessage: 'data-ingestion.label.record' | translate}"
+              [footerHeight]="50"
+              [loadingIndicator]="true"
+              [limit]="limit"
+              [offset]="tableOffset"
+              (page)="onPageChange($event)"
+              rowHeight="auto">
+              <ng-container *ngFor="let col of columns">
+                <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [sortable]="false"
+                                      [flexGrow]="col.flexGrow"
+                                      [sortable]="col.prop === 'actions' ? false : true">
+
+                  <ng-template let-column="column" ngx-datatable-header-template>
+                    <ng-container [ngSwitch]="col.prop">
+                      <ng-container *ngSwitchDefault>
+                        {{ column.name |translate }}
+                      </ng-container>
+                      <!--                      <ng-container *ngSwitchCase="'size'">-->
+                      <!--                        <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>-->
+                      <!--                      </ng-container>-->
+                      <!--                      <ng-container *ngSwitchCase="'quota'">-->
+                      <!--                        <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>-->
+                      <!--                      </ng-container>-->
+                      <!--                      <ng-container *ngSwitchCase="'blocksize'">-->
+                      <!--                        <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>-->
+                      <!--                      </ng-container>-->
+                      <!--                      <ng-container *ngSwitchCase="'block_replication'">-->
+                      <!--                        <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>-->
+                      <!--                      </ng-container>-->
+                      <!--                      <ng-container *ngSwitchCase="'actions'">-->
+                      <!--                        <div style="text-align: center"><span class="w-100">{{ column.name |translate}}</span></div>-->
+                      <!--                      </ng-container>-->
+                    </ng-container>
+                  </ng-template>
+
+                  <ng-template let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template let-row="row">
+                    <ng-container [ngSwitch]="col.prop">
+                      <ng-container *ngSwitchDefault>{{value}}</ng-container>
+                      <ng-container *ngSwitchCase="'size'">
+                        <div class="d-flex justify-content-center">  <span *ngIf="hdfs[rowIndex]?.isLoading"
+                                                                           nbSpinnerSize="small" [nbSpinner]="true"
+                                                                           nbSpinnerStatus="basic"
+                                                                           style="width: 20px; height: 20px; display: block;"></span>
+                          <span *ngIf="!hdfs[rowIndex]?.isLoading">{{value ? convertSize(value) : 'N/A'}}</span>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'quota'">
+                        <div class="d-flex justify-content-center">
+                  <span *ngIf="hdfs[rowIndex]?.isLoading" nbSpinnerSize="small" [nbSpinner]="true"
+                        nbSpinnerStatus="basic" style="width: 20px; height: 20px; display: block;"></span>
+                          <span *ngIf="!hdfs[rowIndex]?.isLoading">{{value ? convertSize(value) : 'N/A'}}</span>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'block_replication'">
+                        <div class="d-flex justify-content-center">{{value ? value : 'N/A'}}</div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'blocksize'">
+                        <div class="d-flex justify-content-center"><span>{{value ? convertSize(value) : 'N/A'}}</span>
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'path'">
+                        <!--                  <div *ngIf="hdfs[rowIndex]?.isdir" class="item-path"-->
+                        <!--                       (click)="onPathClick(value)">{{getFolderName(value)}}</div>-->
+                        <!--                  <span *ngIf="!hdfs[rowIndex]?.isdir">{{getFolderName(value)}}</span>-->
+
+                        <div *ngIf="hdfs[rowIndex]?.isdir" class="item-path"
+                             (click)="onPathClick(value)">{{value ? getFolderName(value) : 'N/A'}}</div>
+                        <span *ngIf="!hdfs[rowIndex]?.isdir">{{value ? getFolderName(value) : 'N/A'}}</span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'actions'">
+                        <div class="d-flex justify-content-center">
+                      <span class="actions" [nbPopover]="listAction" nbPopoverTrigger="click"
+                            nbPopoverPlacement="left"
+                            [nbPopoverContext]="{index: rowIndex, isdir: hdfs[rowIndex]?.isdir}">
+                        <nb-icon icon="more-vertical-outline"></nb-icon>
+                      </span>
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-footer>
+                  <ng-template
+                    ngx-datatable-footer-template
+                    let-rowCount="rowCount"
+                    let-pageSize="pageSize"
+                    let-selectedCount="selectedCount"
+                    let-curPage="curPage"
+                    let-offset="offset">
+                    <div style="padding: 5px 10px;width:250px">
+                      <div *ngIf="rowCount > 0">
+                        <!--                            Showing {{(offset * pageSize)+1}} to {{(rowCount>-->
+                        <!--                            (curPage*pageSize))?(curPage*pageSize):(rowCount)}} of-->
+                        <!--                            {{(rowCount)}} records.-->
+                        <!--                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * 10 + 1}} - {{rowCount - curPage * 10 >= 0 ? (curPage - 1) * 10 + 10 : rowCount}}/{{rowCount}}, page: {{curPage}}/{{getTotalPage(rowCount, pageSize)}}</span>-->
+                        <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * limit + 1}}
+                          - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}
+                          /{{rowCount}} {{'data-ingestion.label.record' | translate}}</span>
+                      </div>
+                      <div *ngIf="rowCount === 0">
+                        <span>0 {{'data-ingestion.label.record' | translate}}</span>
+                      </div>
+                    </div>
+                    <datatable-pager
+                      [pagerLeftArrowIcon]="'datatable-icon-left'"
+                      [pagerRightArrowIcon]="'datatable-icon-right'"
+                      [page]="curPage"
+                      [size]="pageSize"
+                      [count]="rowCount"
+                      [hidden]="!((rowCount / pageSize) > 1)"
+                      (change)="table.onFooterPage($event)">
+                    </datatable-pager>
+                  </ng-template>
+                </ngx-datatable-footer>
+              </ng-container>
+            </ngx-datatable>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+
+</nb-layout>
+
+<ng-template #listAction let-data>
+  <nb-list>
+    <nb-list-item style="padding: 5px 10px;">
+      <button
+        style="outline: none !important; background: none; border: none; color: var(--color-text-light); display: flex;"
+        (click)="getSize(data['index']);hidePopup()">
+        <nb-icon style="margin-right: 5px;" icon="crop-outline"></nb-icon>
+        {{'HDFSBrowser.label.getSize' | translate}}
+      </button>
+    </nb-list-item>
+    <!--*hasAnyAuthority="authoritiesConstant.ROLE_ADMIN"-->
+    <nb-list-item *hasAnyAuthority="authoritiesConstant.HDFS_BROWSER.HDFS_BROWSER_WRITE" style="padding: 5px 10px;">
+      <button
+        style="outline: none !important; background: none; border: none; color: var(--color-text-light); display: flex;"
+        (click)="dialogService.open(delPopup, {context: data['index'], closeOnEsc: true, hasBackdrop: true}); makeId(6); hidePopup()">
+        <nb-icon style="margin-right: 5px;" icon="trash-2-outline"></nb-icon>
+        {{'HDFSBrowser.label.delete' | translate}}
+      </button>
+    </nb-list-item>
+    <nb-list-item *hasAnyAuthority="authoritiesConstant.HDFS_BROWSER.HDFS_BROWSER_WRITE" style="padding: 5px 10px;">
+      <button
+        style="outline: none !important; background: none; border: none; color: var(--color-text-light); display: flex;"
+        (click)="dialogService.open(treeviewPopup, {context: {path: getFolderName('/' + hdfs[data['index']]['path']), action: 'move'}, closeOnEsc: true, hasBackdrop: true}); hidePopup();destinationPath='';pathBreadcrumb=defaultPathBre">
+        <nb-icon style="margin-right: 5px;" icon="move-outline"></nb-icon>
+        {{'HDFSBrowser.label.moveTo' | translate}}
+      </button>
+    </nb-list-item>
+    <nb-list-item style="padding: 5px 10px;">
+      <button
+        style="outline: none !important; background: none; border: none; color: var(--color-text-light); display: flex;">
+        <nb-icon style="margin-right: 5px;" icon="cloud-download-outline"></nb-icon>
+        {{'HDFSBrowser.label.download' | translate}}
+      </button>
+    </nb-list-item>
+    <nb-list-item style="padding: 5px 10px;">
+      <button
+        style="outline: none !important; background: none; border: none; color: var(--color-text-light); display: flex;"
+        (click)="dialogService.open(treeviewPopup, {context: {path: getFolderName('/' + hdfs[data['index']]['path']), action: 'copy'}, closeOnEsc: true, hasBackdrop: true}); makeId(6); hidePopup();destinationPath='';pathBreadcrumb=defaultPathBre">
+        <nb-icon style="margin-right: 5px;" icon="layers-outline"></nb-icon>
+        {{'HDFSBrowser.label.copyTo' | translate}}
+      </button>
+    </nb-list-item>
+    <nb-list-item *hasAnyAuthority="authoritiesConstant.HDFS_BROWSER.HDFS_BROWSER_WRITE" style="padding: 5px 10px;">
+      <button
+        style="outline: none !important; background: none; border: none; color: var(--color-text-light); display: flex;"
+        (click)="dialogService.open(permissionPopup, {context: data['index'], closeOnEsc: true, hasBackdrop: true}); tempPermission = hdfs[data['index']].permission; hidePopup();">
+        <nb-icon style="margin-right: 5px;" icon="unlock-outline"></nb-icon>
+        {{'HDFSBrowser.label.permission' | translate}}
+      </button>
+    </nb-list-item>
+  </nb-list>
+</ng-template>
+
+<ng-template #delPopup let-ref="dialogRef" let-index>
+  <form class="delete-form" (ngSubmit)="delete(getFolderName(hdfs[index]?.path), ref)">
+    <nb-card style="min-width: 400px">
+      <nb-card-header>{{'HDFSBrowser.label.delete' | translate}}</nb-card-header>
+      <nb-card-body>
+        <div class="confirmation-text">
+          <span>{{'HDFSBrowser.label.ConfirmationText' | translate}} <em>{{confirmationString}}</em></span>
+        </div>
+        <div class="confirmation-input">
+          <input class="input-edit" nbInput type="text" placeholder="{{'HDFSBrowser.label.fillText' | translate}}"
+                 [(ngModel)]="confirmationText"
+                 name="confirmation-text" onPaste="return false" autocomplete=off>
+        </div>
+      </nb-card-body>
+      <nb-card-footer class="edit-button"
+                      style="text-align: right;display: flex; justify-content: flex-end">
+        <button status="danger" type="submit"
+                [disabled]="confirmationText !== confirmationString">{{'HDFSBrowser.label.delete' | translate}}
+        </button>
+        <button class="edit-button-cancel" type="button"
+                (click)="ref.close(); confirmationText = ''">{{'HDFSBrowser.label.close' | translate}}</button>
+      </nb-card-footer>
+    </nb-card>
+  </form>
+</ng-template>
+
+<ng-template #treeviewPopup let-ref="dialogRef" let-data>
+  <nb-card style="width: 50vw">
+    <nb-card-header *ngIf="data?.action === 'new-folder'">{{'HDFSBrowser.label.newFolder' | translate}}</nb-card-header>
+    <nb-card-header *ngIf="data?.action === 'move'">{{'HDFSBrowser.label.move' | translate}}</nb-card-header>
+    <nb-card-header *ngIf="data?.action === 'copy'">{{'HDFSBrowser.label.copy' | translate}}</nb-card-header>
+    <nb-card-body>
+      <div class="cluster-dropdown">
+        <input class="input-edit" style="width: 100%; margin-bottom: 15px; max-width: initial"
+               placeholder="{{'HDFSBrowser.label.folderName' | translate}}"
+               *ngIf="data?.action === 'new-folder'" nbInput [(ngModel)]="folderName" type="text" required/>
+        <!--<nb-select placeholder="Select cluster" [(selected)]="selectedPopupCluster" fullWidth (selectedChange)="getTreeData()">
+          <nb-option *ngFor="let cluster of clusters" [value]="cluster.hdfsAddress">{{cluster.uiName}}</nb-option>
+        </nb-select>-->
+      </div>
+      <input class="input-edit" #desPathFolder style="width: 100%; margin-bottom: 15px; max-width: initial"
+             *ngIf="data?.action === 'new-folder'"
+             nbInput [value]="pathBreadcrumb" type="text"/>
+      <input class="input-edit" #inputDesPath style="width: 100%; margin-bottom: 15px; max-width: initial"
+             *ngIf="data?.action !== 'new-folder'"
+             nbInput [value]="'/'+destinationPath" type="text"/>
+      <div class="folder-wrap">
+        <kendo-treeview
+          [nodes]="folderTree"
+          textField="path"
+          kendoTreeViewExpandable
+          kendoTreeViewSelectable
+          kendoTreeViewHierarchyBinding
+          childrenField="children"
+          [(selectedKeys)]="selectedKeys"
+          [children]="children"
+          [hasChildren]="hasChildren"
+          [isDisabled]="isDisabled"
+          (selectionChange)="getSubFolder(getFolderName($event.dataItem['path']), $event); selectedFolder = '/' + getFolderName($event.dataItem['path'])"
+        >
+          <ng-template kendoTreeViewNodeTemplate let-dataItem>
+            <nb-icon style="margin-right: 5px;" icon="folder-outline"></nb-icon>
+            {{getFolderName(dataItem?.path)}}
+          </ng-template>
+        </kendo-treeview>
+      </div>
+    </nb-card-body>
+    <nb-card-footer style="text-align: right">
+      <div style="display: flex;justify-content: flex-end;" class="edit-button">
+        <button style="margin-right: 10px" status="success" type="submit"
+                [disabled]="data?.action === 'new-folder' && !folderName"
+                (click)="data?.action === 'new-folder' ? newMoveCopy(data?.action, data?.path, ref) : data?.action === 'move' ? newMoveCopy(data?.action, getFolderName(data?.path), ref) : newMoveCopy(data?.action, data?.path, ref);ref.close()">
+          {{'HDFSBrowser.label.save' | translate}}
+        </button>
+        <button class="edit-button-cancel" type="button"
+                (click)="ref.close();destinationPath=''">{{'HDFSBrowser.label.close' | translate}}</button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #createNewFile let-ref="dialogRef">
+  <nb-card style="width: 50vw; max-height: 40vw;">
+    <nb-card-header class="d-flex justify-content-between">
+      <div class="header-item">
+        <div class="d-flex">
+          <span>{{'HDFSBrowser.label.newFile' | translate}}</span>
+        </div>
+      </div>
+      <button
+        style="background: none; border: none; color: #8c95b2"
+        size="small"
+        (click)="ref.close()"
+      >
+        <nb-icon icon="close-outline"></nb-icon>
+      </button>
+    </nb-card-header>
+    <nb-card-body>
+      <input class="input-edit" style="width: 100%; margin-bottom: 15px; max-width: initial"
+             placeholder="{{'HDFSBrowser.label.fileName' | translate}}" nbInput
+             [(ngModel)]="fileName" type="text" required/>
+      <textarea style="resize: none; width: 100%; max-width: initial; background: var(--bg-back)"
+                placeholder="{{'HDFSBrowser.label.fileContent' | translate}}" rows="3" nbInput
+                [(ngModel)]="fileContent" required></textarea>
+      <input class="input-edit" #desPathFile style="width: 100%; margin-bottom: 15px; max-width: initial"
+             nbInput [value]="pathBreadcrumb" type="text"/>
+      <div class="folder-wrap">
+        <kendo-treeview
+          [nodes]="folderTree"
+          textField="path"
+          kendoTreeViewExpandable
+          kendoTreeViewSelectable
+          kendoTreeViewHierarchyBinding
+          childrenField="children"
+          [(selectedKeys)]="selectedKeys"
+          [children]="children"
+          [hasChildren]="hasChildren"
+          [isDisabled]="isDisabled"
+          (selectionChange)="getSubFolder(getFolderName($event.dataItem['path']), $event); selectedFolder = '/' + getFolderName($event.dataItem['path'])"
+        >
+          <ng-template kendoTreeViewNodeTemplate let-dataItem>
+            <nb-icon style="margin-right: 5px;" icon="folder-outline"></nb-icon>
+            {{getFolderName(dataItem?.path)}}
+          </ng-template>
+        </kendo-treeview>
+      </div>
+    </nb-card-body>
+    <nb-card-footer style="text-align: right; border:none">
+      <div style="display: flex;justify-content: flex-end;" class="edit-button">
+        <button style="margin-right: 10px" status="success" type="submit" [disabled]="!fileName || !fileContent"
+                (click)="newFile(ref)">
+          {{'HDFSBrowser.label.save' | translate}}
+        </button>
+        <button class="edit-button-cancel" type="button" (click)="ref.close();
+       fileName = ''; fileContent = '';pathBreadcrumb=defaultPathBre">
+          {{'HDFSBrowser.label.close' | translate}}
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #permissionPopup let-ref="dialogRef" let-index>
+  <form class="move-form" (ngSubmit)="changePermission(index, ref)">
+    <nb-card>
+      <nb-card-header> {{'HDFSBrowser.label.permissionChange' | translate}}</nb-card-header>
+      <nb-card-body>
+        <table class="permission">
+          <tr>
+            <td>User:</td>
+            <td>
+              <span
+                (click)="tempPermission[0] === 'r' ? replaceChar(tempPermission, '-', 0) : replaceChar(tempPermission, 'r', 0)"
+                [class.checked]="tempPermission[0] === 'r'">Read</span>
+            </td>
+            <td>
+              <span
+                (click)="tempPermission[1] === 'w' ? replaceChar(tempPermission, '-', 1) : replaceChar(tempPermission, 'w', 1)"
+                [class.checked]="tempPermission[1] === 'w'">Write</span>
+            </td>
+            <td>
+              <span
+                (click)="tempPermission[2] === 'x' ? replaceChar(tempPermission, '-', 2) : replaceChar(tempPermission, 'x', 2)"
+                [class.checked]="tempPermission[2] === 'x'">Execute</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Group:</td>
+            <td>
+              <span
+                (click)="tempPermission[3] === 'r' ? replaceChar(tempPermission, '-', 3) : replaceChar(tempPermission, 'r', 3)"
+                [class.checked]="tempPermission[3] === 'r'">Read</span>
+            </td>
+            <td>
+              <span
+                (click)="tempPermission[4] === 'w' ? replaceChar(tempPermission, '-', 4) : replaceChar(tempPermission, 'w', 4)"
+                [class.checked]="tempPermission[4] === 'w'">Write</span>
+            </td>
+            <td>
+              <span
+                (click)="tempPermission[5] === 'x' ? replaceChar(tempPermission, '-', 5) : replaceChar(tempPermission, 'x', 5)"
+                [class.checked]="tempPermission[5] === 'x'">Execute</span>
+            </td>
+          </tr>
+          <tr>
+            <td>Other:</td>
+            <td>
+              <span
+                (click)="tempPermission[6] === 'r' ? replaceChar(tempPermission, '-', 6) : replaceChar(tempPermission, 'r', 6)"
+                [class.checked]="tempPermission[6] === 'r'">Read</span>
+            </td>
+            <td>
+              <span
+                (click)="tempPermission[7] === 'w' ? replaceChar(tempPermission, '-', 7) : replaceChar(tempPermission, 'w', 7)"
+                [class.checked]="tempPermission[7] === 'w'">Write</span>
+            </td>
+            <td>
+              <span
+                (click)="tempPermission[8] === 'x' ? replaceChar(tempPermission, '-', 8) : replaceChar(tempPermission, 'x', 8)"
+                [class.checked]="tempPermission[8] === 'x'">Execute</span>
+            </td>
+          </tr>
+        </table>
+      </nb-card-body>
+      <nb-card-footer style="text-align: right">
+        <div style="display: flex;justify-content: flex-end;" class="edit-button">
+          <button status="success" type="submit">{{'HDFSBrowser.label.save' | translate}}</button>
+          <button class="edit-button-cancel" type="button"
+                  (click)="ref.close(); tempPermission = ''">{{'HDFSBrowser.label.close' | translate}}</button>
+        </div>
+      </nb-card-footer>
+    </nb-card>
+  </form>
+</ng-template>
+<ng-template #error let-ref="dialogRef" let-error>
+  <nb-card style="width: 25vw; height: 15vh">
+    <nb-card-header
+      style="color: #FF0000; font-style: italic">{{'HDFSBrowser.label.error' | translate}}</nb-card-header>
+    <nb-card-body>{{error.data}}</nb-card-body>
+  </nb-card>
+</ng-template>
+

@@ -1,0 +1,77 @@
+<!--<nav aria-label="breadcrumb">-->
+<!--  <ol class="breadcrumb" style="margin-bottom: 0 !important;background-color: #181E38;">-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+<!--         >VDP-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none"-->
+<!--         >Tiện ích-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item" aria-current="page">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/update-atlas"-->
+<!--         >Update atlas-->
+<!--      </a>-->
+<!--    </li>-->
+<!--  </ol>-->
+<!--</nav>-->
+<nb-layout>
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;"
+    [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant"
+    nbSpinnerMessage="Processing...">
+    <nb-card class="height-tab">
+      <nb-card-header style="text-align: start">
+        <span class="title-page">UPDATE ATLAS</span>
+      </nb-card-header>
+      <form class="d-flex justify-content-center mt-3" [formGroup]="executeForm">
+        <div class="w-50 mb-3 ml-3 mr-3">
+          <div class="w-100 d-block">
+            <span> User name</span>
+            <input type="text" fullWidth nbInput class="mt-1 input-edit" formControlName="user">
+            <ng-container
+              *ngIf="executeForm.get('user').invalid && executeForm.get('user').touched ">
+              <ngx-inline-message [formName]="executeForm.get('user')"
+                                  [message]="'User name'"></ngx-inline-message>
+            </ng-container>
+          </div>
+          <span class="d-block mt-2 mb-1"> Password</span>
+          <nb-form-field>
+            <input class="input-edit" nbInput [type]="getInputType()" fullWidth formControlName="pass">
+            <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+              <nb-icon [icon]="showPassword ? 'eye-off-2-outline' : 'eye-outline'"
+                       pack="eva"
+                       [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+              </nb-icon>
+            </button>
+          </nb-form-field>
+          <ng-container
+            *ngIf="executeForm.get('pass').invalid && executeForm.get('pass').touched ">
+            <ngx-inline-message [formName]="executeForm.get('pass')"
+                                [message]="'Password'"></ngx-inline-message>
+          </ng-container>
+          <textarea style="background-color: var(--background-table)" class="w-100 mt-2" nbInput rows="5" placeholder="select * from dual" fullWidth
+                    formControlName="sql">
+          <ng-container
+            *ngIf="executeForm.get('sql').invalid && executeForm.get('sql').touched ">
+            <ngx-inline-message [formName]="executeForm.get('sql')"
+                                [message]="'User name'"></ngx-inline-message>
+          </ng-container>
+        </textarea>
+          <div class="justify-content-center edit-button d-flex mt-4">
+            <button (click)="execute()" [disabled]="executeForm.invalid">
+              <nb-icon icon="search-outline" pack="eva"></nb-icon>
+              Execute
+            </button>
+          </div>
+        </div>
+      </form>
+      <div class="d-flex justify-content-center mt-3">
+        <span *ngIf="executeErr!==''" class="text-danger">{{executeErr}}</span>
+        <span *ngIf="executeSuc==='SUCCESS'" class="text-success">{{executeSuc}}</span>
+      </div>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

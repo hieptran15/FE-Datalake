@@ -1,0 +1,123 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb" style="margin-bottom: 0 !important;background-color: #222736;">
+    <li class="breadcrumb-item">
+      <a class="text-decoration-none" routerLink="/pages/dashboard"
+         style="color: white;font-size: 13px; font-weight: bold">VDP
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <a class="text-decoration-none" routerLink="/pages/dashboard"
+         style="color: white;font-size: 13px; font-weight: bold">Dashboard
+      </a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a class="text-decoration-none" routerLink="/pages/link"
+         style="color: white;font-size: 13px; font-weight: bold">Link
+      </a>
+    </li>
+  </ol>
+</nav>
+<nb-layout>
+  <nb-layout-column style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;">
+    <nb-card>
+      <nb-card-header>
+        Quản lý liên kết
+
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-lg-6 form-group">
+            <label class="label">Cụm</label>
+            <ng-select [items]="clusters$ | async"
+                       bindLabel="treeName"
+                       bindValue="id"
+                       [hideSelected]="true"
+                       typeToSearchText="Chọn cụm ứng dụng"
+                       [typeahead]="clusterInput$"
+                       [loading]="clusterLoading"
+                       [(ngModel)]="selectedCluster"
+                       (focus)="clusterInput$.next()"
+                       placeholder="Chọn cụm server/ cụm ứng dụng"
+            >
+            </ng-select>
+          </div>
+          <div class="col-lg-6 form-group">
+            <label class="label">Ứng dụng</label>
+            <ng-select [items]="nodes$ | async"
+                       bindLabel="treeName"
+                       bindValue="id"
+                       [hideSelected]="true"
+                       typeToSearchText="Chọn ứng dụng"
+                       [typeahead]="nodeInput$"
+                       [loading]="nodeLoading"
+                       [(ngModel)]="selectedNode"
+                       (focus)="nodeInput$.next()"
+                       placeholder="Chọn ứng dụng"
+            >
+            </ng-select>
+          </div>
+          <div class="col-lg-12 d-flex justify-content-center form-group edit-button">
+            <button type="button" status="primary" (click)="search();">
+              <nb-icon icon="search-outline">
+              </nb-icon>
+              Tìm kiếm
+            </button>
+            <button class="ml-2" status="success" (click)="addLink()">
+              <nb-icon icon="plus-outline">
+              </nb-icon>
+              Thêm mới
+            </button>
+          </div>
+        </div>
+
+        <ngx-datatable class="dark fullscreen"
+                       [columnMode]="'force'"
+                       [rows]="links"
+                       [columns]="columns"
+                       [count]="page.totalElements"
+                       [offset]="page.pageNumber"
+                       (page)="setPage($event)"
+                       [externalPaging]="true"
+                       [limit]="10"
+                       [headerHeight]="'auto'"
+                       [rowHeight]="'auto'"
+                       [footerHeight]="'auto'"
+                       [messages]="{totalMessage:'bản ghi'}"
+        >
+          <ng-container *ngFor="let col of columns">
+            <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [flexGrow]="col.flexGrow">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                {{ column.name}}
+              </ng-template>
+              <ng-template let-row="row" let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                <ng-container [ngSwitch]="col.prop">
+                  <ng-container *ngSwitchDefault>
+                    {{ value }}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'leftRelation'">
+                    {{ row.leftClusterName || row.leftNodeName }}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'rightRelation'">
+                    {{ row.rightClusterName || row.rightNodeName }}
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'action_btn'" class="text-right">
+                    <div>
+                      <button class="p-1" nbButton status="warning" ghost (click)="editLink(row)">
+                        <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+                      </button>
+                      <button class="p-1" nbButton status="danger" ghost (click)="deleteLink(row)">
+                        <nb-icon icon="trash-2-outline" pack="eva" size="tiny"></nb-icon>
+                      </button>
+                    </div>
+                  </ng-container>
+
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+          </ng-container>
+        </ngx-datatable>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+

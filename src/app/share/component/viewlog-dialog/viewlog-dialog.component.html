@@ -1,0 +1,18 @@
+<nb-card>
+  <nb-card-header><h5 style="color:var(--color-text-light)">{{ title }}</h5></nb-card-header>
+  <nb-card-body
+    style="min-width: 70vw;min-height: 48vh;"
+    [nbSpinner]="isLoading" [nbSpinnerMessage]="'process.processing' | translate" nbSpinnerStatus="primary"
+  >
+    <div>
+      <textarea readonly class="edit-text-area" [(ngModel)]="textCode" #scrollContent></textarea>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="text-right d-flex justify-content-center align-items-center">
+      <button class="edit-button-cancel" type="button" size="small" *ngIf="!hideCancel" (click)="close()">
+        {{ closeTitle }}
+      </button>
+    </div>
+  </nb-card-footer>
+</nb-card>

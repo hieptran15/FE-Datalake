@@ -1,0 +1,319 @@
+<!--<nav aria-label="breadcrumb">-->
+<!--  <ol class="breadcrumb" style="margin-bottom: 0 !important;background-color: #181E38;">-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+<!--         >VDP-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none"-->
+<!--         >Tiện ích-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item" aria-current="page">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/upload-file"-->
+<!--         >Download/Upload file-->
+<!--      </a>-->
+<!--    </li>-->
+<!--  </ol>-->
+<!--</nav>-->
+<nb-layout>
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;"
+    [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant"
+    nbSpinnerMessage="Processing...">
+    <nb-card style="min-height: 77vh">
+      <nb-card-header style="text-align: start">
+        <span class="title-page">Download/Upload file</span>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="w-100 d-flex align-items-center justify-content-center form-mode">
+          <div class="w-50 d-flex align-items-center  form-mode-radio-margin ">
+            <span class="w-25">Mode: </span>
+            <div class="mt-1 w-75 ml-2">
+              <nb-radio-group class="d-flex" name="export">
+                <nb-radio (click)="checkRadio('download')" [value]="true" checked="true"><span>Download</span>
+                </nb-radio>
+                <nb-radio (click)="checkRadio('upload')" [value]="false"><span>Upload</span></nb-radio>
+              </nb-radio-group>
+            </div>
+          </div>
+        </div>
+        <form *ngIf="isCheck === 'download'" [formGroup]="downloadForm" class="edit-button">
+          <div class="d-flex justify-content-center mt-3 download-form-background ">
+            <div class="d-block w-50 form-background">
+              <div class="w-100 edit-select d-flex align-items-center">
+                <span class="w-25">Server Download: </span>
+                <div class="mt-1 w-75 pl-2 change-bg-select">
+                  <ng-select formControlName="serverDownload" [items]="servers"
+                             bindValue=""
+                             bindLabel=""
+                             [clearable]="false"
+                             (change)="getPathFolder($event)"
+                             appendTo=""></ng-select>
+                </div>
+              </div>
+              <div class="w-100 d-flex align-items-center mt-3">
+                <span class="w-25 padding-right-when-1500">Đường dẫn cho phép: </span>
+                <div class="mt-1 w-75 pl-2 change-bg-select">
+                  <ng-select formControlName="pathAccept" [items]="pathFolderDownload"
+                             bindValue=""
+                             bindLabel=""
+                             [clearable]="false"
+                             (change)="getFileName()"
+                             appendTo=""></ng-select>
+                </div>
+              </div>
+              <div class="w-100 d-flex align-items-center mt-3">
+                <span class="w-25">Thư mục download: </span>
+                <div class="mt-1 w-75 pl-2">
+                  <input class="change-bg-input input-edit" fullWidth nbInput formControlName="pathFolder"
+                         (change)="getFileName(true)">
+                </div>
+              </div>
+              <!--              <div class="w-100 d-flex align-items-center mt-3" *ngIf="checkHierarchyString === 'ROLE'">-->
+              <!--                <span class="w-15">Path folder:</span>-->
+              <!--                <div class="w-85 ml-2 change-bg-input">-->
+              <!--                  <input class="change-bg-input" fullWidth nbInput formControlName="pathFolder" (change)="getFileName(true)">-->
+              <!--                </div>-->
+              <!--              </div>-->
+              <div class="w-100 d-flex align-items-center mt-3">
+                <span class="w-25">File name: </span>
+                <div class="mt-1 w-75 pl-2 change-bg-select">
+                  <ng-select formControlName="fileName" [items]="fileNames" bindValue="" bindLabel=""
+                             appendTo=""></ng-select>
+                </div>
+              </div>
+              <div class="w-100 d-flex align-items-center mt-3">
+                <div class="w-25">
+
+                </div>
+                <div class="mt-1 w-75 pl-2">
+                  <button style="padding: 5px 10px" (click)="downloadFile()">
+                    <nb-icon style="margin-right: 10px" icon="cloud-download-outline"></nb-icon>
+                    DOWNLOAD
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+        <form *ngIf="isCheck === 'upload'" [formGroup]="uploadForm">
+          <div class="d-flex justify-content-center mt-3 edit-button upload-form-background ml-2">
+            <div style="margin-left: 50px" class="d-flex justify-content-center w-50">
+              <div style="width: 100%; overflow: hidden">
+                <div class="w-100 d-flex align-items-center">
+                  <div class="w-25"><span>Server upload:</span></div>
+                  <div class="mt-1 w-75 pl-2 change-bg-select">
+                    <ng-select formControlName="listServer" [items]="servers" multiple="true" bindValue="" bindLabel=""
+                               (change)="getPathFolder($event)"
+                               appendTo=""></ng-select>
+                  </div>
+                </div>
+                <div class="w-100 d-flex align-items-center mt-3">
+                  <div class="w-25"><span>Path upload:</span></div>
+                  <div class="mt-1 w-75 pl-2 change-bg-select">
+                    <ng-select style="width:100%" formControlName="path" [items]="pathFolders" class="custom-width"
+                               bindLabel="">
+                      <!--<ng-template ng-option-tmp let-item="item">-->
+                      <!--&lt;!&ndash;[ngbTooltip]="item.length > 15 ? item : ''"&ndash;&gt;-->
+                      <!--<div style="text-overflow: ellipsis; width:100%;">-->
+                      <!--&lt;!&ndash;{{item.length > 15 ? (item| slice:0:25) + '..' : item}}&ndash;&gt;-->
+                      <!--{{item}}-->
+                      <!--</div>-->
+                      <!--</ng-template>-->
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="w-100 d-flex align-items-center mt-3 position-relative">
+                  <div class="w-25"><span>File upload:</span></div>
+                  <div class="w-75 pl-2">
+                    <nb-form-field>
+                      <input class="change-bg-input input-edit" nbInput readonly fullWidth formControlName="fileName">
+                      <button class="button-upload p-0"  nbSuffix ghost
+                              type="button"  nbTooltip="Choose file">
+                        <label class="p-2 m-0" for="file">
+                          <svg width="13" height="15" viewBox="0 0 12 14" id="icon_up"
+                               xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M8.625 3.6875V2.9375C8.625 2.86875 8.56875 2.8125 8.5 2.8125H2.5C2.43125 2.8125 2.375 2.86875 2.375 2.9375V3.6875C2.375 3.75625 2.43125 3.8125 2.5 3.8125H8.5C8.56875 3.8125 8.625 3.75625 8.625 3.6875ZM2.5 5.0625C2.43125 5.0625 2.375 5.11875 2.375 5.1875V5.9375C2.375 6.00625 2.43125 6.0625 2.5 6.0625H5.375C5.44375 6.0625 5.5 6.00625 5.5 5.9375V5.1875C5.5 5.11875 5.44375 5.0625 5.375 5.0625H2.5ZM4.75 12.125H1.125V1.125H9.875V6.5C9.875 6.56875 9.93125 6.625 10 6.625H10.875C10.9438 6.625 11 6.56875 11 6.5V0.5C11 0.223437 10.7766 0 10.5 0H0.5C0.223437 0 0 0.223437 0 0.5V12.75C0 13.0266 0.223437 13.25 0.5 13.25H4.75C4.81875 13.25 4.875 13.1938 4.875 13.125V12.25C4.875 12.1812 4.81875 12.125 4.75 12.125ZM11.7141 12.9297L10.2563 11.4719C10.6047 11.0109 10.8125 10.4359 10.8125 9.8125C10.8125 8.29375 9.58125 7.0625 8.0625 7.0625C6.54375 7.0625 5.3125 8.29375 5.3125 9.8125C5.3125 11.3313 6.54375 12.5625 8.0625 12.5625C8.62187 12.5625 9.14062 12.3953 9.575 12.1094L11.0547 13.5891C11.0797 13.6141 11.1109 13.625 11.1422 13.625C11.1734 13.625 11.2063 13.6125 11.2297 13.5891L11.7141 13.1047C11.7256 13.0932 11.7347 13.0796 11.741 13.0646C11.7472 13.0496 11.7504 13.0334 11.7504 13.0172C11.7504 13.0009 11.7472 12.9848 11.741 12.9698C11.7347 12.9548 11.7256 12.9412 11.7141 12.9297ZM8.0625 11.5625C7.09531 11.5625 6.3125 10.7797 6.3125 9.8125C6.3125 8.84531 7.09531 8.0625 8.0625 8.0625C9.02969 8.0625 9.8125 8.84531 9.8125 9.8125C9.8125 10.7797 9.02969 11.5625 8.0625 11.5625Z"
+                            />
+                          </svg>
+                        </label>
+                      </button>
+                      <input style="display: none" id="file" nbInput type="file" name="file"
+                             (change)="onFileChange($event)"
+                             trim="blur">
+                    </nb-form-field>
+                  </div>
+                </div>
+                <!--                <div class="w-100 d-flex align-items-center mt-2">-->
+                <!--                  <span class="w-15">Backup: </span>-->
+                <!--                  <nb-checkbox formControlName="backUp" style="margin-left: -2%" class="ml-2"></nb-checkbox>-->
+                <!--                </div>-->
+              </div>
+              <div style="margin-left: 20px" class="d-flex justify-content-center align-items-end edit-button">
+                <button style="padding: 5px 10px" class="ml-2" (click)="uploadFile()" [disabled]="uploadForm.invalid">
+                  <nb-icon style="margin-right: 10px" icon="cloud-upload-outline"></nb-icon>
+                  UPLOAD
+                </button>
+              </div>
+            </div>
+            <!--            <div class="d-flex justify-content-center mt-2 mb-3">-->
+            <!--              <button *hasAnyAuthority="authoritiesConstant.UPLOAD_FILE.UPLOAD_FILE_WRITE" (click)="reset()">-->
+            <!--                <nb-icon icon="flip-2-outline"></nb-icon>-->
+            <!--                reset-->
+            <!--              </button>-->
+            <!--              <button *hasAnyAuthority="authoritiesConstant.UPLOAD_FILE.UPLOAD_FILE_WRITE" class="ml-2"-->
+            <!--                      [disabled]="uploadForm.invalid" (click)="uploadFile()">-->
+            <!--                <nb-icon icon="upload-outline"></nb-icon>-->
+            <!--                upload-->
+            <!--              </button>-->
+            <!--              <button *hasAnyAuthority="authoritiesConstant.UPLOAD_FILE.UPLOAD_FILE_WRITE" class="ml-2"-->
+            <!--                      (click)="getLog(false, true)">-->
+            <!--                <nb-icon icon="file-text-outline"></nb-icon>-->
+            <!--                viewlog-->
+            <!--              </button>-->
+            <!--              <button *hasAnyAuthority="authoritiesConstant.UPLOAD_FILE.UPLOAD_FILE_WRITE" class="ml-2"-->
+            <!--                      (click)="checkFormDownload();dialogService.open(download,{context:{data:''}})">-->
+            <!--                <nb-icon icon="download-outline"></nb-icon>-->
+            <!--                download-->
+            <!--              </button>-->
+            <!--            </div>-->
+          </div>
+          <div class="d-flex mt-5 ml-2">
+            <!--            <div class="mt-1 mr-4 mb-2 d-flex">-->
+            <!--              <nb-checkbox class="mr-2" formControlName="islog"></nb-checkbox>-->
+            <!--              <span>Log của tôi</span>-->
+            <!--            </div>-->
+            <!--            <div class="mt-1 ml-2 mb-2 d-flex">-->
+            <!--              <nb-checkbox (change)="checkLog(uploadForm.value.islog)" class="mr-2"-->
+            <!--                           formControlName="islog"></nb-checkbox>-->
+            <!--              <span>Tất cả log</span>-->
+            <!--            </div>-->
+            <div class="mt-1">
+              <nb-radio-group class="d-flex" name="export">
+                <nb-radio (click)="checkLog(false)" formControlName="islog" [value]="false"><span>Log của tôi</span>
+                </nb-radio>
+                <nb-radio (click)="checkLog(true)" formControlName="islog" [value]="true" checked="true"><span>Tất cả log</span>
+                </nb-radio>
+              </nb-radio-group>
+            </div>
+          </div>
+        </form>
+        <div *ngIf="isCheck === 'upload'">
+          <ngx-datatable
+            class="dark"
+            [columnMode]="'flex'"
+            [rows]="rows"
+            [columns]="columns"
+            [count]=""
+            [headerHeight]="40"
+            [messages]="{totalMessage:'user.label.record'|translate}"
+            [footerHeight]="50"
+            [loadingIndicator]="true"
+            [limit]="10"
+            rowHeight="auto"
+          >
+            <ng-container *ngFor="let col of columns">
+              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [sortable]="false" [flexGrow]="col.flex">
+                <ng-template let-column="column" ngx-datatable-header-template style="text-align: center">
+                  <span>{{col.name}}</span></ng-template>
+                <ng-template let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template let-row="rows">
+                  <ng-container [ngSwitch]="col.prop">
+                    <ng-container *ngSwitchCase="'log'">
+                          <span class="custom-show-data" [title]="value">
+                            {{value}}
+                          </span>
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+              </ngx-datatable-column>
+            </ng-container>
+          </ngx-datatable>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+<!--<ng-template #download>-->
+<!--  <nb-card style="width: 750px; height: 360px">-->
+<!--    <nb-card-header>-->
+<!--      <span>Download job,config,...</span>-->
+<!--    </nb-card-header>-->
+<!--    <nb-card-body>-->
+<!--      <form [formGroup]="downloadForm">-->
+<!--        <div class="d-flex justify-content-center">-->
+<!--          <div class="d-block w-85">-->
+<!--            <div class="w-100 d-flex align-items-center">-->
+<!--              <span class="w-15">Server Download: </span>-->
+<!--              <div class="mt-1 w-85 ml-2">-->
+<!--                <ng-select formControlName="serverDownload" [items]="servers"-->
+<!--                           bindValue=""-->
+<!--                           bindLabel=""-->
+<!--                           [clearable]="false"-->
+<!--                           (change)="getPathFolder($event)"-->
+<!--                           appendTo="body"></ng-select>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="w-100 d-flex align-items-center mt-2">-->
+<!--              <span class="w-15">Đường dẫn cho phép: </span>-->
+<!--              <div class="mt-1 w-85 ml-2">-->
+<!--                <ng-select formControlName="pathAccept" [items]="pathFolderDownload"-->
+<!--                           bindValue=""-->
+<!--                           bindLabel=""-->
+<!--                           [clearable]="false"-->
+<!--                           (change)="getFileName()"-->
+<!--                           appendTo="body"></ng-select>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="w-100 d-flex align-items-center mt-2">-->
+<!--              <span class="w-15">Path folder:</span>-->
+<!--              <div class="w-85 ml-2">-->
+<!--                <input fullWidth nbInput formControlName="pathFolder" (change)="getFileName(true)">-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="w-100 d-flex align-items-center mt-2">-->
+<!--              <span class="w-15">File name:</span>-->
+<!--              <div class="mt-1 w-85 ml-2">-->
+<!--                <ng-select formControlName="fileName" [items]="fileNames" bindValue="" bindLabel=""-->
+<!--                           appendTo="body"></ng-select>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="d-flex justify-content-center edit-button mt-2 mb-3">-->
+<!--          <button class="ml-2" (click)="downloadFile()" [disabled]="downloadForm.invalid">-->
+<!--            <nb-icon icon="download-outline"></nb-icon>-->
+<!--            download-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </form>-->
+<!--    </nb-card-body>-->
+<!--  </nb-card>-->
+<!--</ng-template>-->
+<ng-template #serverEmpty let-dgRef="dialogRef">
+  <nb-card style="width: 30vw;background: #181E38 !important;">
+    <nb-card-header class="d-flex justify-content-between">
+      <strong class="custom-show-data" style="align-self: center;">Note</strong>
+    </nb-card-header>
+
+    <nb-card-body>
+      <div *ngIf="isCheck === 'download'">
+        Bạn chưa được cấp quyền download file. Liên hệ admin để biết thêm chi tiết!
+      </div>
+      <div *ngIf="isCheck === 'upload'">
+        Bạn chưa được cấp quyền upload file. Liên hệ admin để biết thêm chi tiết!
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end edit-button">
+        <button (click)="dgRef.close()">
+          <nb-icon [icon]="'close-outline'"></nb-icon>
+          <strong>Close</strong>
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

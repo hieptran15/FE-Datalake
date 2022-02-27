@@ -1,0 +1,95 @@
+.edit-status-active {
+  width: 57px;
+  height: 27px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 57px;
+    height: 27px;
+    border-radius: 5px;
+    background: #02bf51;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-greend {
+    color: var(--color-text-status-active);
+    text-align: center;
+    line-height: 27px;
+    position: absolute;
+    background: none;
+    left: 20%;
+  }
+}
+
+.edit-status-lock {
+  width: 57px;
+  height: 27px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 57px;
+    height: 27px;
+    border-radius: 5px;
+    background: #ff313c;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-red {
+    color: var(--color-text-status-lock);
+    text-align: center;
+    line-height: 27px;
+    position: absolute;
+    background: none;
+    left: 30%;
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  .layout button nb-icon * {
+    color: unset;
+  }
+}
+
+* {
+  &:focus {
+    outline: none;
+  }
+}
+
+nb-card {
+  nb-card-header {
+    .title {
+      align-self: center;
+    }
+  }
+}
+
+button.disabled {
+  opacity: 0.5;
+  background-color: #2e3648 !important;
+}
+
+::ng-deep .actives {
+  color: #1FFD35 !important;
+
+  span.text {
+    color: #1FFD35 !important;
+  }
+}
+
+::ng-deep .locks {
+  color: #FB4F4F !important;
+
+  span.text {
+    color: #FB4F4F !important;
+  }
+
+}

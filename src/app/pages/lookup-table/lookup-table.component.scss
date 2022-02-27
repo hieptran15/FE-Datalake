@@ -1,0 +1,250 @@
+.edit-order-by {
+  cursor: pointer;
+}
+
+.edit-status-create {
+  width: 57px;
+  height: 27px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 57px;
+    height: 27px;
+    border-radius: 5px;
+    background: #02bf51;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-greend {
+    color: var(--color-text-status-active);
+    text-align: center;
+    line-height: 27px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.edit-status-update {
+  width: 57px;
+  height: 27px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 57px;
+    height: 27px;
+    border-radius: 5px;
+    background: #38a4f8;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-red {
+    color: var(--color-text-status-update);
+    text-align: center;
+    line-height: 27px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.edit-status-user {
+  width: 57px;
+  height: 27px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 57px;
+    height: 27px;
+    border-radius: 5px;
+    background: #a300ef;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-red {
+    color: var(--color-text-status-user);
+    text-align: center;
+    line-height: 27px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.edit-status-delete {
+  width: 57px;
+  height: 27px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 57px;
+    height: 27px;
+    border-radius: 5px;
+    background: #FF313C;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-red {
+    color: var(--color-text-status-delete);
+    text-align: center;
+    line-height: 27px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+.edit-status-insert {
+  width: 57px;
+  height: 27px;
+  margin: auto;
+  position: relative;
+
+  .status-bg-opacity {
+    width: 57px;
+    height: 27px;
+    border-radius: 5px;
+    background: #FFC300;
+    opacity: var(--opacity-status);
+    position: absolute;
+  }
+
+  .status-red {
+    color: var(--color-text-status-insert);
+    text-align: center;
+    line-height: 27px;
+    position: absolute;
+    background: none;
+    left: 0;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  .datatable-header-cell-template-wrap {
+    display: flex;
+    align-items: center;
+  }
+
+  .edit-checkbox span.text {
+    color: #a6b0cf;
+    font-size: 13px;
+  }
+
+  .ngx-datatable.dark .datatable-body .datatable-body-row .datatable-body-cell {
+    padding: 1rem 1.2rem;
+    font-size: 14px;
+  }
+
+  span.ng-value-label.ng-star-inserted {
+    color: #a6b0cf !important;
+  }
+
+  table tr td {
+    word-break: break-all;
+  }
+
+  .edit-td {
+    width: 30%;
+  }
+
+  span.row-data-show.ng-star-inserted {
+    word-break: break-all;
+  }
+
+  .ngx-datatable .datatable-body-cell-label {
+    text-overflow: unset;
+    white-space: pre-wrap;
+    overflow: hidden;
+    align-items: center;
+  }
+
+  nb-card-footer.d-flex.edit-button.justify-content-center.align-items-center.pb-3 {
+    border-top: unset;
+  }
+
+  .support-filter {
+    background: var(--bg-popover);
+    width: 488px;
+    min-height: 140px;
+    border-radius: 5px;
+    z-index: 1000;
+    left: -500px;
+    top: -32px;
+
+    .edit-select {
+      //width: 100%;
+
+      .ng-select.ng-select-single .ng-select-container {
+        height: 32px !important;
+      }
+    }
+
+    &::after {
+      content: '';
+      width: 15px;
+      height: 15px;
+      background: var(--bg-popover);
+      position: absolute;
+      top: 0;
+      right: -11px;
+      margin-top: 40px;
+      clip-path: polygon(0 0, 0 100%, 100% 51%);
+    }
+  }
+
+  .table-row-listUser {
+    td {
+      padding: 5px 0;
+    }
+
+    ng-select {
+      margin-right: 10px;
+    }
+
+    input {
+      margin-right: 5px;
+    }
+  }
+
+  //.datatable-checkbox input[type='checkbox'] {
+  //  content: '';
+  //  border: 2px solid var(--border-checkbox);
+  //}
+  ::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}

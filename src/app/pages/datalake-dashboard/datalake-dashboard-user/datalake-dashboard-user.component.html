@@ -1,0 +1,29 @@
+<div style="margin-bottom: 26px" class="chart-user d-flex justify-content-between align-items-center">
+  <div class="chart-user__left">
+    <highcharts-chart
+      [Highcharts]="Highcharts"
+      [options]="chartOptions1"
+      [(update)]="chartUpdate"
+      [runOutsideAngular]="true"
+      style="width: 100%;display: block;"
+    ></highcharts-chart>
+  </div>
+  <div class="chart-user__right">
+    <div style="margin: 10px">
+      <highcharts-chart
+        [Highcharts]="Highcharts"
+        [options]="chartOptions2"
+        [(update)]="chartUpdate"
+        [runOutsideAngular]="true"
+        style="width: 100%;display: block;"
+      ></highcharts-chart>
+      <!--      <figure class="highcharts-figure">-->
+      <!--        <div id="container"></div>-->
+      <!--      </figure>-->
+
+    </div>
+  </div>
+</div>
+<div class="list-appMonitor">
+  <ngx-group-chart></ngx-group-chart>
+</div>

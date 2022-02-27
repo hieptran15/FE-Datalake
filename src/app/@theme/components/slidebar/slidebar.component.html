@@ -1,0 +1,30 @@
+<div class="tagger-sideBar">
+  <div class="logo">
+    <a routerLink="/page/dashboards" class="d-flex">
+      <div class="logo-expanded">
+        <img alt="" src="./assets/images/logo-viettel.png" style="width: 50px ">
+      </div>
+
+      <div class="logo-compacted">
+        <img alt="" src="./assets/images/logo-sideBar.png" style="width: 46px;transform: translateX(-19px);">
+      </div>
+    </a>
+  </div>
+
+  <div class="menu-sideBar">
+    <div class="menu-sideBar__item" *ngIf="checkMenu?.length">
+      <div>
+        <nb-card class="edit-carb-sideBar">
+          <nb-menu class="edit-item-menu" [items]="checkMenu">
+          </nb-menu>
+        </nb-card>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<div class="sidebar-footer d-flex justify-content-center align-items-center">-->
+<!--  <nb-toggle (change)="changeTheme()" [(ngModel)]="toggleThemes"></nb-toggle>-->
+<!--  <span class="compacted">Switch to light theme</span>-->
+<!--  <nb-icon class="compacted" icon="sun-outline"></nb-icon>-->
+<!--</div>-->
+

@@ -1,0 +1,16 @@
+<nb-card>
+  <nb-card-header>Thông tin liên kết</nb-card-header>
+  <nb-card-body>
+    <div class="form-group">
+      <label *ngIf="data">Liên kết từ {{data?.leftClusterName ? 'cụm' : 'ứng dụng' }} '{{data?.leftClusterName || data?.leftNodeName}}'
+        tới {{data?.rightClusterName ? 'cụm' : 'ứng dụng' }} '{{data?.rightClusterName || data?.rightNodeName}}'</label>
+    </div>
+    <div class="form-group">
+      <label class="label" *ngIf="data?.description">Mô tả</label>
+      <div class="scrollable" *ngIf="data?.description" [innerHTML]="data?.description"></div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="warning" type="button" (click)="ref.close()">Đóng</button>
+  </nb-card-footer>
+</nb-card>

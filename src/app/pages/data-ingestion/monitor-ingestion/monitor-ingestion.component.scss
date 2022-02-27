@@ -1,0 +1,55 @@
+//::ng-deep .ngx-datatable .datatable-body-cell-label {
+//  text-align: center;
+//}
+//
+//::ng-deep .ngx-datatable .datatable-header .datatable-header-cell .datatable-header-cell-template-wrap {
+//  text-align: center;
+//}
+.monitor-ingestion {
+  .div-right > div {
+    text-align: right;
+  }
+}
+
+.edit-add-left {
+  margin-right: 20px;
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+
+    nb-card-body {
+      overflow: visible;
+
+      .justify-content-between {
+        .align-items-center {
+          ng-select {
+            width: 3vw;
+            border-radius: 5px;
+          }
+        }
+      }
+    }
+
+    ::placeholder {
+      color: #999 !important;
+      opacity: 1; /* Firefox */
+    }
+  }
+}
+
+
+:host ::ng-deep {
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+}
+
+.tagger-Monitor {
+  h2 {
+    font-size: 17px !important;
+    font-weight: 500;
+  }
+
+}

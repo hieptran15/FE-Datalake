@@ -1,0 +1,60 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb" style="margin-bottom: 0 !important;background-color: #222736;">
+    <li class="breadcrumb-item">
+      <a class="text-decoration-none" routerLink="/pages/dashboard"
+         >VDP
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <a class="text-decoration-none" routerLink="/pages/dashboard"
+         >Dashboard
+      </a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a class="text-decoration-none" routerLink="/pages/application"
+         >Application
+      </a>
+    </li>
+  </ol>
+</nav>
+<nb-layout>
+  <nb-layout-column
+                    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;">
+    <div class="row">
+      <div class="col-lg-12">
+        <nb-card>
+          <nb-card-header>Quản lý cụm ứng dụng</nb-card-header>
+          <nb-card-body>
+            <div class="row">
+              <div class="col-lg-5 ng-select">
+                <input style="padding-left: 10px" type="text" nbInput fullWidth placeholder="Từ khóa"
+                       [(ngModel)]="keyword" trim="blur">
+                <button nbButton (click)="keyword = ''"
+                        style="position: absolute; right: 14px; top: 5px; text-transform: lowercase" ghost
+                        *ngIf="keyword" size="small">
+                  <nb-icon icon=close-outline></nb-icon>
+                </button>
+              </div>
+              <div class="col-lg-7 edit-button">
+                <button  (click)="search()" status="primary" type="button">
+                  <nb-icon icon="search-outline"></nb-icon>
+                  Tìm kiếm
+                </button>
+              </div>
+            </div>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <ngx-application-cluster #applicationClusterComponent [keyword]="keyword"
+                                 (changeCluster)="onChangeCluster($event)"></ngx-application-cluster>
+      </div>
+      <!--  <div class="col-lg-7">-->
+      <!--    <ngx-application-node #applicationNodeComponent [cluster]="cluster"></ngx-application-node>-->
+      <!--  </div>-->
+    </div>
+  </nb-layout-column>
+</nb-layout>
+

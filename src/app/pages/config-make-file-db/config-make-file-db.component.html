@@ -1,0 +1,386 @@
+<!--<nav aria-label="breadcrumb">-->
+<!--  <ol class="breadcrumb" style="margin-bottom: 0 !important;background-color: #181E38;">-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+<!--      >VDP-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none"-->
+<!--      >Tiện ích-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item" aria-current="page">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/config-makeFile-db"-->
+<!--      >DB make file config-->
+<!--      </a>-->
+<!--    </li>-->
+<!--  </ol>-->
+<!--</nav>-->
+<nb-layout xmlns="http://www.w3.org/1999/html">
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;"
+    [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant" nbSpinnerMessage="Processing">
+    <nb-card>
+      <nb-card-header>
+        <div class="table-wrap">
+          <div class="d-flex edit-button justify-content-between w-100 flex-nowrap align-items-center">
+              <span class="title-page">
+                DB make file config
+              </span>
+            <button type="button" class="ml-2 px-3"
+                    *hasAnyAuthority="authority.DB_MAKE_FILE_CONFIG.DB_MAKE_FILE_CONFIG_WRITE"
+                    (click)="newConfig();dialogService.open(configMakeFile,{context: { action: 'create-config'}, closeOnBackdropClick:false, closeOnEsc: true, hasBackdrop: true});"
+            >
+              <nb-icon icon="plus-outline"></nb-icon>
+              <strong>{{'serverIpTables.label.save' | translate}}</strong>
+            </button>
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="d-flex justify-content-between">
+          <div class="d-flex page">
+            <span>{{'data-ingestion.label.show' | translate}}</span>
+            <ng-select [items]="limits"
+                       class="selectPage"
+                       bindLabel="name"
+                       [(ngModel)]="limit"
+                       [clearable]="false"
+                       appendTo="">
+            </ng-select>
+            <span>{{'data-ingestion.label.record' | translate}}</span>
+          </div>
+          <div>
+            <div class="d-flex align-items-center">
+              <div class="position-relative mr-3">
+                <input trim="blur" nbInput type="text" [(ngModel)]="search" class="mb-0 input-edit"
+                       placeholder="Nội dung tìm kiếm"
+                       (keyup)="updateFilter($event,colunmFilter)">
+                <nb-icon nbPrefix icon="search-outline" pack="eva"
+                         style="position: absolute;top: 8px;z-index: 3; right: 10px;"></nb-icon>
+              </div>
+              <b style="margin-right: 1em;">By</b>
+              <ng-select
+                class="cbb-custom"
+                appendTo=""
+                [items]="column"
+                [clearable]="false"
+                bindLabel="name"
+                bindValue="prop"
+                [(ngModel)]="colunmFilter"
+                (change)="onchange()"
+              >
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <div>
+          <ngx-datatable
+            #table
+            class="dark"
+            [rows]="filter"
+            [columnMode]="'force'"
+            [columns]="columns"
+            [messages]="{totalMessage:'items'}"
+            [headerHeight]="'auto'"
+            [footerHeight]="50"
+            [loadingIndicator]="true"
+            [count]="filter?.length"
+            [limit]="limit"
+            [offset]="tableOffset"
+            (page)="onPageChange($event)"
+            rowHeight="auto"
+          >
+            <ng-container *ngFor="let col of columns">
+              <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [sortable]="false" [flexGrow]="col.flex">
+                <ng-template let-column="column" ngx-datatable-header-template>{{col.name}}</ng-template>
+                <ng-template let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template let-row="row">
+                  <ng-container [ngSwitch]="col.prop">
+
+                    <ng-container *ngSwitchDefault>
+                  <span class="custom-show-data" [title]="value">
+                    {{value}}
+                  </span></ng-container>
+                    <ng-container *ngSwitchCase="'sqlCommand'">
+                      <div (click)="copyText(value)" [title]="value" class="item-copy custom-show-data">{{value}}</div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'createCommand'">
+                      <div (click)="copyText(value)" [title]="value" class="item-copy custom-show-data">{{value}}</div>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'Actions'">
+                      <button type="button" nbButton nbTooltip="Edit" status="warning" ghost size="small"
+                              *hasAnyAuthority="authority.DB_MAKE_FILE_CONFIG.DB_MAKE_FILE_CONFIG_WRITE"
+                              (click)="getInfoMakeFilById(row.id);dialogService.open(configMakeFile,{context: { action: 'edit-config'}, closeOnEsc: true, hasBackdrop: true});">
+                        <nb-icon icon="edit-outline"></nb-icon>
+                      </button>
+                      <!--                  <button type="button" nbButton style="margin-left: -5px" nbTooltip="Delete" status="danger" ghost size="small"-->
+                      <!--                          (click)="dialogService.open(confirmPopup,{context: { action: 'delete-config',id:row.id }, closeOnEsc: true, hasBackdrop: true })">-->
+                      <!--                    <nb-icon icon="trash-2-outline"></nb-icon>-->
+                      <!--                  </button>-->
+                    </ng-container>
+                  </ng-container>
+                </ng-template>
+              </ngx-datatable-column>
+            </ng-container>
+          </ngx-datatable>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+<ng-template #configMakeFile let-ref="dialogRef" let-data>
+  <nb-card style="width: 750px;">
+    <nb-card-header *ngIf="data?.action==='edit-config'">EDIT CONFIG MAKE FILE DB</nb-card-header>
+    <nb-card-header *ngIf="data?.action==='create-config'">CREATE CONFIG MAKE FILE DB</nb-card-header>
+    <nb-card-body>
+      <div style="overflow-y: auto; max-height: 72vh">
+        <nb-card>
+          <nb-card-header>
+            SELECT_SCRIPT
+          </nb-card-header>
+          <nb-card-body class="config-make-file" style="overflow: visible">
+            <div class="d-flex" style="align-items: center">
+              <label class="label-size">Script</label>
+              <textarea class="edit-text-area" trim="blur" [(ngModel)]="newFileConfig.selectCommand" nbInput rows="2"
+                        style="width: 85%"
+                        fullWidth> </textarea>
+            </div>
+            <div class="d-flex mt-2" style="align-items: center">
+              <label class="label-size">Number of fields</label>
+              <input trim="blur" name="numOfFields" type="number" (keydown)="validateNumber($event)"
+                     (keyup)="checkMaxMin($event, 20 , 'Number of fields')" nbInput
+                     [(ngModel)]="newFileConfig.numFields" class="input-size input-edit" fullWidth>
+              <nb-checkbox [(checked)]="newFileConfig.useSubpartition" style="margin-left: 15%"> Use subpatrition
+              </nb-checkbox>
+            </div>
+            <div class="d-flex mt-2">
+              <label class="label-size">Fetch size</label>
+              <input trim="blur" type="number" (keydown)="validateNumber($event)"
+                     (keyup)="checkMaxMin($event, 20, 'Fetch size')" nbInput [(ngModel)]="newFileConfig.fetchSize"
+                     class="input-size input-edit" maxlength="20" fullWidth>
+              <nb-checkbox [(checked)]="newFileConfig.usePartition" style="margin-left: 15%"> Use patrition
+              </nb-checkbox>
+            </div>
+            <div class="d-flex mt-2" style="align-items: center">
+              <label class="label-size">No of executor</label>
+              <input trim="blur" type="number" nbInput [(ngModel)]="newFileConfig.numExes"
+                     (keydown)="validateNumber($event,3)" (keyup)="checkMaxMin($event, 3, 'No of executor')"
+                     class="input-size input-edit" fullWidth>
+              <label style="width: 12% ; margin-left: 3%">No of part </label>
+              <input trim="blur" type="number" nbInput [(ngModel)]="newFileConfig.numParts"
+                     (keydown)="validateNumber($event,3)" (keyup)="checkMaxMin($event, 3, 'No of part')"
+                     class="input-size input-edit" fullWidth>
+            </div>
+            <div class="d-flex mt-2" style="align-items: center">
+              <label class="label-size" style="align-items: center">Description</label>
+              <textarea class="edit-text-area" trim="blur" [(ngModel)]="newFileConfig.selectDescription"
+                        maxlength="1000" nbInput rows="1"
+                        style="width: 85%" fullWidth> </textarea>
+            </div>
+            <div class="d-flex mt-2">
+              <label class="label-size">Connection <em>*</em></label>
+              <ng-select
+                [clearable]="false"
+                appendTo=".config-make-file"
+                class="combobox custom-show-data"
+                dropdownPosition="bottom"
+                [(ngModel)]="newFileConfig.idConnection"
+              >
+                <ng-option
+                  *ngFor="let item of connectionDb" [value]="item.id">
+                  <span [title]="item.connectionName" style="width: 100%; height: 100%; display: block; white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis; ">{{item.connectionName}}</span>
+                </ng-option>
+              </ng-select>
+              <div class="d-flex">
+                <button type="button" class="ml-2" nbButton nbTooltip="View connection" status="primary" ghost
+                        [disabled]="newFileConfig.idConnection ? false : true"
+                        (click)="getConnectionById(newFileConfig.idConnection);dialogService.open(connection,{context: { action: 'view-connection'}, closeOnEsc: true, hasBackdrop: true})">
+                  <nb-icon icon="eye-outline"></nb-icon>
+                </button>
+                <button type="button" class="ml-2" nbButton nbTooltip="Add connection" status="primary" ghost
+                        *hasAnyAuthority="authority.DB_MAKE_FILE_CONFIG.DB_MAKE_FILE_CONFIG_WRITE"
+                        (click)="resetConnection();dialogService.open(connection,{context: { action: 'add-connection', ref2:ref}, closeOnEsc: true, hasBackdrop: true})">
+                  <nb-icon icon="plus-circle-outline"></nb-icon>
+                </button>
+                <button type="button" class="ml-2" nbButton nbTooltip="Edit connection" status="primary" ghost
+                        [disabled]="newFileConfig.idConnection ? false : true"
+                        *hasAnyAuthority="authority.DB_MAKE_FILE_CONFIG.DB_MAKE_FILE_CONFIG_WRITE"
+                        (click)="getConnectionById(newFileConfig.idConnection);dialogService.open(connection,{context: { action: 'edit-connection', ref2:ref}, closeOnEsc: true, hasBackdrop: true})">
+                  <nb-icon icon="edit-outline"></nb-icon>
+                </button>
+              </div>
+            </div>
+          </nb-card-body>
+        </nb-card>
+        <nb-card>
+          <nb-card-header>
+            CREATE_SCRIPT
+          </nb-card-header>
+          <nb-card-body>
+            <div class="d-flex mt-2" style="align-items: center">
+              <label class="label-size" style="align-items: center">Script</label>
+              <textarea trim="blur" class="edit-text-area" [(ngModel)]="newFileConfig.createSqlCommand" nbInput rows="2"
+                        style="width: 85%"
+                        fullWidth> </textarea>
+            </div>
+            <div class="d-flex mt-2" style="align-items: center">
+              <label class="label-size" style="align-items: center">Description</label>
+              <textarea class="edit-text-area" trim="blur" [(ngModel)]="newFileConfig.createDescription" nbInput
+                        rows="1" maxlength="1000"
+                        style="width: 85%" fullWidth> </textarea>
+            </div>
+          </nb-card-body>
+        </nb-card>
+        <label style="display: block">Table name <em>*</em></label>
+        <input class="input-edit" style="width: 99%" trim="blur" nbInput [(ngModel)]="newFileConfig.tableName" fullWidth
+               #tableName='ngModel' [class.required]="tableName?.touched && tableName?.errors?.required"
+               #tableName='ngModel' maxlength="100" required>
+        <div class="form-validate" *ngIf="tableName?.touched && tableName?.dirty">
+          <span *ngIf="tableName?.errors?.required">Table name is required</span>
+        </div>
+        <div class="d-flex mt-2">
+          <div style="width: 48%; margin-right: 4%">
+            <label style=" ">Location path <em>*</em></label>
+            <input class="input-edit" trim="blur" nbInput [(ngModel)]="newFileConfig.locationPath" fullWidth
+                   #tableName='ngModel'
+                   [class.required]="locationPath?.touched && locationPath?.errors?.required" #locationPath='ngModel'
+                   maxlength="400" required>
+            <div class="form-validate" *ngIf="locationPath?.touched && locationPath?.dirty">
+              <span *ngIf="locationPath?.errors?.required">Location path is required</span>
+            </div>
+          </div>
+          <div style="width: 47%">
+            <label>Source path <em>*</em></label>
+            <input class="input-edit" trim="blur" nbInput [(ngModel)]="newFileConfig.source" fullWidth
+                   #tableName='ngModel'
+                   [class.required]="source?.touched && source?.errors?.required" #source='ngModel' maxlength="200"
+                   required>
+            <div class="form-validate" *ngIf="source?.touched && source?.dirty">
+              <span *ngIf="source?.errors?.required">Source path is required</span>
+              <span *ngIf="source?.errors?.maxlength">Source path must be a maximum of 200 characters</span>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex mt-2" style="align-items: center">
+          <div style="width: 48%;margin-right: 4%">
+            <label style=" ">Remove path</label>
+            <input class="input-edit" trim="blur" nbInput [(ngModel)]="newFileConfig.removePath" maxlength="400"
+                   fullWidth>
+          </div>
+          <nb-checkbox [(checked)]="newFileConfig.active"> Is active</nb-checkbox>
+        </div>
+        <div class="mt-2">
+          <label>Description</label>
+        </div>
+        <textarea class="edit-text-area" style="width: 99%" trim="blur" [(ngModel)]="newFileConfig.description" nbInput
+                  rows="2"
+                  maxlength="1000" fullWidth></textarea>
+        <div class="d-flex mt-2">
+          <label style="width: 15%">Group</label>
+          <input class="input-edit" trim="blur" [(ngModel)]="newFileConfig.idGroup" (keydown)="validateNumber($event)"
+                 (keyup)="checkMaxMin($event, 20 , 'Group')" style="width: 84%" type="number" nbInput fullWidth>
+        </div>
+        <div class="d-flex mt-2">
+          <label style="width: 15%">MAX_TIME</label>
+          <input class="input-edit" trim="blur" [(ngModel)]="newFileConfig.maxTime" style="width: 84%" type="number"
+                 (keydown)="validateNumber($event)" (keyup)="checkMaxMin($event, 10 , 'MAX_TIME')" nbInput fullWidth>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer class="edit-button d-flex justify-content-end" style="text-align: right">
+      <button class="edit-button-cancel" style="margin-right: 10px" type="button" (click)="ref.close()">Close</button>
+      <button [hidden]="data?.action!=='edit-config'" type="submit"
+              (click)="validateConfig(ref,'edit-config')">Save
+      </button>
+      <button [hidden]="data?.action!=='create-config'" type="submit"
+              (click)="validateConfig(ref,'create-config')">Save
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+<ng-template #connection let-ref="dialogRef" let-data>
+  <nb-card style="width: 40vw">
+    <nb-card-header *ngIf="data?.action === 'add-connection'">ADD CONNECTION</nb-card-header>
+    <nb-card-header *ngIf="data?.action === 'edit-connection'">EDIT CONNECTION</nb-card-header>
+    <nb-card-header *ngIf="data?.action === 'view-connection'">VIEW CONNECTION</nb-card-header>
+    <nb-card-body>
+      <div class="d-flex" style="align-items: center">
+        <label class="label-size">Connection Name <em>*</em></label>
+        <input trim="blur" maxlength="200" nbInput class="form-control input-edit" style="width: 85%"
+               [(ngModel)]="newConnection.connectionName" fullWidth
+               [readOnly]="data?.action === 'view-connection'?true:false"
+               [class.required]="connectionName?.touched && connectionName.errors?.required" #connectionName='ngModel'
+               maxlength="200" pattern="^((?!%).)*$" required/>
+      </div>
+      <div class="form-validate" style="margin-left: 15%;" *ngIf="connectionName?.touched && connectionName?.dirty">
+        <span *ngIf="connectionName?.errors?.required">Connection Name is required</span>
+        <span *ngIf="connectionName?.errors?.pattern">Connection Name can not contain % character</span>
+      </div>
+      <div class="d-flex mt-2" style="align-items: center">
+        <label class="label-size">URL <em>*</em></label>
+        <input class="input-edit" trim="blur" maxlength="4000" nbInput style="width: 85%" fullWidth
+               [(ngModel)]="newConnection.url"
+               [readOnly]="data?.action === 'view-connection'?true:false"
+               [class.required]="url?.touched && url.errors?.required" #url='ngModel' pattern="^((?!%).)*$" required/>
+      </div>
+      <div class="form-validate" style="margin-left: 15%;" *ngIf="url?.touched && url?.dirty">
+        <span *ngIf="url?.errors?.required">URL is required</span>
+      </div>
+      <div class="d-flex mt-2" style="align-items: center">
+        <label class="label-size">Username <em>*</em></label>
+        <input class="input-edit" trim="blur" maxlength="200" nbInput style="width: 85%" fullWidth
+               [(ngModel)]="newConnection.userName"
+               [readOnly]="data?.action === 'view-connection'?true:false"
+               [class.required]="userName?.touched && userName.errors?.required" #userName='ngModel' required/>
+      </div>
+      <div class="form-validate" style="margin-left: 15%;" *ngIf="userName?.touched && userName?.dirty">
+        <span *ngIf="userName?.errors?.required">Username is required</span>
+      </div>
+      <div class="d-flex mt-2" style="align-items: center">
+        <label class="label-size">Password</label>
+        <input class="input-edit" trim="blur" maxlength="200" nbInput style="width: 85%" fullWidth
+               [(ngModel)]="newConnection.pass"
+               [readOnly]="data?.action === 'view-connection'?true:false">
+      </div>
+      <div class="d-flex mt-2" style="align-items: center">
+        <label class="label-size">Description</label>
+        <textarea trim="blur" class="edit-text-area" maxlength="1000" nbInput rows="3" style="width: 85%"
+                  [(ngModel)]="newConnection.description" fullWidth
+                  [readOnly]="data?.action === 'view-connection'?true:false"></textarea>
+      </div>
+    </nb-card-body>
+    <nb-card-footer class="edit-button d-flex justify-content-end" style="text-align: right">
+      <button class="edit-button-cancel" style="margin-right: 10px" type="button" (click)="ref.close()">Close</button>
+      <button type="submit" [hidden]="data?.action !== 'edit-connection'"
+              (click)="validateConn(ref,data?.action)">Save
+      </button>
+      <button type="submit" [hidden]="data?.action !== 'add-connection'"
+              (click)="validateConn(ref,data?.action)">Save
+      </button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+<ng-template #confirmPopup let-ref="dialogRef" let-data>
+  <nb-card style="width: 500px;height: 250px;">
+    <nb-card-header>CONFIRM ACTION</nb-card-header>
+    <nb-card-body>
+      <span *ngIf="data.action === 'edit-config'">Do you want to save this Config Make File DB?</span>
+      <span *ngIf="data.action === 'create-config'">Do you want to save this Config Make File DB?</span>
+      <span *ngIf="data.action === 'edit-connection'">Do you want to save this Connection?</span>
+      <span *ngIf="data.action === 'add-connection'">Do you want to save this Connection?</span>
+      <span *ngIf="data.action === 'delete-config'">Do you want to delete this Config Make File DB?</span>
+    </nb-card-body>
+    <nb-card-footer class="edit-button d-flex justify-content-end" style="text-align: right;">
+      <button class="edit-button-cancel" style="margin-right: 10px" type="button" (click)="ref.close()">Close</button>
+      <button type="submit" (click)="
+      data.action === 'edit-config' ? editConfig(data.id,ref,data.ref2):
+      data.action === 'delete-config'?deleteConfigFile(data.id,ref):
+      data.action === 'edit-connection' ? editConnection(ref,data.ref2):
+      data.action === 'add-connection' ? addConnection(ref,data.ref2):
+      addConfig(ref,data.ref2)">{{data.action === 'delete-config' ? 'Delete' : 'Save' }}</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

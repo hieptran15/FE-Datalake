@@ -1,0 +1,197 @@
+.height-tab {
+  //height: calc(100vh - 180px);
+}
+
+.form-mode {
+  padding-left: 1rem;
+}
+
+.page-wrap {
+  nb-card {
+    margin-bottom: 0 !important;
+  }
+}
+
+#icon_up {
+  fill: var(--color-icon-text-area);
+}
+
+:host ::ng-deep {
+
+
+  nb-layout .layout {
+    min-height: 60vh;
+  }
+
+  .ngx-datatable.dark {
+    background: none;
+
+    .datatable-header {
+      border-radius: 5px 5px 0px 0px;
+
+      .datatable-header-cell .datatable-header-cell-template-wrap {
+        min-height: 44px;
+        line-height: 20px;
+      }
+    }
+  }
+
+  //.change-bg-select .ng-select .ng-select-container {
+  //  background-color: #222736;
+  //  border: 2px solid #363e54;
+  //  height: 30px;
+  //}
+
+  //nb-spinner .message {
+  //  color: #e91e63;
+  //  background: azure;
+  //  padding: 40px 30px;
+  //  border-radius: 5px;
+  //}
+  //
+  //nb-spinner.status-basic {
+  //  background-color: transparent;
+  //
+  //  .spin-circle {
+  //    display: none;
+  //  }
+  //}
+  .button-upload {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    height: 29px;
+    box-shadow: none;
+    min-width: 0 !important;
+
+    &:hover {
+      background-color: transparent !important;
+    }
+  }
+}
+
+//.change-bg-input {
+//  background-color: #222736 !important;
+//  border: 2px solid #363e54 !important;
+//  height: 37px;
+//}
+
+//.change-bg-select .ng-select .ng-select-container {
+//  background-color: white !important;
+//}
+.w-25 {
+  //width: 21%;
+  text-align: right;
+  //margin-right: 20px;
+  white-space: nowrap;
+
+}
+
+//.w-25{
+//  white-space: nowrap;
+//  text-align: right;
+//}
+//
+//.ml-2, .mx-2{
+//  margin-left:0;
+//  padding-left:10px;
+//}
+.w-75 {
+  max-width: 85%;
+  min-width: 77.5%;
+  width: 80%;
+  white-space: nowrap;
+}
+
+.custom-show-data {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:host ::ng-deep {
+  //.ng-dropdown-panel.custom-width {
+  //  width: 100%;
+  //  min-width: 100%;
+  //  max-width: 100%;
+  //}
+  .ng-select.ng-select-single .ng-select-container .ng-value-container, .ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
+    width: 90%;
+    white-space: nowrap;
+  }
+
+  .edit-button {
+    .w-15 {
+      white-space: normal;
+      text-align: right;
+    }
+  }
+
+}
+
+.w-25 {
+  //width: 21%;
+  text-align: right;
+  //margin-right: 20px;
+  white-space: pre-wrap;
+
+}
+
+@media screen and (max-width: 1500px) {
+  .form-mode {
+    padding-left: 0;
+  }
+
+  .download-form-background {
+    margin-right: 0.5rem;
+
+    .form-background {
+      .w-75 {
+        max-width: 60%;
+        min-width: 60%;
+      }
+    }
+  }
+
+  .form-mode, .download-form-background, .upload-form-background {
+    .w-50 {
+      min-width: 60%;
+
+    }
+
+    .w-25 {
+      //width: 21%;
+      //min-width: 30%;
+      text-align: right;
+      //margin-right: 20px;
+      white-space: nowrap;
+
+    }
+
+    .w-75 {
+      max-width: 75%;
+      min-width: 70%;
+      white-space: nowrap;
+
+      input {
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
+
+//.edit-button {
+//  .change-bg-select{
+//    max-width:85%;
+//    min-width:85%;
+//    margin:0;
+//    padding:0;
+//    width:85%;
+//  }
+//}
+
+
+//fix font color radio button
+::ng-deep .text span {
+  color: var(--color-text-light);
+}

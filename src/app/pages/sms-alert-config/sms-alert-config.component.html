@@ -1,0 +1,272 @@
+<!--<nav aria-label="breadcrumb">-->
+<!--  <ol class="breadcrumb" style="margin-bottom: 0 !important;background-color: #181E38;">-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/group-chart"-->
+<!--         >VDP-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item">-->
+<!--      <a class="text-decoration-none"-->
+<!--         >Tiện ích-->
+<!--      </a>-->
+<!--    </li>-->
+<!--    <li class="breadcrumb-item" aria-current="page">-->
+<!--      <a class="text-decoration-none" routerLink="/webportal/sms-alert-config"-->
+<!--         >SMS alert config-->
+<!--      </a>-->
+<!--    </li>-->
+<!--  </ol>-->
+<!--</nav>-->
+<nb-layout>
+  <nb-layout-column
+    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;"
+    [nbSpinner]="isLoading" nbSpinnerStatus="primary" nbSpinnerSize="giant"
+    nbSpinnerMessage="Processing...">
+    <nb-card class="position-relative">
+      <nb-tabset (click)="searchWpAlertIsdn()">
+        <nb-tab tabTitle="Cấu hình cảnh báo" class="height-tab">
+          <ngx-alert-isdn [rowsInput]="rowIsdn"></ngx-alert-isdn>
+        </nb-tab>
+        <nb-tab tabTitle="Nhóm cảnh báo" class="height-tab">
+          <ngx-alert-group></ngx-alert-group>
+        </nb-tab>
+        <nb-tab tabTitle="Đầu mối cảnh báo" class="height-tab">
+          <div style="margin-bottom: 32px;margin-top: 20px;" class="d-flex  justify-content-between">
+            <div class="d-flex page" style="align-items: center;">
+              <span>{{'data-ingestion.label.show' | translate}}</span>
+              <ng-select [items]="limits"
+                         class="selectPage"
+                         style="padding: 0 5px;"
+                         bindLabel="name"
+                         [(ngModel)]="limit"
+                         [clearable]="false">
+              </ng-select>
+              <span>{{'data-ingestion.label.record' | translate}}</span>
+            </div>
+            <div style="width: 60%" class="d-flex mb-3 justify-content-end align-items-center">
+              <nb-form-field style="width: 45%">
+                <!--              <button nbSuffix nbButton status="success" (click)="searchWpAlertUser()"-->
+                <!--                      [nbTooltip]="'user.label.search'|translate" ghost>-->
+                <!--                <nb-icon icon="search-outline" pack="eva"></nb-icon>-->
+                <!--              </button>-->
+                <!--              <input trim="blur" nbInput type="text" name="search" [(ngModel)]="smsAlertConfigKey" fullWidth (keydown.enter)="searchWpAlertUser()">-->
+                <div style="position: relative">
+                  <input class="mr-3 input-edit" fullWidth nbInput
+                         trim="blur"
+                         placeholder="Nội dung tìm kiếm"
+                         type="text" name="search" [(ngModel)]="smsAlertConfigKey"
+                         (change)="searchTextWpAlertUser()">
+                  <nb-icon nbPrefix icon="search-outline" pack="eva"
+                           style="position: absolute;top: 8px;z-index: 3; right: 10px;color: #999;"></nb-icon>
+                </div>
+              </nb-form-field>
+              <div class="edit-button">
+                <button size="small" class="ml-5"
+                        *hasAnyAuthority="authoritiesConstant.SMS_ALERT_CONFIG.SMS_ALERT_CONFIG_WRITE"
+                        (click)="alertUserForm.reset();dialogService.open(addOrUpdate, {context: {action:'add'}}); alertUserForm.get('status').patchValue('1')">
+                  <nb-icon icon="plus" pack="eva"></nb-icon>
+                  {{'user.label.add'|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-bottom: 50px">
+            <ngx-datatable
+              class="dark"
+              [columnMode]="'force'"
+              [rows]="rows"
+              [columns]="columns"
+              [count]=""
+              [headerHeight]="'auto'"
+              [messages]="{totalMessage:'user.label.record'|translate}"
+              [footerHeight]="50"
+              [loadingIndicator]="true"
+              [limit]="limit"
+              rowHeight="auto"
+            >
+              <ng-container *ngFor="let col of columns">
+                <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [sortable]="false"
+                                      [flexGrow]="col.flex">
+                  <ng-template let-column="column" ngx-datatable-header-template>{{col.name}}</ng-template>
+                  <ng-template let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template let-row="rows">
+                    <ng-container [ngSwitch]="col.prop">
+                      <ng-container *ngSwitchDefault>
+                          <span class="custom-show-data" [title]="value">
+                            {{value}}
+                          </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'insertDate'">
+                      <span class="custom-show-data">
+                            {{value | date:'dd/MM/yyyy HH:mm' }}
+                          </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'status'">
+                      <span class="custom-show-data">
+                            {{value === 1 ? 'On' : 'Off'}}
+                          </span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'actions'">
+                        <nb-toggle *hasAnyAuthority="authoritiesConstant.SMS_ALERT_CONFIG.SMS_ALERT_CONFIG_WRITE"
+                                   class="scale" status="info" [checked]="rows[rowIndex]?.status === 1"
+                                   (click)="showConfirmDialog(rowIndex, confirmDialog, $event);">
+                        </nb-toggle>
+                        <!-- <button nbTooltip="Cập nhật" class="p-1" nbButton status="warning" ghost
+                                 (click)="setValueAlertUserForm(rowIndex);dialogService.open(addOrUpdate, {context: {action:'update', id: rows[rowIndex].id}})">
+                           <nb-icon icon="edit-outline" pack="eva" size="tiny"></nb-icon>
+                         </button>
+                         <button nbTooltip="Xóa" title="Xoá" class="p-1" nbButton status="danger"
+                                 (click)="dialogService.open(confirm, {context: {action:'delete', id: rows[rowIndex].id}})"
+                                 ghost>
+                           <nb-icon icon="trash-outline" pack="eva" size="tiny"></nb-icon>
+                         </button>-->
+                      </ng-container>
+                    </ng-container>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-footer>
+                  <ng-template
+                    ngx-datatable-footer-template
+                    let-rowCount="rowCount"
+                    let-pageSize="pageSize"
+                    let-selectedCount="selectedCount"
+                    let-curPage="curPage"
+                    let-offset="offset">
+                    <div style="padding: 5px 10px;width:250px">
+                      <div *ngIf="rowCount > 0">
+                        <!--                            Showing {{(offset * pageSize)+1}} to {{(rowCount>-->
+                        <!--                            (curPage*pageSize))?(curPage*pageSize):(rowCount)}} of-->
+                        <!--                            {{(rowCount)}} records.-->
+                        <!--                      <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * 10 + 1}} - {{rowCount - curPage * 10 >= 0 ? (curPage - 1) * 10 + 10 : rowCount}}/{{rowCount}}, page: {{curPage}}/{{getTotalPage(rowCount, pageSize)}}</span>-->
+                        <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * limit + 1}}
+                          - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}
+                          /{{rowCount}} {{'data-ingestion.label.record' | translate}}</span>
+                      </div>
+                      <div *ngIf="rowCount === 0">
+                        <span>0 records</span>
+                      </div>
+                    </div>
+                    <datatable-pager
+                      [pagerLeftArrowIcon]="'datatable-icon-left'"
+                      [pagerRightArrowIcon]="'datatable-icon-right'"
+                      [page]="curPage"
+                      [size]="pageSize"
+                      [count]="rowCount"
+                      [hidden]="!((rowCount / pageSize) > 1)"
+                      (change)="table.onFooterPage($event)">
+                    </datatable-pager>
+                  </ng-template>
+                </ngx-datatable-footer>
+              </ng-container>
+            </ngx-datatable>
+          </div>
+        </nb-tab>
+      </nb-tabset>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+<ng-template #confirm let-ref="dialogRef" let-data>
+  <nb-card>
+    <nb-card-header>
+      <span *ngIf="data.action==='delete'"> Xóa bản ghi</span>
+      <span *ngIf="data.action==='update'"> Update bản ghi</span>
+      <span *ngIf="data.action==='add'"> Thêm bản ghi</span>
+    </nb-card-header>
+    <nb-card-body>
+      <span *ngIf="data.action==='!delete'">Bạn có muốn lưu bản ghi ?</span>
+      <span *ngIf="data.action==='toggle'">Bạn có muốn thay đổi trạng thái bản ghi?</span>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex edit-button justify-content-end">
+        <button class="edit-button-cancel" (click)="ref.close()">
+          <nb-icon icon="close-outline" pack="eva">
+          </nb-icon>
+          Đóng
+        </button>
+        <button *ngIf="data.action==='toggle'" (click)="updateWpAlertUser(ref)"
+                class="ml-2">
+          <nb-icon icon="trash-2-outline" pack="eva">
+          </nb-icon>
+          Lưu
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+<ng-template #addOrUpdate let-ref="dialogRef" let-data>
+  <nb-card style="width: 600px; height: 400px">
+    <nb-card-header>
+      <span *ngIf="data.action==='update'">Update alert user</span>
+      <span *ngIf="data.action==='add'">Thêm mới alert user</span>
+    </nb-card-header>
+    <nb-card-body>
+      <form [formGroup]="alertUserForm">
+        <div class="mb-3 ml-2 mr-2">
+          <div class="d-flex w-100 align-items-center">
+            <span class="w-25">User name: </span>
+            <input trim="blur" nbInput fullWidth class="w-75 input-edit" formControlName="userName" name="userName"
+                   pattern="^((?!%).)*$">
+          </div>
+          <ng-container
+            *ngIf="alertUserForm.get('userName').invalid && alertUserForm.get('userName').touched ">
+            <ngx-inline-message [formName]="alertUserForm.get('userName')"
+                                [message]="'User name'"></ngx-inline-message>
+          </ng-container>
+        </div>
+        <div class="mb-3 ml-2 mr-2">
+          <div class="d-flex w-100 align-items-center">
+            <span class="w-25">Số điện thoại: </span>
+            <input trim="blur" type="text" (keydown)="isNumber($event)" nbInput fullWidth class="w-75 input-edit"
+                   name="isdn"
+                   formControlName="isdn">
+          </div>
+          <ng-container
+            *ngIf="alertUserForm.get('isdn').invalid && alertUserForm.get('isdn').touched ">
+            <ngx-inline-message [formName]="alertUserForm.get('isdn')"
+                                [message]="'Số điện thoại'"></ngx-inline-message>
+          </ng-container>
+        </div>
+        <div class="mb-3 ml-2 mr-2">
+          <nb-radio-group formControlName="status" name="status" class="d-flex ml-3">
+            <nb-radio class="mr-5" [value]="'1'"><span>On</span></nb-radio>
+            <nb-radio [value]="'0'"><span>Off</span></nb-radio>
+          </nb-radio-group>
+        </div>
+      </form>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex justify-content-end edit-button">
+        <button (click)="ref.close()" class="mr-2 edit-button-cancel">
+          <nb-icon icon="close-outline" pack="eva"></nb-icon>
+          Đóng
+        </button>
+        <button
+          (click)="updateWpAlertUser(ref)"
+          [disabled]="alertUserForm.invalid">
+          <nb-icon icon="save-outline" pack="eva"></nb-icon>
+          Lưu
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #confirmDialog let-ref='dialogRef' let-data>
+  <nb-card>
+    <nb-card-header>
+      Chuyển trạng thái
+    </nb-card-header>
+    <nb-card-body>
+      Xác nhận chuyển trạng thái của đầu mối ?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="d-flex w-100 edit-button justify-content-end align-items-center">
+        <button (click)="ref.close()" class="mr-2 edit-button-cancel">
+          Đóng
+        </button>
+        <button (click)="setValueAlertUserForm(data);updateWpAlertUser(); ref.close()">
+          Xác nhận
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

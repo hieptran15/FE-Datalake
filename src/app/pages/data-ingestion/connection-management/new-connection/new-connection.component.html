@@ -1,0 +1,1267 @@
+<nb-card class="w-h-dialog">
+  <nb-card-header>
+    <div class="d-flex justify-content-between align-items-center">
+      <span>{{'connection-manager.label.addNewConnection' | translate}}</span>
+      <div class="d-flex">
+        <button nbButton ghost (click)="dialogService.open(tutorial)" style="border:none">
+          <nb-icon [icon]="'question-circle'" pack="fa"></nb-icon>
+        </button>
+        <button nbButton ghost (click)="ref.close()" style="border:none">
+          <nb-icon [icon]="'times'" pack="fa" style="font-size: 20px;cursor: pointer"></nb-icon>
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="">
+      <div class="row">
+        <div class="col-6 d-flex align-items-lg-center edit-error">
+          <span class="w-25">{{'connection-manager.label.nameConnection' | translate}} <em>*</em></span>
+          <div class="w-75 ml-3 position-relative">
+            <input trim="blur" class="input-edit" nbInput fullWidth [(ngModel)]="connectionName"
+                   (change)="isConnection($event)"
+                   (click)="isConnection($event)">
+            <span *ngIf="isConn" class="text-danger"
+                  style="font-size: 80%">{{'connection-manager.label.emptyName' | translate}}</span>
+          </div>
+        </div>
+        <div class="col-6 d-flex align-items-lg-center">
+          <span class="w-25">{{'connection-manager.label.typeConnection' | translate}}</span>
+          <div class="w-75 ml-3">
+            <ng-select
+              [(ngModel)]="connType"
+              [items]="connTypes"
+              [clearable]="false"
+              [disabled]="connection['id']"
+              (change)="resetFrom()"
+              bindValue=""
+              bindLabel=""
+              appendTo="">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <form class="w-100" [formGroup]="ftpForm" *ngIf="connType === 'FTP'">
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> FTP server <em>*</em></span>
+            <div class="w-75 ml-3">
+              <span class="w-100"><input class="input-edit" trim="blur" nbInput fullWidth
+                                         formControlName="ftpServer"></span>
+              <ngx-inline-message [message]="' FTP server'" [formName]="ftpForm.get('ftpServer')"></ngx-inline-message>
+            </div>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Port<em> *</em></span>
+            <div class="w-75 ml-3">
+            <span class="w-100"><input class="input-edit" trim="blur" nbInput fullWidth formControlName="ftpPort"
+                                       (keydown)="isNumber($event)"></span>
+              <ngx-inline-message [message]="' FTP port'" [formName]="ftpForm.get('ftpPort')"></ngx-inline-message>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">{{'connection-manager.label.userName' | translate}} <em>*</em></span>
+            <div class="w-75 ml-3">
+              <span class="w-100"><input class="input-edit" trim="blur" nbInput fullWidth formControlName="ftpUsername"></span>
+              <ngx-inline-message [message]="'connection-manager.label.userName' | translate"
+                                  [formName]="ftpForm.get('ftpUsername')"></ngx-inline-message>
+            </div>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">{{'connection-manager.label.password' | translate}}</span>
+            <span class="w-75 ml-3 d-flex">
+           <nb-form-field class="w-100">
+             <input nbInput fullWidth class="input-edit" [type]="getInputType()" trim="blur"
+                    formControlName="ftpPassword">
+             <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+               <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                        pack="eva"
+                        [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+               </nb-icon>
+             </button>
+           </nb-form-field>
+            </span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">{{'connection-manager.label.connectionMode' | translate}} <em>*</em></span>
+            <div class="w-75 ml-3">
+              <ng-select
+                formControlName="connectionMode"
+                fullWidth=""
+                [items]="connMode"
+                [clearable]="false"
+                bindValue=""
+                bindLabel=""
+                appendTo="">
+              </ng-select>
+              <ngx-inline-message [message]="'connection-manager.label.connectionMode' | translate"
+                                  [formName]="ftpForm.get('connectionMode')"></ngx-inline-message>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">{{'connection-manager.label.connectionTimeout' | translate}}</span>
+            <span class="w-75 ml-3"><input class="input-edit" trim="blur" nbInput fullWidth
+                                           formControlName="connectionTimeout"></span>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">{{'connection-manager.label.dataTimeOut' | translate}}</span>
+            <span class="w-75 ml-3"><input class="input-edit" trim="blur" nbInput fullWidth
+                                           formControlName="dataTimeout"></span>
+          </div>
+        </div>
+        <div class="d-flex align-items-lg-center mt-3">
+          <span class="w-12">Remote Roll BatchSize</span>
+          <span class="w-88 ml-3">
+            <input trim="blur" class="input-edit" nbInput fullWidth formControlName="remotePollBatchSize"
+                   (keydown)="isNumber($event)"></span>
+        </div>
+        <div class="d-flex justify-content-between edit-button mt-5">
+          <button
+            [disabled]="ftpForm.invalid || connectionName===''">
+            <nb-icon [icon]="'bolt'" pack="fa"></nb-icon>
+            <strong>{{'connection-manager.label.testConnection' | translate}}</strong>
+          </button>
+          <div class="d-flex justify-content-between">
+            <button class="mr-3" status="success"
+                    [disabled]="ftpForm.invalid || connectionName===''" (click)="save()">
+              <nb-icon icon="checkmark-outline"></nb-icon>
+              <strong *ngIf="connection['id']">{{'connection-manager.label.save' | translate}}</strong> <strong
+              *ngIf="!connection['id']">{{'connection-manager.label.create' | translate}}</strong>
+            </button>
+            <button class="edit-button-cancel" (click)="ref.close()">
+              <nb-icon icon="close-outline"></nb-icon>
+              <strong>{{'connection-manager.label.cancel' | translate}}</strong>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <form class="w-100" [formGroup]="rdbmsForm" *ngIf="connType === 'RDBMS'">
+        <div class="d-flex align-items-lg-center mt-3">
+          <span class="w-12"> DB connection url <em>*</em></span>
+          <div class="w-88 ml-3">
+            <input class="input-edit" trim="blur" nbInput fullWidth formControlName="dbConnectionUrl">
+            <ngx-inline-message [message]="'DB connection url'"
+                                [formName]="rdbmsForm.get('dbConnectionUrl')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex align-items-lg-center mt-3">
+          <span class="w-12"> DB driver classname <em>*</em></span>
+          <div class="w-88 ml-3">
+            <input class="input-edit" trim="blur" nbInput fullWidth formControlName="dbDriverClassname">
+            <ngx-inline-message [message]="'DB driver classname'"
+                                [formName]="rdbmsForm.get('dbDriverClassname')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex align-items-lg-center mt-3">
+          <span class="w-12"> DB driver location <em>*</em></span>
+          <div class="w-88 ml-3">
+            <input class="input-edit" trim="blur" nbInput fullWidth formControlName="dbDriverLocations">
+            <ngx-inline-message [message]="'DB driver location'"
+                                [formName]="rdbmsForm.get('dbDriverLocations')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex align-items-lg-center mt-3">
+          <span class="w-12"> DB username <em>*</em></span>
+          <div class="w-88 ml-3">
+            <input class="input-edit" trim="blur" nbInput fullWidth formControlName="dbUsername">
+            <ngx-inline-message [message]="'DB username'"
+                                [formName]="rdbmsForm.get('dbUsername')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex align-items-lg-center mt-3">
+          <span class="w-12"> DB password <em>*</em></span>
+          <div class="w-88 ml-3">
+            <nb-form-field class="w-100">
+              <input class="input-edit" nbInput fullWidth [type]="getInputType()" trim="blur"
+                     formControlName="dbPassword">
+              <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+                <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                         pack="eva"
+                         [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                </nb-icon>
+              </button>
+            </nb-form-field>
+            <ngx-inline-message [message]="'DB password'"
+                                [formName]="rdbmsForm.get('dbPassword')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex align-items-lg-center mt-3">
+          <span class="w-12">{{'connection-manager.label.advancedSetting' | translate}}</span>
+          <div class="w-88 ml-3">
+              <textarea class="input-edit" trim="blur" nbInput rows="3" fullWidth (change)="isJson($event)"
+                        formControlName="advancedConfig">
+              </textarea>
+            <ngx-inline-message [message]="'connection-manager.label.advancedSetting' | translate"
+                                [formName]="rdbmsForm.get('advancedConfig')"></ngx-inline-message>
+            <span *ngIf="isObj" class="text-danger" style="font-size: 80%">Sai định dạng JSON</span>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between edit-button mt-5">
+          <button status="primary"
+                  [disabled]="rdbmsForm.invalid || connectionName === '' || isObj">
+            <nb-icon [icon]="'bolt'" pack="fa"></nb-icon>
+            <strong>{{'connection-manager.label.testConnection' | translate}}</strong>
+          </button>
+          <div class="d-flex justify-content-between">
+            <button class="mr-3" status="success"
+                    [disabled]="rdbmsForm.invalid || connectionName === '' || isObj"
+                    (click)="save()">
+              <nb-icon icon="checkmark-outline"></nb-icon>
+              <strong *ngIf="connection['id']">{{'connection-manager.label.save' | translate}}</strong>
+              <strong *ngIf="!connection['id']">{{'connection-manager.label.create' | translate}}</strong>
+            </button>
+            <button class="edit-button-cancel" (click)="ref.close()">
+              <nb-icon icon="close-outline"></nb-icon>
+              <strong>{{'connection-manager.label.cancel' | translate}}</strong>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <form class="w-100" [formGroup]="kafkaForm" *ngIf="connType === 'Kafka'">
+        <div class="d-flex align-items-lg-center mt-3">
+          <span class="w-12"> Kafka broker <em>*</em></span>
+          <div class="w-88 ml-3">
+            <input class="input-edit" trim="blur" nbInput fullWidth formControlName="kafkaBrokers">
+            <ngx-inline-message [message]="'Kafka broker'"
+                                [formName]="kafkaForm.get('kafkaBrokers')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between edit-button mt-5">
+          <button status="primary"
+                  [disabled]="kafkaForm.invalid || connectionName===''">
+            <nb-icon [icon]="'bolt'" pack="fa"></nb-icon>
+            <strong>{{'connection-manager.label.testConnection' | translate}}</strong>
+          </button>
+          <div class="d-flex justify-content-between">
+            <button class="mr-3" status="success"
+                    [disabled]="kafkaForm.invalid || connectionName===''" (click)="save()">
+              <nb-icon icon="checkmark-outline"></nb-icon>
+              <strong *ngIf="connection['id']">{{'connection-manager.label.save' | translate}}</strong> <strong
+              *ngIf="!connection['id']">{{'connection-manager.label.create' | translate}}</strong>
+            </button>
+            <button (click)="ref.close()">
+              <nb-icon icon="close-outline"></nb-icon>
+              <strong>{{'connection-manager.label.cancel' | translate}}</strong>
+            </button>
+          </div>
+        </div>
+      </form>
+      <form class="w-100" [formGroup]="hdfsForm" *ngIf="connType === 'HDFS'">
+        <div class="d-flex align-items-lg-center mt-3">
+          <span class="w-12"> HDFS Resource Path <em>*</em></span>
+          <span class="w-88 ml-3">
+            <input class="input-edit" trim="blur" nbInput fullWidth formControlName="hdfsResource">
+            <ngx-inline-message [message]="'HDFS Resource Path'"
+                                [formName]="hdfsForm.get('hdfsResource')"></ngx-inline-message></span>
+        </div>
+        <div class="d-flex justify-content-between edit-button mt-5">
+          <button status="primary"
+                  [disabled]="hdfsForm.invalid || connectionName ===''">
+            <nb-icon [icon]="'bolt'" pack="fa"></nb-icon>
+            <strong>{{'connection-manager.label.testConnection' | translate}}</strong>
+          </button>
+          <div class="d-flex justify-content-between">
+            <button class="mr-3"
+                    [disabled]="hdfsForm.invalid || connectionName ===''" (click)="save()">
+              <nb-icon icon="checkmark-outline"></nb-icon>
+              <strong *ngIf="connection['id']">{{'connection-manager.label.save' | translate}}</strong> <strong
+              *ngIf="!connection['id']">{{'connection-manager.label.create' | translate}}</strong>
+            </button>
+            <button class="edit-button-cancel" (click)="ref.close()">
+              <nb-icon icon="close-outline"></nb-icon>
+              <strong>{{'connection-manager.label.cancel' | translate}}</strong>
+            </button>
+          </div>
+        </div>
+      </form>
+      <form class="w-100 edit-error" [formGroup]="hiveForm" *ngIf="connType === 'HIVE'">
+        <div class="d-flex align-items-lg-center mt-4">
+          <span class="w-12">Database URL<em> *</em></span>
+          <div class="w-88 ml-3 position-relative">
+            <input trim="blur" class="input-edit" nbInput fullWidth formControlName="databaseUrl">
+            <ngx-inline-message [message]="'Database URL'"
+                                [formName]="hiveForm.get('databaseUrl')"></ngx-inline-message>
+          </div>
+        </div>
+        <div class="d-flex align-items-lg-center mt-4">
+          <span class="w-12">Hive Configuration Resources </span>
+          <span class="w-88 ml-3">
+            <input trim="blur" class="input-edit" nbInput fullWidth formControlName="hiveConfigResources"></span>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Username<em>*</em></span>
+            <div class="w-75 ml-3 position-relative">
+              <span class="w-100"><input autocomplete="nope" class="input-edit" trim="blur" nbInput fullWidth
+                                         formControlName="databaseUser"></span>
+              <ngx-inline-message [message]="'Username'" [formName]="hiveForm.get('databaseUser')"></ngx-inline-message>
+            </div>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Password<em> *</em></span>
+            <div class="w-75 ml-3 position-relative">
+              <nb-form-field class="w-100">
+                <input class="input-edit" autocomplete="new-password" nbInput fullWidth [type]="getInputType()"
+                       trim="blur"
+                       formControlName="databasePassword">
+                <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+                  <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                           pack="eva"
+                           [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                  </nb-icon>
+                </button>
+              </nb-form-field>
+              <ngx-inline-message [message]="'Password'"
+                                  [formName]="hiveForm.get('databasePassword')"></ngx-inline-message>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25"> Max Wait Time</span>
+            <div class="w-75 ml-3">
+              <span class="w-100"><input class="input-edit" trim="blur" (keydown)="isNumber($event)" nbInput fullWidth
+                                         formControlName="maxWaitTime"></span>
+            </div>
+          </div>
+          <div class="col-6 d-flex align-items-lg-center">
+            <span class="w-25">Max connection</span>
+            <div class="w-75 ml-3">
+              <span class="w-100"><input class="input-edit" trim="blur" (keydown)="isNumber($event)" nbInput fullWidth
+                                         formControlName="maxTotalConnection"></span>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between edit-button mt-5">
+          <button
+            [disabled]="true">
+            <nb-icon [icon]="'bolt'" pack="fa"></nb-icon>
+            <strong>{{'connection-manager.label.testConnection' | translate}}</strong>
+          </button>
+          <div class="d-flex justify-content-between">
+            <button class="mr-3" status="success"
+                    [disabled]="hiveForm.invalid || connectionName===''" (click)="save()">
+              <nb-icon icon="checkmark-outline"></nb-icon>
+              <strong *ngIf="connection['id']">{{'connection-manager.label.save' | translate}}</strong> <strong
+              *ngIf="!connection['id']">{{'connection-manager.label.create' | translate}}</strong>
+            </button>
+            <button class="edit-button-cancel" (click)="ref.close()">
+              <nb-icon icon="close-outline"></nb-icon>
+              <strong>{{'connection-manager.label.cancel' | translate}}</strong>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<ng-template let-refTuto="dialogRef" #tutorial>
+  <nb-card style="height: calc(100vh - 200px); width: calc(100vw - 500px)">
+    <nb-card-header>
+      <div class="d-flex justify-content-end">
+        <button style="background: none; border: none; color: #8C95B2" class="mr-2" status="danger"
+                (click)="refTuto.close()">
+          <nb-icon
+            icon="close-outline"
+          ></nb-icon>
+        </button>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row">
+        <nb-card class="col-3">
+            <span style='font-size:13.0pt;font-family:"Times New Roman",serif'><br
+              clear=all style='page-break-before:always'>
+            </span>
+
+          <p (click)="scroll(Toc65748530)" class="custom-link MsoToc2"><a>1.<span style='color:windowtext;
+text-decoration:none'> </span>T&#7841;o FTP Connection<span
+            style='color:windowtext;display:none;text-decoration:none'>. </span><span
+            style='color:windowtext;display:none;text-decoration:none'>3</span></a></p>
+
+          <p (click)="scroll(Toc65748531)" class="custom-link MsoToc2"><a>2.<span style='color:windowtext;
+text-decoration:none'> </span>T&#7841;o RDBMS Connection<span
+            style='color:windowtext;display:none;text-decoration:none'>. </span><span
+            style='color:windowtext;display:none;text-decoration:none'>5</span></a></p>
+
+          <p (click)="scroll(Toc65748532)" class="custom-link MsoToc2"><a>3.<span style='color:windowtext;
+text-decoration:none'> </span>T&#7841;o HDFS Connection<span
+            style='color:windowtext;display:none;text-decoration:none'>. </span><span
+            style='color:windowtext;display:none;text-decoration:none'>8</span></a></p>
+
+          <p (click)="scroll(Toc65748533)" class="custom-link MsoToc2"><a>4.<span style='color:windowtext;
+text-decoration:none'> </span>T&#7841;o Kafka Connection<span
+            style='color:windowtext;display:none;text-decoration:none'>. </span><span
+            style='color:windowtext;display:none;text-decoration:none'>9</span></a></p>
+
+        </nb-card>
+        <nb-card class="col-9 custom-p" style="height: calc(100vh - 350px);">
+          <nb-card-body>
+
+            <h3 style='margin-left:.25in'><a #Toc65748530 class="custom-font">1.<span
+              style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>T&#7841;o FTP Connection</a></h3>
+
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>T&#7841;o FTP Connection</p>
+            <p class=picture><img width=505 height=348 id="Picture 1"
+                                  src="assets/tutorial-ingestion/image001.jpg">
+            </p>
+
+            <p class=MsoCaption>Hình 1. T&#7841;o FTP Connection</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 1. Mô t&#7843; các tr&#432;&#7901;ng c&#7845;u
+              hình khi t&#7841;o connection</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Tên trường</span></p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; m&#7863;c &#273;&#7883;nh</span></p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; cho phép</span></p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Mô t&#7843;</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Tên connection</p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Vi&#7871;t hoa, không d&#7845;u, nên n&#7889;i nhau b&#7903;i
+                    d&#7845;u g&#7841;ch chân thay cho d&#7845;u cách. Ví d&#7909; FTP_SERVER_137</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>FTP server</p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Fully Qualified Hostname ho&#7863;c &#273;&#7883;a ch&#7881;
+                    IP c&#7911;a server FTP</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Port</p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>21</p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Port c&#7911;a FTP</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Username</p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Username</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Password</p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Password cho user account</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Connection Mode</p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Passive</p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoListParagraphCxSpFirst style='margin-left:.5in;text-indent:-.25in'><span
+                    style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span></span>Active</p>
+                  <p class=MsoListParagraphCxSpLast style='margin-left:.5in;text-indent:-.25in'><span
+                    style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </span></span>Passive</p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Connection Mode c&#7911;a FTP</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Connection Timeout</p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>30 sec</p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Kho&#7843;ng th&#7901;i gian ch&#7901; tr&#432;&#7899;c
+                    khi b&#7883; Timeout lúc t&#7841;o FTP connection</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Data Timeout</p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>30 sec</p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Khi chuy&#7875;n 1 file gi&#7919;a h&#7879; th&#7889;ng
+                    local và ftp server, giá tr&#7883; này ch&#7881; &#273;&#7883;nh th&#7901;i
+                    gian &#273;&#432;&#7907;c phép trôi qua mà không có d&#7919; li&#7879;u nào
+                    &#273;&#432;&#7907;c chuy&#7875;n gi&#7919;a các h&#7879; th&#7889;ng</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=135 valign=top style='width:101.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Remote Roll Batchsize</p>
+                </td>
+                <td width=69 valign=top style='width:51.8pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>30000</p>
+                </td>
+                <td width=106 valign=top style='width:79.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=265 valign=top style='width:198.4pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Giá tr&#7883; ch&#7881; &#273;&#7883;nh s&#7889; l&#432;&#7907;ng
+                    file path c&#7847;n tìm trong m&#7897;t th&#432; m&#7909;c nh&#7845;t &#273;&#7883;nh
+                    trên FTP serer. Giá tr&#7883; này c&#417; b&#7843;n không c&#7847;n ph&#7843;i
+                    s&#7917;a &#273;&#7893;i nh&#7919;ng khi th&#259;m dò nh&#7919;ng h&#7879; th&#7889;ng
+                    có s&#7889; l&#432;&#7907;ng t&#7879;p l&#7899;n, giá tr&#7883; này r&#7845;t
+                    quan tr&#7885;ng. &#272;&#7863;t giá tr&#7883; này quá cao có th&#7875; d&#7851;n
+                    &#273;&#7871;n hi&#7879;u su&#7845;t r&#7845;t kém, còn &#273;&#7863;t quá th&#7845;p
+                    có th&#7875; khi&#7871;n lu&#7891;ng ch&#7853;m h&#417;n bình th&#432;&#7901;ng</p>
+                </td>
+              </tr>
+            </table>
+            <p class=MsoNormal>&nbsp;</p>
+            <h3 style='margin-left:.25in'><a #Toc65748531>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>T&#7841;o RDBMS Connection</a></h3>
+
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>T&#7841;o RDBMS Connection</p>
+
+            <p class=picture><img width=440 height=354 id="Picture 2"
+                                  src="assets/tutorial-ingestion/image003.jpg">
+            </p>
+
+            <p class=MsoCaption>Hình 2. T&#7841;o RDBMS Connection</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 2. Mô t&#7843; các tr&#432;&#7901;ng c&#7845;u
+              hình khi t&#7841;o RDBMS connection</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Tên trường</span></p>
+                </td>
+                <td width=54 valign=top style='width:40.5pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; m&#7863;c &#273;&#7883;nh</span></p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; cho phép</span></p>
+                </td>
+                <td width=366 valign=top style='width:274.25pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Mô t&#7843;</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Tên connection</p>
+                </td>
+                <td width=54 valign=top style='width:40.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=366 valign=top style='width:274.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Vi&#7871;t hoa, không d&#7845;u, nên n&#7889;i nhau b&#7903;i
+                    d&#7845;u g&#7841;ch chân thay cho d&#7845;u cách. Ví d&#7909;
+                    ORACLE_SERVER_12</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>DB connection url</p>
+                </td>
+                <td width=54 valign=top style='width:40.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=366 valign=top style='width:274.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>M&#7897;t database connection URL &#273;&#432;&#7907;c s&#7917;
+                    d&#7909;ng &#273;&#7875; k&#7871;t n&#7889;i t&#7899;i m&#7897;t database. Có
+                    th&#7875; ch&#7913;a database system name, host, port, database name và m&#7897;t
+                    vài tham s&#7889;. Cú pháp chính xác c&#7911;a m&#7897;t database connection
+                    URL ph&#7909; thu&#7897;c vào Database mà b&#7841;n s&#7917; d&#7909;ng.<br>
+                    Ví d&#7909;: <b><span style='color:black;background:#DEEAF6'>jdbc:mysql://10.60.170.188:8036/db_thrift_secure</span></b>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>DB driver classname</p>
+                </td>
+                <td width=54 valign=top style='width:40.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=366 valign=top style='width:274.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Database driver class name.<br>
+                    Ví d&#7909;: <b><span style='color:black;background:#DEEAF6'>com.mysql.jdbc.Driver</span></b></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>DB driver location(s)</p>
+                </td>
+                <td width=54 valign=top style='width:40.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=366 valign=top style='width:274.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Đường dẫn chứa các file/folder và/hoặc các URL chứa driver JAR và các dependency
+                    của nó (nếu cần).</p>
+                  <p> Người dùng upload file database driver vào các server cài Nifi theo cùng đường dẫn:
+                    /usr/dgd/v1.0.0/nifi2/jdbcs/</p>
+                  <p> VDP hỗ trợ sẵn driver cho MySQL5, MySQL8, Oracle 12+ với các đường dẫn như sau:</p>
+                  <p>• MySQL5: /usr/dgd/v1.0.0/nifi2/jdbcs/mysql-connector-java-5.jar</p>
+                  <p>• MySQL8: /usr/dgd/v1.0.0/nifi2/jdbcs/mysql-connector-java-8.jar</p>
+                  <p>• Oracle 12+: /usr/dgd/v1.0.0/nifi2/jdbcs/ojdbc8.jar</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>DB username</p>
+                </td>
+                <td width=54 valign=top style='width:40.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=366 valign=top style='width:274.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Database user name</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>DB password</p>
+                </td>
+                <td width=54 valign=top style='width:40.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=366 valign=top style='width:274.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Database password</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=84 valign=top style='width:62.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Thi&#7871;t l&#7853;p nâng cao (không b&#7855;t bu&#7897;c
+                    nh&#7853;p)</p>
+                </td>
+                <td width=54 valign=top style='width:40.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=366 valign=top style='width:274.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>JSON các key/value ch&#7913;a các thi&#7871;t l&#7853;p
+                    nâng cao.<br>
+                    Ví d&#7909;:<br>
+                    <img width=624 height=220
+                         src="assets/tutorial-ingestion/image004.png">
+                  </p>
+                  <p class=MsoNormal>Chi ti&#7871;t các c&#7845;u hình nâng cao cho RDBMS
+                    nh&#432; b&#7843;ng d&#432;&#7899;i &#273;ây.</p>
+                </td>
+              </tr>
+            </table>
+
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption style='page-break-after:avoid'>B&#7843;ng 3.
+              Mô t&#7843; các c&#7845;u hình nâng cao cho RDBMS</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Tên trường (key)</span></p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; m&#7863;c &#273;&#7883;nh</span></p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; cho phép</span></p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Mô t&#7843;</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Max Wait Time</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>500 millis</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Kho&#7843;ng th&#7901;i gian t&#7889;i &#273;a mà pool s&#7869;
+                    &#273;&#7907;i (khi không có k&#7871;t n&#7889;i kh&#7843; d&#7909;ng) m&#7897;t
+                    connection tr&#7843; v&#7873; tr&#432;&#7899;c khi b&#7883; l&#7895;i
+                    ho&#259;c -1 &#273;&#7875; ch&#7901; vô h&#7841;n</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Max Total Connections</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>8</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>S&#7889; l&#432;&#7907;ng t&#7889;i &#273;a active
+                    connection có th&#7875; &#273;&#432;&#7907;c kh&#7903;i t&#7841;o cùng m&#7897;t
+                    th&#7901;i &#273;i&#7875;m, ho&#7863;c s&#7917; d&#7909;ng giá tr&#7883; âm
+                    &#273;&#7875; không gi&#7899;i h&#7841;n</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>dbcp-min-idle-conns</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>0</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>S&#7889; l&#432;&#7907;ng t&#7889;i thi&#7875;u các k&#7871;t
+                    n&#7889;i có th&#7875; &#7903; tr&#7841;ng thái r&#7843;nh (idle) trong pool</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>dbcp-max-idle-conns</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>8</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>S&#7889; l&#432;&#7907;ng connection t&#7889;i &#273;a &#7903;
+                    tr&#7841;ng thái r&#7843;nh (idle) mà không b&#7883; gi&#7843;i phóng, &#273;&#7875;
+                    giá tr&#7883; âm &#273;&#7875; không gi&#7899;i h&#7841;n</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>dbcp-max-conn-lifetime</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>-1</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Th&#7901;i gian t&#7891;n t&#7841;i t&#7889;i &#273;a
+                    (tính theo mili giây) c&#7911;a m&#7897;t k&#7871;t n&#7889;i. Thi&#7871;t l&#7853;p
+                    giá tr&#7883; 0 ho&#7863;c m&#7897;t s&#7889; âm &#273;&#7875; cho phép k&#7871;t
+                    n&#7889;i có th&#7901;i gian t&#7891;n t&#7841;i vô h&#7841;n</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>dbcp-time-between-eviction-runs</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>-1</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Th&#7901;i gian tính theo mili giây gi&#7919;a m&#7895;i l&#7847;n
+                    ch&#7841;y thread lo&#7841;i b&#7887; các k&#7871;t n&#7889;i r&#7843;nh</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>dbcp-min-evictable-idle-time</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>30 mins</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Kho&#7843;ng th&#7901;i gian t&#7889;i thi&#7875;u &#273;&#7875;
+                    m&#7897;t k&#7871;t n&#7889;i có th&#7875; không ho&#7841;t &#273;&#7897;ng
+                    tr&#432;&#7899;c khi b&#7883; lo&#7841;i b&#7887;</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>dbcp-soft-min-evictable-idle-time</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>-1</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Kho&#7843;ng th&#7901;i gian t&#7889;i thi&#7875;u m&#7897;t
+                    k&#7871;t n&#7889;i có th&#7875; &#7903; tr&#7841;ng thái r&#7843;nh trong
+                    pool tr&#432;&#7899;c khi &#273;&#7911; &#273;i&#7873;u ki&#7879;n b&#7883;
+                    lo&#7841;i b&#7887; </p>
+                </td>
+              </tr>
+            </table>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <h3 style='margin-left:.25in'><a #Toc65748532>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>T&#7841;o HDFS Connection</a></h3>
+
+            <!--tao HDFS-->
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>T&#7841;o HDFS Connection</p>
+
+            <p class=picture><img width=505 height=209 id="Picture 3"
+                                  src="assets/tutorial-ingestion/image006.jpg">
+            </p>
+
+            <p class=MsoCaption>Hình 3. T&#7841;o HDFS Connection</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 4. Mô t&#7843; các tr&#432;&#7901;ng c&#7845;u
+              hình khi t&#7841;o HDFS connection</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Tên trường</span></p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; m&#7863;c &#273;&#7883;nh</span></p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; cho phép</span></p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Mô t&#7843;</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Tên connection</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Vi&#7871;t hoa, không d&#7845;u, nên n&#7889;i nhau b&#7903;i
+                    d&#7845;u g&#7841;ch chân thay cho d&#7845;u cách. Ví d&#7909;
+                    HDFS_CLUSTER_HIT</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=145 valign=top style='width:108.55pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>HDFS Resource Path</p>
+                </td>
+                <td width=71 valign=top style='width:53.2pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=72 valign=top style='width:.75in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=288 valign=top style='width:215.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Đường dẫn đến các file hệ thống cấu hình Hadoop (core-site.xml và
+                    hdfs-site.xml).</p>
+                  <p>
+                    Đương dẫn mặc định trên cấu hình Hadoop trên VDP: </p>
+                  <p>
+                    /usr/hdp/current/hadoop-client/conf/core-site.xml,/usr/hdp/current/hadoop-client/conf/hdfs-site.xml</p>
+                </td>
+              </tr>
+            </table>
+
+            <p class=MsoNormal>&nbsp;</p>
+            <!--tao Kafka-->
+            <h3 style='margin-left:.25in'><a #Toc65748533>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>T&#7841;o Kafka Connection</a></h3>
+
+            <p class=MsoListParagraph style='margin-left:.5in;text-indent:-.25in'><span
+              style='font-family:Symbol'>-<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>T&#7841;o Kafka Connection</p>
+
+            <p class=picture><img width=483 height=216 id="Picture 7"
+                                  src="assets/tutorial-ingestion/image008.jpg">
+            </p>
+
+            <p class=MsoCaption>Hình 4. T&#7841;o Kafka Connection</p>
+
+            <p class=MsoNormal>&nbsp;</p>
+
+            <p class=MsoCaption>B&#7843;ng 5. Mô t&#7843; các tr&#432;&#7901;ng c&#7845;u
+              hình khi t&#7841;o Kafka Connection</p>
+
+            <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+                   style='margin-left:.5in;border-collapse:collapse;border:none'>
+              <tr>
+                <td width=136 valign=top style='width:101.65pt;border:solid windowtext 1.0pt;
+  background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Tên trường</span></p>
+                </td>
+                <td width=101 valign=top style='width:1.05in;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; m&#7863;c &#273;&#7883;nh</span></p>
+                </td>
+                <td width=68 valign=top style='width:50.95pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Giá tr&#7883; cho phép</span></p>
+                </td>
+                <td width=271 valign=top style='width:203.3pt;border:solid windowtext 1.0pt;
+  border-left:none;background:#BFBFBF;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal><span style='color:black'>Mô t&#7843;</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td width=136 valign=top style='width:101.65pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Tên connection</p>
+                </td>
+                <td width=101 valign=top style='width:1.05in;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=68 valign=top style='width:50.95pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=271 valign=top style='width:203.3pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Vi&#7871;t hoa, không d&#7845;u, nên n&#7889;i nhau b&#7903;i
+                    d&#7845;u g&#7841;ch chân thay cho d&#7845;u cách. Ví d&#7909;
+                    KAFKA_CLUSTER_HIT</p>
+                </td>
+              </tr>
+              <tr>
+                <td width=136 valign=top style='width:101.65pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Kafka brokers</p>
+                </td>
+                <td width=101 valign=top style='width:1.05in;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>localhost:9092</p>
+                </td>
+                <td width=68 valign=top style='width:50.95pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>&nbsp;</p>
+                </td>
+                <td width=271 valign=top style='width:203.3pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+                  <p class=MsoNormal>Danh sách các Kafka Broker theo d&#7841;ng
+                    &lt;host&gt;:&lt;port&gt;, các broker cách nhau b&#7903;i d&#7845;u ph&#7849;y</p>
+                </td>
+              </tr>
+            </table>
+
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template>

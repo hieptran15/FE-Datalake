@@ -1,0 +1,167 @@
+<nb-layout>
+  <nb-layout-column
+                    style=" padding-right: 0 !important;padding-left: 0 !important;padding-top: 15.6px !important;">
+    <nb-card [nbSpinner]="isLoading" [nbSpinnerMessage]="'process.processing' | translate" nbSpinnerStatus="primary"
+             class="w-h-body">
+      <nb-card-header>
+        <div class="table-wrap">
+          <div class="d-flex justify-content-between align-items-center">
+            <span>{{'connection-manager.label.listConnection' | translate}}</span>
+            <div class="row w-50 justify-content-end edit-button">
+              <button *hasAnyAuthority="authoritiesConstant.CONNECTION_MANAGER.CONNECTION_MANAGER_WRITE"
+                      type="button"
+                      (click)="newConnection()">
+                <nb-icon icon="plus-outline"></nb-icon>
+                <span class="custom-show-data">{{'connection-manager.label.addNewConnection' | translate}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div style="margin-bottom: 25px;margin-top: 20px;" class="w-100 d-flex justify-content-between">
+          <div class="w-50 d-flex page">
+            <span>{{'data-ingestion.label.show' | translate}}</span>
+            <ng-select [items]="limits"
+                       bindLabel="name"
+                       [(ngModel)]="limit"
+                       [clearable]="false">
+            </ng-select>
+            <span>{{'data-ingestion.label.record' | translate}}</span>
+          </div>
+          <div class="w-50 d-flex justify-content-end search">
+            <div style="position: relative">
+              <input class="mr-3 input-edit" fullWidth nbInput
+                     placeholder="{{'data-ingestion.column.threadName' | translate}}" trim="blur"
+                     [(ngModel)]="nameConnection"
+                     (change)="doSearch()">
+              <nb-icon nbPrefix icon="search-outline" pack="eva"
+                       style="position: absolute;top: 8px;z-index: 3; right: 25px;"></nb-icon>
+            </div>
+            <ng-select [items]="connections"
+                       class="typeConnection"
+                       placeholder="{{'connection-manager.label.typeConnection' | translate}}"
+                       bindLabel="name"
+                       bindValue="name"
+                       appendTo=""
+                       [closeOnSelect]="true"
+                       [clearAllText]="''"
+                       (change)="checkConnection($event)">
+            </ng-select>
+          </div>
+        </div>
+        <ngx-datatable
+          #table
+          class="dark"
+          [rows]="rows"
+          [columnMode]="'force'"
+          [columns]="columns"
+          [messages]="{totalMessage: 'data-ingestion.label.record' | translate}"
+          [headerHeight]="'auto'"
+          [limit]="limit"
+          [footerHeight]="50"
+          [loadingIndicator]="true"
+          rowHeight="auto">
+          <ng-container *ngFor="let col of columns">
+            <ngx-datatable-column prop="{{col.prop}}" name="{{col.name}}" [sortable]="false" [flexGrow]="col.flex">
+              <ng-template let-column="column" ngx-datatable-header-template>
+
+                <ng-container [ngSwitch]="col.prop">
+                  <ng-container *ngSwitchDefault>
+                    {{ column.name |translate }}
+                  </ng-container>
+
+                  <ng-container *ngSwitchCase="'id'">
+                    <div class="text-center"><span class="custom-show-data">{{ column.name |translate}}</span></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'connectionType'">
+                    <div class="text-center"><span class="custom-show-data">{{ column.name |translate}}</span></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'count'">
+                    <div class="text-center"><span class="custom-show-data">{{ column.name |translate}}</span></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'createdAt'">
+                    <div class="text-center"><span class="custom-show-data">{{ column.name |translate}}</span></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'action'">
+                    <div class="text-center"><span class="custom-show-data">{{ column.name |translate}}</span></div>
+                  </ng-container>
+                </ng-container>
+
+              </ng-template>
+
+              <ng-template let-value="value" let-rowIndex="rowIndex" ngx-datatable-cell-template let-row="row">
+                <ng-container [ngSwitch]="col.prop">
+                  <ng-container *ngSwitchDefault>
+                    <span class="custom-show-data" [title]="value">{{value ? value : 'N/A'}}</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'id'">
+                    <div class="text-center">
+                      <span [title]="value">{{value}}</span>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'connectionType'">
+                    <div class="text-center">
+                      {{value}}
+                    </div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'count'">
+                    <div class="text-center">
+                      {{ value}}
+                    </div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'createdAt'">
+                    <div class="text-center">
+                      {{ value | date:'dd/MM/yyyy HH:mm:ss'}}
+                    </div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'Action'">
+                    <button *hasAnyAuthority="authoritiesConstant.CONNECTION_MANAGER.CONNECTION_MANAGER_WRITE"
+                            style="border: none;" nbButton ghost status="warning"
+                            nbTooltip="{{'data-ingestion.label.edit'| translate}}"
+                            (click)="edit(rowIndex)">
+                      <nb-icon [icon]="'edit-2-outline'"></nb-icon>
+                    </button>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-footer>
+              <ng-template
+                ngx-datatable-footer-template
+                let-rowCount="rowCount"
+                let-pageSize="pageSize"
+                let-selectedCount="selectedCount"
+                let-curPage="curPage"
+                let-offset="offset">
+                <div style="padding: 5px 10px;width:250px">
+                  <div *ngIf="rowCount > 0">
+                    <!--                            Showing {{(offset * pageSize)+1}} to {{(rowCount>-->
+                    <!--                            (curPage*pageSize))?(curPage*pageSize):(rowCount)}} of-->
+                    <!--                            {{(rowCount)}} records.-->
+                    <!--                    <span>(Record {{(curPage - 1) * limit + 1}} - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + 10 : rowCount}}/{{rowCount}})</span>-->
+                    <span>{{'data-ingestion.label.show' | translate}} {{(curPage - 1) * limit + 1}}
+                      - {{rowCount - curPage * limit >= 0 ? (curPage - 1) * limit + limit : rowCount}}
+                      /{{rowCount}} {{'data-ingestion.label.record' | translate}}</span>
+                  </div>
+                  <div *ngIf="rowCount === 0">
+                    <span>0 {{'data-ingestion.label.record' | translate}}</span>
+                  </div>
+                </div>
+                <datatable-pager
+                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+                  [pagerRightArrowIcon]="'datatable-icon-right'"
+                  [page]="curPage"
+                  [size]="pageSize"
+                  [count]="rowCount"
+                  [hidden]="!((rowCount / pageSize) > 1)"
+                  (change)="table.onFooterPage($event)">
+                </datatable-pager>
+              </ng-template>
+            </ngx-datatable-footer>
+          </ng-container>
+        </ngx-datatable>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
